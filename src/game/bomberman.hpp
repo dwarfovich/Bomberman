@@ -4,14 +4,28 @@
 #include "character.hpp"
 #include "direction.hpp"
 
+#include <memory>
+
 namespace bm {
-inline constexpr size_t defaultBombermanSpeed = 5;
+struct Bomb;
+
+inline constexpr size_t defaultBombermanSpeed      = 20;
 inline constexpr size_t defaultBombermanBombRadius = 1;
 
-struct Bomberman : public Character {
+class Bomberman : public Character, public std::enable_shared_from_this<Bomberman>
+{
+public:
     Bomberman();
-    // player
+
+    size_t                activeBombs() const;
+    size_t                maxActiveBombs() const;
+    void                  decreaseActiveBombs();
+    std::unique_ptr<Bomb> createBomb();
+
+private:
+    size_t activeBombs_    = 0;
+    size_t maxActiveBombs_ = 1;
 };
-}  // namespace bm
+} // namespace bm
 
 #endif // BOMBERMAN_HPP

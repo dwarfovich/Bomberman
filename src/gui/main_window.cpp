@@ -5,35 +5,66 @@
 
 #include <QKeyEvent>
 
+#include <iostream>
+
+#include <QDebug>
+
 namespace bm {
 namespace gui {
-    MainWindow::MainWindow(QWidget* parent)
-        : QMainWindow{parent}
-        , ui_{new Ui::MainWindow}
-        , gameView_{new GameView{this}}
-    {
-        ui_->setupUi(this);
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow { parent }, ui_ { new Ui::MainWindow }, gameView_ { new GameView { this } }
+{
+    ui_->setupUi(this);
 
-        std::shared_ptr<Map> map = createTestMap();
-        auto player = std::make_shared<Bomberman>();
+    std::shared_ptr<Map> map    = createTestMap();
+    auto                 player = std::make_shared<Bomberman>();
+    // 44
+    player->moveData.location = map->cellIndexToCenterLocation(44);
+    map->setPlayer(player);
+    game_.setMap(map);
+    game_.setScene(gameView_->scene());
+    gameView_->setMap(map);
+    setCentralWidget(gameView_);
+    game_.start();
+}
 
-        player->location = {5, 5};
-        map->setPlayer(player);
-        game_.setMap(map);
-        gameView_->setMap(map);
-        setCentralWidget(gameView_);
+MainWindow::~MainWindow()
+{
+    delete ui_;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_W) {
+        game_.movePlayer(Direction::Upward);
+    } else if (event->key() == Qt::Key_D) {
+        game_.movePlayer(Direction::Right);
+    } else if (event->key() == Qt::Key_S) {
+        game_.movePlayer(Direction::Downward);
+    } else if (event->key() == Qt::Key_A) {
+        game_.movePlayer(Direction::Left);
     }
 
-    MainWindow::~MainWindow()
-    {
-        delete ui_;
-    }
+    std::cout << "Moving" << std::endl;
+}
 
-    void MainWindow::keyPressEvent(QKeyEvent* event)
-    {
-        if (event->key() == Qt::Key_W) {
-            game_.movePlayer(Direction::Upward);
-        }
+void MainWindow::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->isAutoRepeat()) {
+        return;
     }
-}  // namespace gui
-}  // namespace bm
+    if (event->key() == Qt::Key_W) {
+        game_.stopPlayer(Direction::Upward);
+    } else if (event->key() == Qt::Key_D) {
+        game_.stopPlayer(Direction::Right);
+    } else if (event->key() == Qt::Key_S) {
+        game_.stopPlayer(Direction::Downward);
+    } else if (event->key() == Qt::Key_A) {
+        game_.stopPlayer(Direction::Left);
+    } else if (event->key() == Qt::Key_Space) {
+        game_.placeBomb();
+    }
+}
+
+} // namespace gui
+} // namespace bm

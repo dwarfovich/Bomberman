@@ -14,34 +14,43 @@ SOURCES += \
     src/game/bomberman.cpp \
     src/game/cell.cpp \
     src/game/enemy.cpp \
-    src/game/game_loop.cpp \
+    src/game/game.cpp \
+    src/game/imovable.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
     src/game/modifiers/imodifier.cpp \
     src/gui/cell_item.cpp \
+    src/gui/character_graphics_item.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/timer_queue.cpp
 
 HEADERS += \
     src/direction.hpp \
+    src/game/bomb.hpp \
     src/game/bomberman.hpp \
     src/game/cell.hpp \
     src/game/cell_type.hpp \
     src/game/character.hpp \
     src/game/enemy.hpp \
-    src/game/game_loop.hpp \
+    src/game/game.hpp \
+    src/game/imovable.hpp \
+    src/game/interval.hpp \
     src/game/map.hpp \
     src/game/map_loader.hpp \
     src/game/modifiers/imodifier.hpp \
     src/game/modifiers/modifier_type.hpp \
+    src/game/move_data.hpp \
     src/gui/cell_item.hpp \
+    src/gui/character_graphics_item.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_window.hpp \
-    src/gui/map_widget.hpp
+    src/gui/map_widget.hpp \
+    src/timer_queue.hpp
 
 FORMS += \
     src/gui/main_window.ui \

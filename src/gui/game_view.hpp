@@ -10,20 +10,25 @@
 
 namespace bm {
 namespace gui {
-    class GameView : public QGraphicsView {
-    public:
-        explicit GameView(QWidget* parent = nullptr);
 
-        void setMap(const std::shared_ptr<Map>& map);
+class GameView : public QGraphicsView
+{
+public:
+    explicit GameView(QWidget* parent = nullptr);
 
-    protected:
-        void updateMap();
+    void setMap(const std::shared_ptr<Map>& map);
 
-    private:
-        GameScene* scene_;
-        std::shared_ptr<Map> map_;
-    };
-}  // namespace gui
-}  // namespace bm
+    GameScene* scene() const;
+
+protected:
+    void updateMap();
+
+private:
+    GameScene*           scene_;
+    std::shared_ptr<Map> map_;
+};
+
+} // namespace gui
+} // namespace bm
 
 #endif // GAMEVIEW_HPP
