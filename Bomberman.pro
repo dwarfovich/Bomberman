@@ -11,6 +11,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 INCLUDEPATH += $$PWD/src
 
 SOURCES += \
+    src/game/bomb_explosion_event.cpp \
     src/game/bomberman.cpp \
     src/game/cell.cpp \
     src/game/enemy.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     src/direction.hpp \
     src/game/bomb.hpp \
+    src/game/bomb_explosion_event.hpp \
     src/game/bomberman.hpp \
     src/game/cell.hpp \
     src/game/cell_type.hpp \
@@ -50,6 +52,8 @@ HEADERS += \
     src/gui/game_view.hpp \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
+    src/time.hpp \
+    src/timer_event.hpp \
     src/timer_queue.hpp
 
 FORMS += \

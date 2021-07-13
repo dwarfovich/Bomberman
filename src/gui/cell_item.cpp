@@ -7,7 +7,7 @@ namespace bm {
 namespace gui {
     double CellItem::size_ = 50;
     const QBrush CellItem::concreteBrush_ = Qt::gray;
-    const QBrush CellItem::bricksBrush_ = QColor(150, 0, 0);
+    const QBrush CellItem::bricksBrush_ = QColor{150, 0, 0};
 
     CellItem::CellItem(const Cell* cell, QGraphicsItem* parent) : QGraphicsItem{parent}, cell_{cell}
     {
@@ -38,7 +38,7 @@ namespace gui {
             if (cell_->type == CellType::Concrete) {
                 painter->setBrush(concreteBrush_);
             }
-            else if (cell_->type == CellType::Destroyable) {
+            else if (cell_->type == CellType::Bricks) {
                 painter->setBrush(bricksBrush_);
             }
             painter->drawRect(boundingRect());

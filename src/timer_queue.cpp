@@ -1,5 +1,7 @@
 #include "timer_queue.hpp"
 
+namespace bm{
+
 TimerQueue::TimerQueue()
 {
     connect(&timer_, &QTimer::timeout, this, &TimerQueue::onTimeout);
@@ -43,4 +45,6 @@ void TimerQueue::onTimeout()
             restart();
         }
     }
+}
+
 }

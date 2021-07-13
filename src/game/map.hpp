@@ -30,6 +30,7 @@ public:
     void setPlayer(const std::shared_ptr<Bomberman>& player);
     bool moveCharacter(const std::shared_ptr<Character>& character, Direction direction);
     void stopCharacter(const std::shared_ptr<Character>& character, Direction direction);
+    void explodeBomb(const std::shared_ptr<Bomb>& bomb);
 
     QPoint                     indexToCoordinates(size_t index) const;
     size_t                     coordinatesToIndex(const QPoint& point) const;

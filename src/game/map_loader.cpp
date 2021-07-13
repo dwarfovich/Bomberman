@@ -26,6 +26,11 @@ std::unique_ptr<Map> createTestMap()
         map->setCellType(35, CellType::Concrete);
         map->setCellType(53, CellType::Concrete);
         map->setCellType(55, CellType::Concrete);
+        map->setCellType(24, CellType::Bricks);
+        map->setCellType(42, CellType::Bricks);
+        map->setCellType(46, CellType::Bricks);
+        map->setCellType(64, CellType::Bricks);
+
         return map;
     } catch (...) {
         return nullptr;

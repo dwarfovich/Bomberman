@@ -70,7 +70,6 @@ bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 void Map::setPlayer(const std::shared_ptr<Bomberman>& player)
 {
     player_ = player;
-    // qDebug() << "SetPlayer" << player_->moveData.location;
 }
 
 bool Map::moveCharacter(const std::shared_ptr<Character>& character, Direction direction)
@@ -95,6 +94,14 @@ void Map::stopCharacter(const std::shared_ptr<Character>& character, Direction d
     if (character->moveData.direction == direction) {
         character->moveData.speed = 0;
     }
+}
+
+void Map::explodeBomb(const std::shared_ptr<Bomb> &bomb)
+{
+    bombs_.erase(std::remove(bombs_.begin(), bombs_.end(), bomb));
+    const auto& index = bomb->cellIndex;
+        map_[index].hasBomb = false;
+        emit cellChanged(index);
 }
 
 QPoint Map::indexToCoordinates(size_t index) const

@@ -1,21 +1,16 @@
 #ifndef TIMERQUEUE_HPP
 #define TIMERQUEUE_HPP
 
+#include "time.hpp"
+#include "timer_event.hpp"
+
 #include <QObject>
 #include <QTimer>
 
 #include <map>
 #include <chrono>
 
-using TimerType = std::chrono::steady_clock;
-using TimePoint = std::chrono::time_point<TimerType>;
-
-class TimerEvent
-{
-public:
-    virtual ~TimerEvent()       = default;
-    virtual void doWork() const = 0;
-};
+namespace bm {
 
 class TimerQueue : public QObject
 {
@@ -41,5 +36,7 @@ private:
     QTimer    timer_;
     EventsMap events_;
 };
+
+}
 
 #endif // TIMERQUEUE_HPP

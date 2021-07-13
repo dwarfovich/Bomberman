@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include "map.hpp"
+#include "timer_queue.hpp"
 
 #include <QTimer>
 
@@ -30,11 +31,15 @@ public:
 
     void setScene(gui::GameScene* newScene);
 
-private:
+private: // methods
+    void explodeBomb(const std::shared_ptr<Bomb>& bomb);
+
+private: // data
     static const int     timeout_ = 42;
     std::shared_ptr<Map> map_;
     gui::GameScene*      scene_ = nullptr;
-    QTimer               timer_;
+    QTimer               moveTimer;
+    TimerQueue timerQueue;
 };
 } // namespace bm
 

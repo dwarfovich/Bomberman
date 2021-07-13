@@ -6,6 +6,7 @@
 
 namespace bm {
 namespace gui {
+
 GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }
 {}
 
@@ -17,7 +18,6 @@ bool GameScene::setCellItem(CellItem* item, size_t index)
         }
         cellItems_[index] = item;
         addItem(cellItems_[index]);
-        qDebug() << cellItems_[index]->pos();
 
         return true;
     } catch (...) {
