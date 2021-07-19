@@ -1,6 +1,7 @@
 #include "game_scene.hpp"
-#include "game/character.hpp"
+//#include "game/character.hpp"
 #include "game/map_constants.hpp"
+#include "game/moving_object.hpp"
 
 namespace bm {
 namespace gui {
@@ -23,18 +24,19 @@ bool GameScene::setCellItem(CellItem* item, size_t index)
     }
 }
 
-void GameScene::addCharacter(const std::shared_ptr<Character>& character, std::unique_ptr<CharacterGraphicsItem> item)
+void GameScene::addCharacter(const std::shared_ptr<MovingObject>&   character,
+                             std::unique_ptr<CharacterGraphicsItem> item)
 {
     addItem(item.get());
     characters_.insert({ character, std::move(item) });
     characterMoved(character);
 }
 
-void GameScene::characterMoved(const std::shared_ptr<Character>& character)
+void GameScene::characterMoved(const std::shared_ptr<MovingObject>& character)
 {
     auto iter = characters_.find(character);
     if (iter != characters_.cend()) {
-        iter->second->setPos(mapCoordinatesToSceneCoordinates(character->moveData.coordinates));
+        iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
     }
 }
 

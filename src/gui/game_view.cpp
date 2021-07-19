@@ -29,12 +29,12 @@ void GameView::updateMap()
         cellItem->setPos(x, y);
         scene_->setCellItem(cellItem, i);
     }
-    QBrush      playerBrush(Qt::green);
-    const auto& player = map_->player();
+    //    QBrush      playerBrush(Qt::green);
+    //    const auto& player = map_->player();
 
-    auto characterItem = std::make_unique<CharacterGraphicsItem>();
-    characterItem->setCharacter(player);
-    scene_->addCharacter(player, std::move(characterItem));
+    //    auto characterItem = std::make_unique<CharacterGraphicsItem>();
+    //    characterItem->setCharacter(player);
+    //    scene_->addCharacter(player, std::move(characterItem));
 }
 
 GameScene* GameView::scene() const

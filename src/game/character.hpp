@@ -1,19 +1,17 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-#include "game_object.hpp"
-#include "direction.hpp"
-#include "move_data.hpp"
-
-#include <QPoint>
-#include <QPointF>
+#include "moving_object.hpp"
 
 namespace bm {
+struct MoveData;
 
-struct Character : public GameObject
+class Character : public MovingObject
 {
-    Character(const MoveData& aMoveData = {});
-    MoveData moveData;
+public:
+    Character(const MoveData& moveData = {});
+
+    virtual bool acceptsModifiers() const = 0;
 };
 
 } // namespace bm

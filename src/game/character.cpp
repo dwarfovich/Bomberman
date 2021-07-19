@@ -2,7 +2,7 @@
 
 namespace bm {
 
-Character::Character(const MoveData &aMoveData) : moveData { aMoveData }
+Character::Character(const MoveData &moveData) : MovingObject { moveData }
 {}
 
 } // namespace bm

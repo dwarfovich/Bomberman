@@ -18,6 +18,8 @@ public:
     Bomberman();
     ALLOW_EXPLOSION_VISITOR;
 
+    bool acceptsModifiers() const override;
+
     size_t                activeBombs() const;
     size_t                maxActiveBombs() const;
     void                  decreaseActiveBombs();

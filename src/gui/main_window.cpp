@@ -16,11 +16,17 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui_->setupUi(this);
 
-    std::shared_ptr<Map> map    = createTestMap();
-    auto                 player = std::make_shared<Bomberman>();
+    std::shared_ptr<Map> map = createTestMap();
+    game_.setScene(gameView_->scene());
+    game_.setMap(map);
+
+    auto player = std::make_shared<Bomberman>();
     // 44
-    player->moveData.coordinates = map->indexToCellCenterCoordinates(44);
-    map->setPlayer(player);
+    // player->movementData().coordinates = map->indexToCellCenterCoordinates(44);
+    player->setCoordinates(map->indexToCellCenterCoordinates(44));
+    //    map->setPlayer(player);
+    game_.setPlayer(player);
+
     game_.setMap(map);
     game_.setScene(gameView_->scene());
     gameView_->setMap(map);

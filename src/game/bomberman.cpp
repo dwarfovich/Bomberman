@@ -6,6 +6,11 @@ namespace bm {
 Bomberman::Bomberman() : Character { MoveData { 0, Direction::Downward, { 0, 0 } } }
 {}
 
+bool Bomberman::acceptsModifiers() const
+{
+    return true;
+}
+
 size_t Bomberman::activeBombs() const
 {
     return activeBombs_;

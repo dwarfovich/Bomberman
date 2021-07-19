@@ -4,6 +4,7 @@
 #include "modifier_deactivation_event.hpp"
 #include "map_constants.hpp"
 #include "gui/game_scene.hpp"
+#include "gui/character_graphics_item.hpp"
 
 #include <functional>
 
@@ -30,26 +31,51 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     }
     map_ = map;
     connect(map_.get(), &Map::bombermanIndexChanged, this, &Game::onBombermanIndexChanged);
+    connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::characterMoved);
+    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
+}
+
+void Game::setPlayer(const std::shared_ptr<Bomberman>& player)
+{
+    player_            = player;
+    auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
+    characterItem->setCharacter(player);
+    map_->addMovingObject(player);
+    scene_->addCharacter(player, std::move(characterItem));
 }
 
 bool Game::movePlayer(Direction direction)
 {
-    const auto& player = map_->player();
-    return map_->moveCharacter(player, direction);
+    player_->setSpeed(defaultBombermanSpeed);
+    // character->moveData.speed     = defaultBombermanSpeed;
+    // character->moveData.direction = direction;
+    player_->setDirection(direction);
+    if (direction == Direction::Left || direction == Direction::Upward) {
+        if (player_->speed() > 0) {
+            player_->setSpeed(player_->speed() * -1);
+        }
+    } else {
+        // character->moveData.speed = abs(character->moveData.speed);
+    }
+    // character->
+    // character->location += coordinatesShift(direction);
+    // emit characterMoved(character);
+    return true;
 }
 
 void Game::stopPlayer(Direction direction)
 {
-    const auto& player = map_->player();
-    map_->stopCharacter(player, direction);
+    if (player_->movementData().direction == direction) {
+        player_->setSpeed(0);
+    }
 }
 
 void Game::placeBomb()
 {
-    const auto&           player = map_->player();
-    std::shared_ptr<Bomb> bomb   = player->createBomb();
+    // const auto&           player = map_->player();
+    std::shared_ptr<Bomb> bomb = player_->createBomb();
     if (bomb) {
-        auto index = map_->coordinatesToIndex(player->moveData.coordinates);
+        auto index = map_->coordinatesToIndex(player_->movementData().coordinates);
         if (map_->isProperIndex(index)) {
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
@@ -61,7 +87,6 @@ void Game::placeBomb()
 void Game::setScene(gui::GameScene* newScene)
 {
     scene_ = newScene;
-    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
 }
 
 void Game::onBombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index)

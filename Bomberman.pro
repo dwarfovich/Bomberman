@@ -28,6 +28,7 @@ SOURCES += \
     src/game/modifiers/modifier_creator.cpp \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
+    src/game/moving_object.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
     src/gui/game_scene.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     src/game/modifiers/permanent_bomb_radius_increase.hpp \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
+    src/game/moving_object.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
     src/gui/game_scene.hpp \

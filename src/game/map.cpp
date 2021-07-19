@@ -72,34 +72,37 @@ bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
     }
 }
 
-void Map::setPlayer(const std::shared_ptr<Bomberman>& player)
-{
-    player_ = player;
-}
+// void Map::setPlayer(const std::shared_ptr<Bomberman>& player)
+//{
+//    player_ = player;
+//    movingObjects_.push_back(player);
+//}
 
-bool Map::moveCharacter(const std::shared_ptr<Character>& character, Direction direction)
-{
-    character->moveData.speed     = defaultBombermanSpeed;
-    character->moveData.direction = direction;
-    if (direction == Direction::Left || direction == Direction::Upward) {
-        if (character->moveData.speed > 0) {
-            character->moveData.speed *= -1;
-        }
-    } else {
-        // character->moveData.speed = abs(character->moveData.speed);
-    }
-    // character->
-    // character->location += coordinatesShift(direction);
-    // emit characterMoved(character);
-    return true;
-}
+// bool Map::moveCharacter(const std::shared_ptr<MovingObject>& character, Direction direction)
+//{
+//    character->setSpeed(defaultBombermanSpeed);
+//    // character->moveData.speed     = defaultBombermanSpeed;
+//    // character->moveData.direction = direction;
+//    character->setDirection(direction);
+//    if (direction == Direction::Left || direction == Direction::Upward) {
+//        if (character->speed() > 0) {
+//            character->setSpeed(character->speed() * -1);
+//        }
+//    } else {
+//        // character->moveData.speed = abs(character->moveData.speed);
+//    }
+//    // character->
+//    // character->location += coordinatesShift(direction);
+//    // emit characterMoved(character);
+//    return true;
+//}
 
-void Map::stopCharacter(const std::shared_ptr<Character>& character, Direction direction)
-{
-    if (character->moveData.direction == direction) {
-        character->moveData.speed = 0;
-    }
-}
+// void Map::stopCharacter(const std::shared_ptr<MovingObject>& character, Direction direction)
+//{
+//    if (character->movementData().direction == direction) {
+//        character->setSpeed(0);
+//    }
+//}
 
 std::vector<GameObject*> Map::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
@@ -164,6 +167,11 @@ bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
     }
 }
 
+void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
+{
+    movingObjects_.push_back(object);
+}
+
 const Cell& Map::cell(size_t index) const
 {
     return cells_[index];
@@ -226,7 +234,7 @@ bool Map::cellIsMovable(const CellLocation& location) const
 
 bool Map::nextCellIsMovable(const Character& object, Direction direction) const
 {
-    return nextCellIsMovable(object.moveData.coordinates, direction);
+    return nextCellIsMovable(object.movementData().coordinates, direction);
 }
 
 bool Map::nextCellIsMovable(const QPoint& coordinates, Direction direction) const
@@ -264,25 +272,25 @@ QPoint Map::indexToCellCenterCoordinates(size_t index) const
              static_cast<int>((index / widthInCells_) * cellSize + cellHalfSize) };
 }
 
-const std::shared_ptr<Bomberman>& Map::player() const
-{
-    return player_;
-}
+// const std::shared_ptr<Bomberman>& Map::player() const
+//{
+//    return player_;
+//}
 
-const std::vector<std::shared_ptr<Bomberman>>& Map::bombermans() const
-{
-    return bombermans_;
-}
+// const std::vector<std::shared_ptr<Bomberman>>& Map::bombermans() const
+//{
+//    return bombermans_;
+//}
 
-const std::vector<std::shared_ptr<Enemy>>& Map::enemies() const
-{
-    return enemies_;
-}
+// const std::vector<std::shared_ptr<Enemy>>& Map::enemies() const
+//{
+//    return enemies_;
+//}
 
 void Map::alignToCenter(double timeDelta, Character& character)
 {
-    const auto& moveData       = character.moveData;
-    const auto& location       = character.moveData.coordinates;
+    const auto& moveData       = character.movementData();
+    const auto& location       = character.movementData().coordinates;
     auto        newCoordinates = advanceCoordinates(location, timeDelta, moveData.speed, moveData.direction);
     auto        inCell         = coordinatesInCell(newCoordinates);
     if (moveData.direction == Direction::Upward) {
@@ -293,7 +301,8 @@ void Map::alignToCenter(double timeDelta, Character& character)
         }
     }
 
-    character.moveData.coordinates = newCoordinates;
+    //    character.moveData.coordinates = newCoordinates;
+    character.setCoordinates(newCoordinates);
 }
 
 CellLocation Map::upperRightLocation(const CellLocation& location) const
@@ -785,120 +794,125 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
 
 void Map::moveObjects(double timeDelta)
 {
-    if (player_->moveData.speed == 0) {
-        return;
+    for (const auto& object : movingObjects_) {
+        if (object->movementData().speed == 0) {
+            continue;
+        }
+
+        timeDelta /= 42.;
+        auto        moveData       = object->movementData();
+        auto&       coordinates    = moveData.coordinates;
+        auto        oldIndex       = coordinatesToIndex(coordinates);
+        const auto& newCoordinates = advanceCoordinates(coordinates, timeDelta, moveData.speed, moveData.direction);
+        auto        inCell         = coordinatesInCell(newCoordinates);
+        const int   ds             = 5;
+
+        // int inCellOrtogonalCoord  = inCellCoordinate(newCoordinates, moveData.direction);
+        int firstCoord            = firstCoordinate(coordinates, moveData.direction);
+        int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
+        int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);
+        int maxFirstCoordAdvance =
+            maxFirstCoordinateAdvance(firstCoordBestAdvance, firstCoordObstacle, moveData.direction);
+        // int cellCenterDelta = std::abs()
+
+        if (moveData.direction == Direction::Upward) {
+            coordinates.setY(maxFirstCoordAdvance);
+            auto d = abs(inCell.x() - cellHalfSize);
+            if (inCell.x() > cellHalfSize) {
+                auto obstacleCoords = findUpwardRightObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setX(coordinates.x() - ds);
+                    } else {
+                        coordinates.setX(coordinates.x() - d);
+                    }
+                }
+            } else if (inCell.x() < cellHalfSize) {
+                auto obstacleCoords = findUpwardLeftObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setX(coordinates.x() + ds);
+                    } else {
+                        coordinates.setX(coordinates.x() + d);
+                    }
+                }
+            }
+        } else if (moveData.direction == Direction::Right) {
+            coordinates.setX(maxFirstCoordAdvance);
+            auto d = abs(inCell.y() - cellHalfSize);
+            if (inCell.y() > cellHalfSize) {
+                auto obstacleCoords = findRightBottomObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setY(coordinates.y() - ds);
+                    } else {
+                        coordinates.setY(coordinates.y() - d);
+                    }
+                }
+            } else if (inCell.x() < cellHalfSize) {
+                auto obstacleCoords = findRightTopObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setY(coordinates.y() + ds);
+                    } else {
+                        coordinates.setY(coordinates.y() + d);
+                    }
+                }
+            }
+        } else if (moveData.direction == Direction::Downward) {
+            coordinates.setY(maxFirstCoordAdvance);
+            auto d = abs(inCell.x() - cellHalfSize);
+            if (inCell.x() > cellHalfSize) {
+                auto obstacleCoords = findDownwardRightObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setX(coordinates.x() - ds);
+                    } else {
+                        coordinates.setX(coordinates.x() - d);
+                    }
+                }
+            } else if (inCell.x() < cellHalfSize) {
+                auto obstacleCoords = findDownwardLeftObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setX(coordinates.x() + ds);
+                    } else {
+                        coordinates.setX(coordinates.x() + d);
+                    }
+                }
+            }
+        } else if (moveData.direction == Direction::Left) {
+            coordinates.setX(maxFirstCoordAdvance);
+            auto d = abs(inCell.y() - cellHalfSize);
+            if (inCell.y() > cellHalfSize) {
+                auto obstacleCoords = findLeftBottomObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setY(coordinates.y() - ds);
+                    } else {
+                        coordinates.setY(coordinates.y() - d);
+                    }
+                }
+            } else if (inCell.x() < cellHalfSize) {
+                auto obstacleCoords = findLeftTopObstacle(coordinates);
+                if (circlesIntersect(coordinates, obstacleCoords)) {
+                    if (d > ds) {
+                        coordinates.setY(coordinates.y() + ds);
+                    } else {
+                        coordinates.setY(coordinates.y() + d);
+                    }
+                }
+            }
+        }
+
+        object->setMovementData(moveData);
+        auto newIndex = coordinatesToIndex(coordinates);
+        if (oldIndex != newIndex) {
+            // emit bombermanIndexChanged(object, newIndex);
+        }
+
+        emit characterMoved(object);
     }
-    timeDelta /= 42.;
-    const auto& moveData       = player_->moveData;
-    auto&       coordinates    = player_->moveData.coordinates;
-    auto        oldIndex       = coordinatesToIndex(coordinates);
-    const auto& newCoordinates = advanceCoordinates(coordinates, timeDelta, moveData.speed, moveData.direction);
-    auto        inCell         = coordinatesInCell(newCoordinates);
-    const int   ds             = 5;
-
-    // int inCellOrtogonalCoord  = inCellCoordinate(newCoordinates, moveData.direction);
-    int firstCoord            = firstCoordinate(coordinates, moveData.direction);
-    int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
-    int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);
-    int maxFirstCoordAdvance = maxFirstCoordinateAdvance(firstCoordBestAdvance, firstCoordObstacle, moveData.direction);
-    // int cellCenterDelta = std::abs()
-
-    if (moveData.direction == Direction::Upward) {
-        coordinates.setY(maxFirstCoordAdvance);
-        auto d = abs(inCell.x() - cellHalfSize);
-        if (inCell.x() > cellHalfSize) {
-            auto obstacleCoords = findUpwardRightObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setX(coordinates.x() - ds);
-                } else {
-                    coordinates.setX(coordinates.x() - d);
-                }
-            }
-        } else if (inCell.x() < cellHalfSize) {
-            auto obstacleCoords = findUpwardLeftObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setX(coordinates.x() + ds);
-                } else {
-                    coordinates.setX(coordinates.x() + d);
-                }
-            }
-        }
-    } else if (moveData.direction == Direction::Right) {
-        coordinates.setX(maxFirstCoordAdvance);
-        auto d = abs(inCell.y() - cellHalfSize);
-        if (inCell.y() > cellHalfSize) {
-            auto obstacleCoords = findRightBottomObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setY(coordinates.y() - ds);
-                } else {
-                    coordinates.setY(coordinates.y() - d);
-                }
-            }
-        } else if (inCell.x() < cellHalfSize) {
-            auto obstacleCoords = findRightTopObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setY(coordinates.y() + ds);
-                } else {
-                    coordinates.setY(coordinates.y() + d);
-                }
-            }
-        }
-    } else if (moveData.direction == Direction::Downward) {
-        coordinates.setY(maxFirstCoordAdvance);
-        auto d = abs(inCell.x() - cellHalfSize);
-        if (inCell.x() > cellHalfSize) {
-            auto obstacleCoords = findDownwardRightObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setX(coordinates.x() - ds);
-                } else {
-                    coordinates.setX(coordinates.x() - d);
-                }
-            }
-        } else if (inCell.x() < cellHalfSize) {
-            auto obstacleCoords = findDownwardLeftObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setX(coordinates.x() + ds);
-                } else {
-                    coordinates.setX(coordinates.x() + d);
-                }
-            }
-        }
-    } else if (moveData.direction == Direction::Left) {
-        coordinates.setX(maxFirstCoordAdvance);
-        auto d = abs(inCell.y() - cellHalfSize);
-        if (inCell.y() > cellHalfSize) {
-            auto obstacleCoords = findLeftBottomObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setY(coordinates.y() - ds);
-                } else {
-                    coordinates.setY(coordinates.y() - d);
-                }
-            }
-        } else if (inCell.x() < cellHalfSize) {
-            auto obstacleCoords = findLeftTopObstacle(coordinates);
-            if (circlesIntersect(coordinates, obstacleCoords)) {
-                if (d > ds) {
-                    coordinates.setY(coordinates.y() + ds);
-                } else {
-                    coordinates.setY(coordinates.y() + d);
-                }
-            }
-        }
-    }
-
-    auto newIndex = coordinatesToIndex(coordinates);
-    if (oldIndex != newIndex) {
-        emit bombermanIndexChanged(player_, newIndex);
-    }
-
-    emit characterMoved(player_);
 }
 
 // void Map::moveObjects(double timeDelta)
@@ -1036,28 +1050,28 @@ size_t Map::shiftIndex(size_t index, Direction direction) const
 
 int Map::alignToCellCenter(int position) const
 {
-    return (position / cellSize) * cellSize + cellSize / 2;
+    return (position / cellSize) * cellSize + cellHalfSize;
 }
 
 void Map::addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects)
 {
     auto index = locationToIndex(location);
     objects.push_back(&cells_[index]);
-    for (const auto& bomberman : bombermans_) {
-        if (coordinatesToIndex(bomberman->moveData.coordinates) == index) {
+    for (const auto& bomberman : movingObjects_) {
+        if (coordinatesToIndex(bomberman->movementData().coordinates) == index) {
             objects.push_back(bomberman.get());
         }
     }
 
-    for (const auto& enemy : enemies_) {
-        if (coordinatesToIndex(enemy->moveData.coordinates) == index) {
-            objects.push_back(enemy.get());
-        }
-    }
+    //    for (const auto& enemy : enemies_) {
+    //        if (coordinatesToIndex(enemy->movementData().coordinates) == index) {
+    //            objects.push_back(enemy.get());
+    //        }
+    //    }
 
-    if (coordinatesToIndex(player_->moveData.coordinates) == index) {
-        objects.push_back(player_.get());
-    }
+    //    if (coordinatesToIndex(player_->movementData().coordinates) == index) {
+    //        objects.push_back(player_.get());
+    //    }
 }
 
 QPoint Map::coordinatesInCell(const QPoint& coordinates) const

@@ -1,7 +1,8 @@
 #ifndef CHARACTERGRAPHICSITEM_HPP
 #define CHARACTERGRAPHICSITEM_HPP
 
-#include "game/character.hpp"
+//#include "game/character.hpp"
+#include "game/moving_object.hpp"
 
 #include <QGraphicsItem>
 
@@ -20,10 +21,10 @@ public:
     QRectF boundingRect() const override;
     void   paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    void setCharacter(const std::shared_ptr<Character> &newCharacter);
+    void setCharacter(const std::shared_ptr<MovingObject> &newCharacter);
 
 private:
-    std::shared_ptr<Character> character_;
+    std::shared_ptr<MovingObject> character_;
 };
 
 } // namespace gui
