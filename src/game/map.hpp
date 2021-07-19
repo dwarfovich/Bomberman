@@ -4,7 +4,7 @@
 #include "cell.hpp"
 #include "bomberman.hpp"
 #include "enemy.hpp"
-#include "cell_type.hpp"
+#include "cell_structure.hpp"
 #include "bomb.hpp"
 
 #include <QObject>
@@ -13,7 +13,7 @@
 #include <vector>
 
 namespace bm {
-inline const size_t wrongIndex = -1;
+class CellLocation;
 
 class Map : public QObject
 {
@@ -23,55 +23,79 @@ public:
     Map() = default;
     Map(size_t width, size_t height);
 
-    bool reset(size_t width, size_t height);
-    void setCellType(size_t index, CellType type);
-    bool placeBomb(const std::shared_ptr<Bomb>& bomb);
-    void removeBomb(size_t index);
-    void setPlayer(const std::shared_ptr<Bomberman>& player);
-    bool moveCharacter(const std::shared_ptr<Character>& character, Direction direction);
-    void stopCharacter(const std::shared_ptr<Character>& character, Direction direction);
-    void explodeBomb(const std::shared_ptr<Bomb>& bomb);
+    bool                     reset(size_t width, size_t height);
+    void                     setCellType(size_t index, CellStructure structure);
+    bool                     placeBomb(const std::shared_ptr<Bomb>& bomb);
+    void                     removeBomb(size_t index);
+    void                     setPlayer(const std::shared_ptr<Bomberman>& player);
+    bool                     moveCharacter(const std::shared_ptr<Character>& character, Direction direction);
+    void                     stopCharacter(const std::shared_ptr<Character>& character, Direction direction);
+    std::vector<GameObject*> explodeBomb(const std::shared_ptr<Bomb>& bomb);
+    bool                     setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
 
-    QPoint                     indexToCoordinates(size_t index) const;
-    size_t                     coordinatesToIndex(const QPoint& point) const;
-    bool                       nextCellIsMovable(const Character& object, Direction direction) const;
-    bool                       nextCellIsMovable(const QPoint& location, Direction direction) const;
-    bool                       isProperIndex(size_t index) const;
-    size_t                     width() const;
-    size_t                     height() const;
-    const std::vector<Cell>&   map() const;
-    const std::vector<QPoint>& bombs() const;
-    QPoint                     cellIndexToCenterLocation(size_t index) const;
+    const Cell&  cell(size_t index) const;
+    CellLocation coordinatesToLocation(const QPoint& coordinates) const;
+    QPoint       locationToCellCenterCoordinates(const CellLocation& location) const;
+    //    QPoint                     indexToCoordinates(size_t index) const;
+    size_t                   coordinatesToIndex(const QPoint& point) const;
+    size_t                   locationToIndex(const CellLocation& location) const;
+    CellLocation             indexToLocation(size_t index) const;
+    QPoint                   indexToCellCenterCoordinates(size_t index) const;
+    bool                     cellIsMovable(const CellLocation& location) const;
+    bool                     nextCellIsMovable(const Character& object, Direction direction) const;
+    bool                     nextCellIsMovable(const QPoint& coordinates, Direction direction) const;
+    bool                     isProperIndex(size_t index) const;
+    size_t                   width() const;
+    size_t                   height() const;
+    const std::vector<Cell>& cells() const;
 
-    const std::shared_ptr<Bomberman>& player() const;
-
+    const std::shared_ptr<Bomberman>&              player() const;
     const std::vector<std::shared_ptr<Bomberman>>& bombermans() const;
-
-    const std::vector<std::shared_ptr<Enemy>>& enemies() const;
+    const std::vector<std::shared_ptr<Enemy>>&     enemies() const;
 
     void moveObjects(double timeDelta);
-
-    size_t cellSize() const;
 
 signals:
     void cellChanged(size_t index);
     void characterMoved(const std::shared_ptr<Character>& character);
+    void bombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index);
 
 private: // methods
-    size_t shiftIndex(size_t index, Direction direction) const;
-    int    alignToCellCenter(int position) const;
+    size_t       shiftIndex(size_t index, Direction direction) const;
+    int          alignToCellCenter(int position) const;
+    void         addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects);
+    QPoint       coordinatesInCell(const QPoint& coordinates) const;
+    void         alignToCenter(double timeDelta, Character& character);
+    CellLocation upperRightLocation(const CellLocation& location) const;
+    CellLocation upperLeftLocation(const CellLocation& location) const;
+    CellLocation shiftLocation(const CellLocation& location, int dx, int dy) const;
+    bool         circlesIntersect(const QPoint& center1, const QPoint& center2) const;
+    int          moveCoordinateY(int y, int speed, int timeDelta) const;
+    int          findXObstacle(const QPoint& coordinates, Direction direction) const;
+    int          findYObstacle(const QPoint& coordinates, Direction direction) const;
+
+    QPoint findUpwardRightObstacle(const QPoint& coordinates) const;
+    QPoint findUpwardLeftObstacle(const QPoint& coordinates) const;
+    QPoint findRightTopObstacle(const QPoint& coordinates) const;
+    QPoint findRightBottomObstacle(const QPoint& coordinates) const;
+    QPoint findDownwardRightObstacle(const QPoint& coordinates) const;
+    QPoint findDownwardLeftObstacle(const QPoint& coordinates) const;
+    QPoint findLeftBottomObstacle(const QPoint& coordinates) const;
+    QPoint findLeftTopObstacle(const QPoint& coordinates) const;
+
+    int firstCoordinateObstacle(const QPoint& coordinates, Direction direction);
+    int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
-    int cellSize_ = 50;
-    // int                                     halfCellSize_  = cellSize_ / 2;
     size_t                                  widthInCells_  = 0;
     size_t                                  heightInCells_ = 0;
-    std::vector<Cell>                       map_;
+    std::vector<Cell>                       cells_;
     std::vector<std::shared_ptr<Bomberman>> bombermans_;
     std::shared_ptr<Bomberman>              player_;
     std::vector<std::shared_ptr<Enemy>>     enemies_;
     std::vector<std::shared_ptr<Bomb>>      bombs_;
 };
+
 } // namespace bm
 
 #endif // MAP_HPP

@@ -1,15 +1,22 @@
 #ifndef CELL_HPP
 #define CELL_HPP
 
-#include "cell_type.hpp"
-#include "modifiers/modifier_type.hpp"
+#include "game_object.hpp"
+#include "cell_structure.hpp"
+#include "modifiers/imodifier.hpp"
 
 namespace bm {
-struct Cell {
-    CellType type = CellType::Empty;
-    //game::ModifierType modifier = game::ModifierType::Dummy;
-    bool hasBomb = false;
-};
-}  // namespace bm
 
-#endif  // CELL_HPP
+struct Cell : public GameObject
+{
+    ALLOW_EXPLOSION_VISITOR;
+
+    CellStructure              structure = CellStructure::Empty;
+    bool                       hasBomb   = false;
+    std::shared_ptr<IModifier> modifier  = nullptr;
+    size_t                     index     = 0;
+};
+
+} // namespace bm
+
+#endif // CELL_HPP

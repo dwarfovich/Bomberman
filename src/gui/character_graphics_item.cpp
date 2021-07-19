@@ -25,9 +25,9 @@ void CharacterGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsI
         case Direction::Left: d = "Left"; break;
     }
     painter->drawText(-20, 0, d);
-    QString l = QString::number(character_->moveData.location.x());
+    QString l = QString::number(character_->moveData.coordinates.x());
     l += ", ";
-    l += QString::number(character_->moveData.location.y());
+    l += QString::number(character_->moveData.coordinates.y());
     painter->drawText(-20, 20, l);
 }
 

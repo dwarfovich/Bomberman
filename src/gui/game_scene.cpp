@@ -1,13 +1,11 @@
 #include "game_scene.hpp"
 #include "game/character.hpp"
-
-#include <QKeyEvent>
-#include <QDebug>
+#include "game/map_constants.hpp"
 
 namespace bm {
 namespace gui {
 
-GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }
+GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }, cellSize_ { 50 }
 {}
 
 bool GameScene::setCellItem(CellItem* item, size_t index)
@@ -36,8 +34,7 @@ void GameScene::characterMoved(const std::shared_ptr<Character>& character)
 {
     auto iter = characters_.find(character);
     if (iter != characters_.cend()) {
-        auto pos = iter->first->moveData.location;
-        iter->second->setPos(pos);
+        iter->second->setPos(mapCoordinatesToSceneCoordinates(character->moveData.coordinates));
     }
 }
 
@@ -46,6 +43,21 @@ void GameScene::cellChanged(size_t index)
     if (index < cellItems_.size()) {
         cellItems_[index]->update();
     }
+}
+
+QPoint GameScene::mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const
+{
+    auto   xCells      = coordinates.x() / cellSize;
+    auto   dx          = coordinates.x() - xCells * cellSize;
+    auto   dxPercents  = (dx * 100.) / cellSize;
+    QPoint sceneCoords = { xCells * cellSize_ + int(cellSize_ * dxPercents / 100.), 0 };
+
+    auto yCells     = coordinates.y() / cellSize;
+    auto dy         = coordinates.y() - yCells * cellSize;
+    auto dyPercents = (dy * 100.) / cellSize;
+    sceneCoords.setY(yCells * cellSize_ + int(cellSize_ * dyPercents / 100.));
+
+    return sceneCoords;
 }
 
 } // namespace gui

@@ -16,20 +16,20 @@ std::unique_ptr<Map> createTestMap()
             size_t rightBorder  = i * side + side - 1;
             size_t topBorder    = i;
             size_t bottomBorder = side * (side - 1) + i;
-            map->setCellType(leftBorder, CellType::Concrete);
-            map->setCellType(rightBorder, CellType::Concrete);
-            map->setCellType(topBorder, CellType::Concrete);
-            map->setCellType(bottomBorder, CellType::Concrete);
+            map->setCellType(leftBorder, CellStructure::Concrete);
+            map->setCellType(rightBorder, CellStructure::Concrete);
+            map->setCellType(topBorder, CellStructure::Concrete);
+            map->setCellType(bottomBorder, CellStructure::Concrete);
         }
 
-        map->setCellType(33, CellType::Concrete);
-        map->setCellType(35, CellType::Concrete);
-        map->setCellType(53, CellType::Concrete);
-        map->setCellType(55, CellType::Concrete);
-        map->setCellType(24, CellType::Bricks);
-        map->setCellType(42, CellType::Bricks);
-        map->setCellType(46, CellType::Bricks);
-        map->setCellType(64, CellType::Bricks);
+        map->setCellType(33, CellStructure::Concrete);
+        map->setCellType(35, CellStructure::Concrete);
+        map->setCellType(53, CellStructure::Concrete);
+        map->setCellType(55, CellStructure::Concrete);
+        map->setCellType(24, CellStructure::Bricks);
+        map->setCellType(42, CellStructure::Bricks);
+        map->setCellType(46, CellStructure::Bricks);
+        map->setCellType(64, CellStructure::Bricks);
 
         return map;
     } catch (...) {

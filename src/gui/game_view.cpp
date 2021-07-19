@@ -17,7 +17,7 @@ void GameView::setMap(const std::shared_ptr<bm::Map>& map)
 void GameView::updateMap()
 {
     const int   cellSize = 50;
-    const auto& cells    = map_->map();
+    const auto& cells    = map_->cells();
     int         x        = 0;
     int         y        = 0;
     QBrush      concreteBrush { Qt::blue };
@@ -28,12 +28,6 @@ void GameView::updateMap()
         CellItem* cellItem = new CellItem { &cells[i] };
         cellItem->setPos(x, y);
         scene_->setCellItem(cellItem, i);
-
-        //        if (cells[i].type == CellType::Empty) {
-        //            scene_->addRect(x, y, cellSize, cellSize);
-        //        } else {
-        //            scene_->addRect(x, y, cellSize, cellSize, {}, concreteBrush);
-        //        }
     }
     QBrush      playerBrush(Qt::green);
     const auto& player = map_->player();

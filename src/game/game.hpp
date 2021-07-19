@@ -3,6 +3,7 @@
 
 #include "map.hpp"
 #include "timer_queue.hpp"
+#include "explosion_processor.hpp"
 
 #include <QTimer>
 
@@ -16,6 +17,8 @@ class GameScene;
 class Game : public QObject
 {
     Q_OBJECT
+
+    friend class ExplosionProcessor;
 
 public:
     Game();
@@ -31,15 +34,20 @@ public:
 
     void setScene(gui::GameScene* newScene);
 
+private slots:
+    void onBombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index);
+
 private: // methods
+    void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     void explodeBomb(const std::shared_ptr<Bomb>& bomb);
 
 private: // data
     static const int     timeout_ = 42;
     std::shared_ptr<Map> map_;
     gui::GameScene*      scene_ = nullptr;
+    ExplosionProcessor   explosionProcessor;
     QTimer               moveTimer;
-    TimerQueue timerQueue;
+    TimerQueue           timerQueue;
 };
 } // namespace bm
 

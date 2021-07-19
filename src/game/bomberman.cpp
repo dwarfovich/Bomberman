@@ -27,13 +27,22 @@ std::unique_ptr<Bomb> Bomberman::createBomb()
 {
     if (activeBombs_ < maxActiveBombs_) {
         ++activeBombs_;
-        auto bomb    = std::make_unique<Bomb>();
-        bomb->owner  = shared_from_this();
-        bomb->radius = 1;
+        auto bomb   = std::make_unique<Bomb>(defaultBomb_);
+        bomb->owner = shared_from_this();
         return bomb;
     } else {
         return nullptr;
     }
+}
+
+const Bomb &Bomberman::defaultBomb() const
+{
+    return defaultBomb_;
+}
+
+void Bomberman::setDefaultBomb(const Bomb &newBomb)
+{
+    defaultBomb_ = newBomb;
 }
 
 } // namespace bm

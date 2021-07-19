@@ -1,14 +1,26 @@
 #ifndef IMODIFIER_HPP
 #define IMODIFIER_HPP
 
-namespace bm {
-struct Bomberman;
+#include "time.hpp"
 
-class IModifier {
+namespace bm {
+class Bomberman;
+
+enum class ModifierType : uint8_t
+{
+    Permanent,
+    Temporary
+};
+
+class IModifier
+{
 public:
-    virtual void activate(Bomberman& bomberman) = 0;
+    virtual ModifierType type() const;
+    virtual Milliseconds duration() const;
+
+    virtual void activate(Bomberman& bomberman)   = 0;
     virtual void deactivate(Bomberman& bomberman) = 0;
 };
-}  // namespace bm
+} // namespace bm
 
-#endif  // IMODIFIER_HPP
+#endif // IMODIFIER_HPP

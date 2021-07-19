@@ -28,9 +28,13 @@ public slots:
     void cellChanged(size_t index);
 
 private:
+    QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
+
+private:
     using CharactersItems = std::unordered_map<std::shared_ptr<Character>, std::unique_ptr<CharacterGraphicsItem>>;
     CharactersItems        characters_;
     std::vector<CellItem*> cellItems_;
+    const int              cellSize_;
 };
 
 } // namespace gui

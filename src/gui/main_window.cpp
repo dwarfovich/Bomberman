@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget* parent)
     std::shared_ptr<Map> map    = createTestMap();
     auto                 player = std::make_shared<Bomberman>();
     // 44
-    player->moveData.location = map->cellIndexToCenterLocation(44);
+    player->moveData.coordinates = map->indexToCellCenterCoordinates(44);
     map->setPlayer(player);
     game_.setMap(map);
     game_.setScene(gameView_->scene());

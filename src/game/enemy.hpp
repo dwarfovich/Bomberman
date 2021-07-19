@@ -4,8 +4,8 @@
 #include "character.hpp"
 
 namespace bm {
-struct Enemy : public Character {
-};
-}  // namespace bm
+struct Enemy : public Character
+{};
+} // namespace bm
 
 #endif // ENEMY_HPP

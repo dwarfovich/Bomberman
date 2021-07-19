@@ -1,6 +1,7 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include "game_object.hpp"
 #include "direction.hpp"
 #include "move_data.hpp"
 
@@ -8,14 +9,13 @@
 #include <QPointF>
 
 namespace bm {
-struct Character
+
+struct Character : public GameObject
 {
-    //    size_t    speed           = 0;
-    //    Direction direction       = Direction::Downward;
-    //    QPoint    location        = { 0, 0 };
-    //    QPointF   preciseLocation = { 0., 0. };
+    Character(const MoveData& aMoveData = {});
     MoveData moveData;
 };
+
 } // namespace bm
 
 #endif // CHARACTER_HPP

@@ -1,6 +1,6 @@
 #include "timer_queue.hpp"
 
-namespace bm{
+namespace bm {
 
 TimerQueue::TimerQueue()
 {
@@ -47,4 +47,4 @@ void TimerQueue::onTimeout()
     }
 }
 
-}
+} // namespace bm

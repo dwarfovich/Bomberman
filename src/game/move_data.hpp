@@ -9,9 +9,9 @@ namespace bm {
 
 struct MoveData
 {
-    int       speed     = 0;
-    Direction direction = Direction::Downward;
-    QPoint    location  = { 0, 0 };
+    int       speed       = 0;
+    Direction direction   = Direction::Downward;
+    QPoint    coordinates = { 0, 0 };
 };
 
 } // namespace bm
