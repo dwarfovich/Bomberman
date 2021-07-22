@@ -36,7 +36,7 @@ public:
     void setScene(gui::GameScene* newScene);
 
 private slots:
-    void onBombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index);
+    void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);
 
 private: // methods
     void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);

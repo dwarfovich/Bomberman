@@ -13,10 +13,11 @@ INCLUDEPATH += $$PWD/src
 SOURCES += \
     src/game/bomb_explosion_event.cpp \
     src/game/bomberman.cpp \
+    src/game/bot.cpp \
+    src/game/bot_ai.cpp \
     src/game/cell.cpp \
     src/game/cell_location.cpp \
     src/game/character.cpp \
-    src/game/enemy.cpp \
     src/game/explosion_processor.cpp \
     src/game/explosure.cpp \
     src/game/game.cpp \
@@ -43,11 +44,12 @@ HEADERS += \
     src/game/bomb.hpp \
     src/game/bomb_explosion_event.hpp \
     src/game/bomberman.hpp \
+    src/game/bot.hpp \
+    src/game/bot_ai.hpp \
     src/game/cell.hpp \
     src/game/cell_location.hpp \
     src/game/cell_structure.hpp \
     src/game/character.hpp \
-    src/game/enemy.hpp \
     src/game/explosion_processor.hpp \
     src/game/explosure.hpp \
     src/game/game.hpp \

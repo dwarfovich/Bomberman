@@ -3,7 +3,7 @@
 
 #include "cell.hpp"
 #include "bomberman.hpp"
-#include "enemy.hpp"
+#include "bot.hpp"
 #include "cell_structure.hpp"
 #include "bomb.hpp"
 
@@ -59,7 +59,7 @@ public:
 signals:
     void cellChanged(size_t index);
     void characterMoved(const std::shared_ptr<MovingObject>& character);
-    void bombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index);
+    void objectIndexChanged(const std::shared_ptr<MovingObject>& bomberman, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
 
 private: // methods

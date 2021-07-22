@@ -27,10 +27,10 @@ void Game::start()
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
     if (map_) {
-        disconnect(map_.get(), &Map::bombermanIndexChanged, this, &Game::onBombermanIndexChanged);
+        disconnect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
     }
     map_ = map;
-    connect(map_.get(), &Map::bombermanIndexChanged, this, &Game::onBombermanIndexChanged);
+    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
     connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::characterMoved);
     connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
 }
@@ -89,11 +89,12 @@ void Game::setScene(gui::GameScene* newScene)
     scene_ = newScene;
 }
 
-void Game::onBombermanIndexChanged(const std::shared_ptr<Bomberman>& bomberman, size_t index)
+void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier;
-    if (modifier) {
+    if (modifier && object == player_) {
+        auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
         if (modifier->type() == ModifierType::Temporary) {
             auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier);

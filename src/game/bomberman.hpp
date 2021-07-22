@@ -9,7 +9,7 @@
 
 namespace bm {
 
-inline constexpr size_t defaultBombermanSpeed      = 5;
+inline constexpr size_t defaultBombermanSpeed      = 10;
 inline constexpr size_t defaultBombermanBombRadius = 1;
 
 class Bomberman : public Character, public std::enable_shared_from_this<Bomberman>

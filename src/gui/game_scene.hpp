@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 namespace bm {
-struct Character;
+class Character;
 
 namespace gui {
 class CellItem;

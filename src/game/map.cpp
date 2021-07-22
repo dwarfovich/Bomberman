@@ -800,20 +800,19 @@ void Map::moveObjects(double timeDelta)
         }
 
         timeDelta /= 42.;
-        auto        moveData       = object->movementData();
-        auto&       coordinates    = moveData.coordinates;
-        auto        oldIndex       = coordinatesToIndex(coordinates);
-        const auto& newCoordinates = advanceCoordinates(coordinates, timeDelta, moveData.speed, moveData.direction);
-        auto        inCell         = coordinatesInCell(newCoordinates);
-        const int   ds             = 5;
+        auto  moveData    = object->movementData();
+        auto& coordinates = moveData.coordinates;
+        auto  oldIndex    = coordinatesToIndex(coordinates);
+        // const auto& newCoordinates = advanceCoordinates(coordinates, timeDelta, moveData.speed, moveData.direction);
+        auto      inCell = coordinatesInCell(coordinates);
+        const int ds     = 5;
 
         // int inCellOrtogonalCoord  = inCellCoordinate(newCoordinates, moveData.direction);
-        int firstCoord            = firstCoordinate(coordinates, moveData.direction);
-        int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
-        int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);
-        int maxFirstCoordAdvance =
+        const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
+        const int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
+        const int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);
+        const int maxFirstCoordAdvance =
             maxFirstCoordinateAdvance(firstCoordBestAdvance, firstCoordObstacle, moveData.direction);
-        // int cellCenterDelta = std::abs()
 
         if (moveData.direction == Direction::Upward) {
             coordinates.setY(maxFirstCoordAdvance);
@@ -908,7 +907,7 @@ void Map::moveObjects(double timeDelta)
         object->setMovementData(moveData);
         auto newIndex = coordinatesToIndex(coordinates);
         if (oldIndex != newIndex) {
-            // emit bombermanIndexChanged(object, newIndex);
+            emit objectIndexChanged(object, newIndex);
         }
 
         emit characterMoved(object);
