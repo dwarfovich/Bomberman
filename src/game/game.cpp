@@ -3,6 +3,8 @@
 #include "bomb_explosion_event.hpp"
 #include "modifier_deactivation_event.hpp"
 #include "map_constants.hpp"
+#include "bomb_explosion.hpp"
+
 #include "gui/game_scene.hpp"
 #include "gui/character_graphics_item.hpp"
 
@@ -10,11 +12,7 @@
 
 namespace bm {
 Game::Game() : explosionProcessor { *this }
-{
-    connect(&moveTimer, &QTimer::timeout, [this]() {
-        map_->moveObjects(timeout_);
-    });
-}
+{}
 
 void Game::start()
 {
@@ -26,21 +24,23 @@ void Game::start()
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
-    if (map_) {
-        disconnect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-    }
     map_ = map;
+    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
+
+    // moveProcessor_ = std::make_unique<MoveProcessor>(*map);
     connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
     connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::characterMoved);
-    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
+    connect(&moveTimer, &QTimer::timeout, [this]() {
+        map_->moveObjects(timeout_);
+    });
 }
-
 void Game::setPlayer(const std::shared_ptr<Bomberman>& player)
 {
     player_            = player;
     auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
     characterItem->setCharacter(player);
     map_->addMovingObject(player);
+    // moveProcessor_->addObject(player);
     scene_->addCharacter(player, std::move(characterItem));
 }
 
@@ -114,11 +114,12 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     qDebug() << "Game::explodeBomb";
     explosionProcessor.setBomb(bomb);
-    auto affectedObjects = map_->explodeBomb(bomb);
-    qDebug() << "exploded objects:" << affectedObjects.size();
-    for (auto* object : affectedObjects) {
-        object->explode(explosionProcessor);
-    }
+    auto result = bm::explodeBomb(*map_, *bomb);
+    //    auto affectedObjects = map_->removeBomb(bomb);
+    //    qDebug() << "exploded objects:" << affectedObjects.size();
+    //    for (auto* object : affectedObjects) {
+    //        object->explode(explosionProcessor);
+    //    }
 
     const auto& bomberman = bomb->owner;
     bomberman->decreaseActiveBombs();

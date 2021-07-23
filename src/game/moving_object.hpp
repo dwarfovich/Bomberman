@@ -16,6 +16,7 @@ public:
     virtual void            setSpeed(int speed);
     virtual int             speed() const;
     virtual void            setDirection(Direction direction);
+    virtual const QPoint&   coordinates() const;
     virtual void            setCoordinates(const QPoint& coordinates);
 
 private:

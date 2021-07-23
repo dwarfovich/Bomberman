@@ -11,6 +11,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 INCLUDEPATH += $$PWD/src
 
 SOURCES += \
+    src/game/bomb_explosion.cpp \
     src/game/bomb_explosion_event.cpp \
     src/game/bomberman.cpp \
     src/game/bot.cpp \
@@ -18,8 +19,8 @@ SOURCES += \
     src/game/cell.cpp \
     src/game/cell_location.cpp \
     src/game/character.cpp \
+    src/game/explosion.cpp \
     src/game/explosion_processor.cpp \
-    src/game/explosure.cpp \
     src/game/game.cpp \
     src/game/game_object.cpp \
     src/game/map.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     src/game/modifiers/modifier_creator.cpp \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
+    src/game/move_processor.cpp \
     src/game/moving_object.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
@@ -42,6 +44,7 @@ SOURCES += \
 HEADERS += \
     src/direction.hpp \
     src/game/bomb.hpp \
+    src/game/bomb_explosion.hpp \
     src/game/bomb_explosion_event.hpp \
     src/game/bomberman.hpp \
     src/game/bot.hpp \
@@ -50,10 +53,11 @@ HEADERS += \
     src/game/cell_location.hpp \
     src/game/cell_structure.hpp \
     src/game/character.hpp \
+    src/game/explosion.hpp \
     src/game/explosion_processor.hpp \
-    src/game/explosure.hpp \
     src/game/game.hpp \
     src/game/game_object.hpp \
+    src/game/game_object_variant.hpp \
     src/game/game_parameters.hpp \
     src/game/interval.hpp \
     src/game/map.hpp \
@@ -66,6 +70,7 @@ HEADERS += \
     src/game/modifiers/permanent_bomb_radius_increase.hpp \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
+    src/game/move_processor.hpp \
     src/game/moving_object.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \

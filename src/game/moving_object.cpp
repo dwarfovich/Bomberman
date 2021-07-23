@@ -30,6 +30,11 @@ void MovingObject::setDirection(Direction direction)
     data_.direction = direction;
 }
 
+const QPoint& MovingObject::coordinates() const
+{
+    return data_.coordinates;
+}
+
 void MovingObject::setCoordinates(const QPoint& coordinates)
 {
     data_.coordinates = coordinates;
