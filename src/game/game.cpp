@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace bm {
-Game::Game() : explosionProcessor { *this }
+Game::Game() : collider_ { this }, explosionProcessor { *this }
 {}
 
 void Game::start()
@@ -113,8 +113,14 @@ void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     qDebug() << "Game::explodeBomb";
-    explosionProcessor.setBomb(bomb);
-    auto result = bm::explodeBomb(*map_, *bomb);
+    // explosionProcessor.setBomb(bomb);
+    auto  explosionData = bm::explodeBomb(*map_, *bomb);
+    auto& explosion     = explosionData.explosion;
+    qDebug() << explosionData.affectedObjects.size();
+    for (auto* affectedObject : explosionData.affectedObjects) {
+        explosion.collideWith(*affectedObject, collider_);
+    }
+
     //    auto affectedObjects = map_->removeBomb(bomb);
     //    qDebug() << "exploded objects:" << affectedObjects.size();
     //    for (auto* object : affectedObjects) {

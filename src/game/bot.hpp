@@ -2,10 +2,14 @@
 #define BOT_H
 
 #include "character.hpp"
+#include "collider.hpp"
 
 namespace bm {
-struct Bot : public Character
-{};
+class Bot : public Character
+{
+public:
+    ACCEPT_COLLISION;
+};
 } // namespace bm
 
 #endif // BOT_H

@@ -67,6 +67,7 @@ public: // methods
     size_t       shiftIndex(size_t index, Direction direction) const;
     int          alignToCellCenter(int position) const;
     void         addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects);
+    void         addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects);
     QPoint       coordinatesInCell(const QPoint& coordinates) const;
     void         alignToCenter(double timeDelta, Character& character);
     CellLocation upperRightLocation(const CellLocation& location) const;

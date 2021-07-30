@@ -827,10 +827,15 @@ int Map::alignToCellCenter(int position) const
 void Map::addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects)
 {
     auto index = locationToIndex(location);
+    addGameObjectsForCell(index, objects);
+}
+
+void Map::addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects)
+{
     objects.push_back(&cells_[index]);
-    for (const auto& bomberman : movingObjects_) {
-        if (coordinatesToIndex(bomberman->movementData().coordinates) == index) {
-            objects.push_back(bomberman.get());
+    for (const auto& object : movingObjects_) {
+        if (coordinatesToIndex(object->movementData().coordinates) == index) {
+            objects.push_back(object.get());
         }
     }
 }

@@ -19,6 +19,7 @@ SOURCES += \
     src/game/cell.cpp \
     src/game/cell_location.cpp \
     src/game/character.cpp \
+    src/game/collider.cpp \
     src/game/explosion.cpp \
     src/game/explosion_processor.cpp \
     src/game/game.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     src/game/cell_location.hpp \
     src/game/cell_structure.hpp \
     src/game/character.hpp \
+    src/game/collider.hpp \
     src/game/explosion.hpp \
     src/game/explosion_processor.hpp \
     src/game/game.hpp \

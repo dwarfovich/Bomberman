@@ -3,6 +3,8 @@
 
 #include "bot.hpp"
 
+#include <memory>
+
 namespace bm {
 class Map;
 

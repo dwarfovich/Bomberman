@@ -5,6 +5,7 @@
 #include "timer_queue.hpp"
 #include "explosion_processor.hpp"
 #include "move_processor.hpp"
+#include "collider.hpp"
 
 #include <QTimer>
 
@@ -20,6 +21,7 @@ class Game : public QObject
     Q_OBJECT
 
     friend class ExplosionProcessor;
+    friend class Collider;
 
 public:
     Game();
@@ -49,6 +51,7 @@ private: // data
     gui::GameScene*                scene_         = nullptr;
     std::shared_ptr<Bomberman>     player_        = nullptr;
     std::unique_ptr<MoveProcessor> moveProcessor_ = nullptr;
+    Collider                       collider_;
     ExplosionProcessor             explosionProcessor;
     QTimer                         moveTimer;
     TimerQueue                     timerQueue;

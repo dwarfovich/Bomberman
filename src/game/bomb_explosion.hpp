@@ -13,6 +13,7 @@ class Map;
 struct BombExplosionResult
 {
     BombExplosionResult();
+    BombExplosionResult(const Explosion& aExplosion, const std::vector<GameObject*>& aAffectedObjects);
 
     Explosion                explosion;
     std::vector<GameObject*> affectedObjects;
