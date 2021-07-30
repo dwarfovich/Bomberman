@@ -1,5 +1,10 @@
 #include "map_loader.hpp"
 
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 namespace bm {
 std::unique_ptr<Map> loadFromFile(const QString& filePath)
 {
@@ -38,4 +43,44 @@ std::unique_ptr<Map> createTestMap()
         return nullptr;
     }
 }
+
+std::unique_ptr<Map> map_loader::loadFromFile(const QString &filePath)
+{
+    qDebug() << filePath;
+    QFile  file {filePath};
+    if (!file.open(QIODevice::ReadOnly)) {
+        return nullptr;
+    }
+
+    auto jsonData = file.readAll();
+    QJsonParseError error;
+    auto document = QJsonDocument::fromJson(jsonData, & error);
+    if (error.error != QJsonParseError::NoError) {
+        qDebug() << "Error parsing json:" << error.errorString();
+        return nullptr;
+    }
+
+    const auto& jsonObject = document.object();
+    size_t width = jsonObject["width"].toInt(0);
+    size_t height = jsonObject["height"].toInt(0);
+    if (width == 0 || height == 0) {
+        return nullptr;
+    }
+
+    auto map = std::make_shared<Map>(width, height);
+    const auto& mapJsonArray = jsonObject["map"].toArray();
+    if (mapJsonArray.size() != width * height) {
+        return nullptr;
+    }
+
+    for (int i = 0; i < mapJsonArray.size(); ++i) {
+        const auto& cellObject = mapJsonArray[i].toObject();
+
+    }
+
+    qDebug() << width << height;
+
+    return nullptr;
+}
+
 } // namespace bm

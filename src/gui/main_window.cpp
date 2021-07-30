@@ -4,6 +4,7 @@
 #include "game/map_loader.hpp"
 
 #include <QKeyEvent>
+#include <QDir>
 
 #include <iostream>
 
@@ -16,7 +17,13 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui_->setupUi(this);
 
-    std::shared_ptr<Map> map = createTestMap();
+    //std::shared_ptr<Map> map = map_loader::createTestMap();
+    const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
+    std::shared_ptr<Map> map = map_loader::loadFromFile(mapFile);
+    if (!map) {
+        exit(1);
+    }
+
     game_.setScene(gameView_->scene());
     game_.setMap(map);
 

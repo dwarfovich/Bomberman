@@ -8,9 +8,10 @@
 #include <memory>
 
 namespace bm {
-
+namespace map_loader{
 std::unique_ptr<Map> loadFromFile(const QString& filePath);
 std::unique_ptr<Map> createTestMap();
+}
 
 }  // namespace bm
 
