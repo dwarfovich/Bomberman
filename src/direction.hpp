@@ -5,7 +5,7 @@
 
 namespace bm {
 
-enum class Direction : size_t
+enum class Direction : uint8_t
 {
     Left,
     Upward,
@@ -33,6 +33,14 @@ inline QPoint directionMultiplier(Direction direction)
         case Direction::Downward: return { 1, 1 };
         case Direction::Left: return { -1, 1 };
     }
+}
+
+inline Direction nextDirection(Direction direction) {
+if (direction == Direction::Downward) {
+    return Direction::Left;
+} else {
+    return static_cast<Direction>(static_cast<uint8_t>(direction) + 1);
+}
 }
 
 } // namespace bm

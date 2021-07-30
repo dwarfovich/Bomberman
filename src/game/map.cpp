@@ -75,8 +75,6 @@ bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 
 bool Map::removeBomb(size_t index)
 {
-    // bombs_.erase(std::remove(bombs_.begin(), bombs_.end(), index));
-    // const auto& index     = index->cellIndex;
     auto iter = std::find_if(bombs_.cbegin(), bombs_.cend(), [index](const auto& bomb) {
         return bomb->cellIndex == index;
     });
@@ -88,48 +86,6 @@ bool Map::removeBomb(size_t index)
     emit cellChanged(index);
 
     return true;
-
-    //    std::vector<GameObject*> affectedObjects;
-
-    //    auto   centerCell = indexToLocation(index);
-    //    size_t firstX     = centerCell.x() - index->radius >= 0 ? centerCell.x() - index->radius : 0;
-    //    size_t lastX = centerCell.x() + index->radius >= widthInCells_ ? widthInCells_ - 1 : centerCell.x() +
-    //    index->radius; auto   currentCell = centerCell; while (currentCell.x() >= firstX) {
-    //        addGameObjectsForCell(currentCell, affectedObjects);
-    //        if (!cellIsMovable(currentCell)) {
-    //            break;
-    //        }
-    //        currentCell.setX(currentCell.x() - 1);
-    //    }
-    //    currentCell = centerCell;
-    //    currentCell.setX(currentCell.x() + 1);
-    //    for (; currentCell.x() <= lastX; currentCell.setX(currentCell.x() + 1)) {
-    //        addGameObjectsForCell(currentCell, affectedObjects);
-    //        if (!cellIsMovable(currentCell)) {
-    //            break;
-    //        }
-    //    }
-
-    //    size_t firstY = centerCell.y() - index->radius >= 0 ? centerCell.y() - index->radius : 0;
-    //    size_t lastY = centerCell.y() + index->radius >= heightInCells_ ? heightInCells_ - 1 : centerCell.y() +
-    //    index->radius; currentCell  = centerCell; currentCell.setY(currentCell.y() - 1); for (; currentCell.y() >=
-    //    firstY; currentCell.setY(currentCell.y() - 1)) {
-    //        addGameObjectsForCell(currentCell, affectedObjects);
-    //        if (!cellIsMovable(currentCell)) {
-    //            break;
-    //        }
-    //    }
-
-    //    currentCell = centerCell;
-    //    currentCell.setY(currentCell.y() + 1);
-    //    for (; currentCell.y() <= lastY; currentCell.setY(currentCell.y() + 1)) {
-    //        addGameObjectsForCell(currentCell, affectedObjects);
-    //        if (!cellIsMovable(currentCell)) {
-    //            break;
-    //        }
-    //    }
-
-    //    return affectedObjects;
 }
 
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
@@ -163,16 +119,6 @@ QPoint Map::locationToCellCenterCoordinates(const CellLocation& location) const
     auto index = locationToIndex(location);
     return indexToCellCenterCoordinates(index);
 }
-
-// QPoint Map::indexToCoordinates(size_t index) const
-//{
-//    if (index < cells_.size()) {
-//        return { static_cast<int>((index % widthInCells_) * cellSize),
-//                 static_cast<int>((index / widthInCells_) * cellSize) };
-//    } else {
-//        return wrongCoordinates;
-//    }
-//}
 
 size_t Map::coordinatesToIndex(const QPoint& point) const
 {
@@ -208,9 +154,9 @@ bool Map::cellIsMovable(const CellLocation& location) const
     }
 }
 
-bool Map::nextCellIsMovable(const Character& object, Direction direction) const
+bool Map::nextCellIsMovable(const MovingObject& object, Direction direction) const
 {
-    return nextCellIsMovable(object.movementData().coordinates, direction);
+    return nextCellIsMovable(object.coordinates(), direction);
 }
 
 bool Map::nextCellIsMovable(const QPoint& coordinates, Direction direction) const
@@ -245,23 +191,13 @@ const std::vector<Cell>& Map::cells() const
 QPoint Map::indexToCellCenterCoordinates(size_t index) const
 {
     return { static_cast<int>((index % widthInCells_) * cellSize + cellHalfSize),
-             static_cast<int>((index / widthInCells_) * cellSize + cellHalfSize) };
+                static_cast<int>((index / widthInCells_) * cellSize + cellHalfSize) };
 }
 
-// const std::shared_ptr<Bomberman>& Map::player() const
-//{
-//    return player_;
-//}
-
-// const std::vector<std::shared_ptr<Bomberman>>& Map::bombermans() const
-//{
-//    return bombermans_;
-//}
-
-// const std::vector<std::shared_ptr<Enemy>>& Map::enemies() const
-//{
-//    return enemies_;
-//}
+bool Map::isCellCenter(const QPoint &coordinates) const
+{
+    return (coordinates.x() % cellSize == cellHalfSize && coordinates.y() % cellSize == cellHalfSize);
+}
 
 void Map::alignToCenter(double timeDelta, Character& character)
 {
@@ -277,7 +213,6 @@ void Map::alignToCenter(double timeDelta, Character& character)
         }
     }
 
-    //    character.moveData.coordinates = newCoordinates;
     character.setCoordinates(newCoordinates);
 }
 
@@ -662,9 +597,30 @@ void Map::moveObjects(double timeDelta)
         }
 
         emit characterMoved(object);
+        if (object->notifyIfMeetedWall()) {
+            if (!nextCellIsMovable(*object, object->movementData().direction) && isCellCenter(object->coordinates())) {
+                object->meetsWall();
+            }
+        }
     }
 
     checkCollisions();
+}
+
+const Map::RespawnPlaces &Map::respawnPlaces(RespawnType type) const
+{
+    auto iter = respawnPlaces_.find(type);
+    if (iter != respawnPlaces_.cend()) {
+        return iter->second;
+    } else {
+        static const RespawnPlaces empty {};
+        return empty;
+    }
+}
+
+void Map::setRespawnPlaces(RespawnType type, const RespawnPlaces &places)
+{
+    respawnPlaces_[type] = places;
 }
 
 void Map::checkCollisions()

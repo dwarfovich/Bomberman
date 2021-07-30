@@ -15,9 +15,12 @@ public:
     virtual void            setMovementData(const MoveData& data);
     virtual void            setSpeed(int speed);
     virtual int             speed() const;
+    virtual Direction direction() const;
     virtual void            setDirection(Direction direction);
     virtual const QPoint&   coordinates() const;
     virtual void            setCoordinates(const QPoint& coordinates);
+    virtual bool notifyIfMeetedWall() const;
+    virtual void meetsWall();
 
 private:
     MoveData data_;

@@ -104,6 +104,10 @@ void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, siz
     }
 }
 
+void Game::initializeBots()
+{
+}
+
 void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 {
     auto callback = std::bind(&Game::explodeBomb, this, std::placeholders::_1);

@@ -42,6 +42,7 @@ private slots:
     void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);
 
 private: // methods
+    void initializeBots();
     void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     void explodeBomb(const std::shared_ptr<Bomb>& bomb);
 

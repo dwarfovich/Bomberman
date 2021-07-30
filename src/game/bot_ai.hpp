@@ -13,6 +13,8 @@ class BotAi
 public:
     BotAi(const Map& map, const std::shared_ptr<Bot>& bot);
 
+    virtual Direction nextDirection() const;
+
 private:
     const Map&           map_;
     std::shared_ptr<Bot> bot_;

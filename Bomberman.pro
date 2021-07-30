@@ -74,6 +74,7 @@ HEADERS += \
     src/game/move_data.hpp \
     src/game/move_processor.hpp \
     src/game/moving_object.hpp \
+    src/game/respawn_place.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
     src/gui/game_scene.hpp \
