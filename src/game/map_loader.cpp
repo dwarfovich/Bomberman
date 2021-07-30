@@ -31,6 +31,8 @@ std::unique_ptr<Map> createTestMap()
         map->setCellType(46, CellStructure::Bricks);
         map->setCellType(64, CellStructure::Bricks);
 
+        map->setRespawnPlaces(RespawnType::Bot, {11, 18});
+
         return map;
     } catch (...) {
         return nullptr;

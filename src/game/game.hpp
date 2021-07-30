@@ -4,6 +4,8 @@
 #include "map.hpp"
 #include "timer_queue.hpp"
 #include "explosion_processor.hpp"
+#include "move_processor.hpp"
+#include "collider.hpp"
 
 #include <QTimer>
 
@@ -19,6 +21,7 @@ class Game : public QObject
     Q_OBJECT
 
     friend class ExplosionProcessor;
+    friend class Collider;
 
 public:
     Game();
@@ -39,18 +42,22 @@ private slots:
     void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);
 
 private: // methods
+    void initializeBots();
     void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     void explodeBomb(const std::shared_ptr<Bomb>& bomb);
 
 private: // data
-    static const int           timeout_ = 42;
-    std::shared_ptr<Map>       map_;
-    gui::GameScene*            scene_  = nullptr;
-    std::shared_ptr<Bomberman> player_ = nullptr;
-    ExplosionProcessor         explosionProcessor;
-    QTimer                     moveTimer;
-    TimerQueue                 timerQueue;
+    static const int               timeout_ = 42;
+    std::shared_ptr<Map>           map_;
+    gui::GameScene*                scene_         = nullptr;
+    std::shared_ptr<Bomberman>     player_        = nullptr;
+    std::unique_ptr<MoveProcessor> moveProcessor_ = nullptr;
+    Collider                       collider_;
+    ExplosionProcessor             explosionProcessor;
+    QTimer                         moveTimer;
+    TimerQueue                     timerQueue;
 };
+
 } // namespace bm
 
 #endif // GAME_HPP

@@ -4,6 +4,7 @@
 #include "character.hpp"
 #include "direction.hpp"
 #include "bomb.hpp"
+#include "collider.hpp"
 
 #include <memory>
 
@@ -15,8 +16,9 @@ inline constexpr size_t defaultBombermanBombRadius = 1;
 class Bomberman : public Character, public std::enable_shared_from_this<Bomberman>
 {
 public:
+    ACCEPT_COLLISION;
+
     Bomberman();
-    ALLOW_EXPLOSION_VISITOR;
 
     bool acceptsModifiers() const override;
 

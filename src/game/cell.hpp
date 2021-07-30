@@ -3,13 +3,15 @@
 
 #include "game_object.hpp"
 #include "cell_structure.hpp"
+#include "collider.hpp"
+
 #include "modifiers/imodifier.hpp"
 
 namespace bm {
 
 struct Cell : public GameObject
 {
-    ALLOW_EXPLOSION_VISITOR;
+    ACCEPT_COLLISION;
 
     CellStructure              structure = CellStructure::Empty;
     bool                       hasBomb   = false;

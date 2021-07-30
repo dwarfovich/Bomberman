@@ -8,8 +8,10 @@
 #include <memory>
 
 namespace bm {
+
 std::unique_ptr<Map> loadFromFile(const QString& filePath);
 std::unique_ptr<Map> createTestMap();
+
 }  // namespace bm
 
 #endif // MAP_LOADER_HPP

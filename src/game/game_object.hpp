@@ -1,21 +1,25 @@
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
 
-#include "explosion_processor.hpp"
-
-#ifndef ALLOW_EXPLOSION_VISITOR
-    #define ALLOW_EXPLOSION_VISITOR \
-        void explode(ExplosionProcessor& processor) override { processor.explode(*this); }
-#endif
+#define ACCEPT_COLLISION                                                            \
+    void collideWith(GameObject& other, Collider& collider) override                \
+    {                                                                               \
+        auto dispatcher = CollisionDispatcher<decltype(*this)> { *this, collider }; \
+        other.accept(dispatcher);                                                   \
+    }                                                                               \
+    void accept(const CollisionDispatcherBase& dispatcher) override { dispatcher.collide(*this); }
 
 namespace bm {
-class ExplosionProcessor;
+class Collider;
+class CollisionDispatcherBase;
 
 class GameObject
 {
 public:
     virtual ~GameObject() = default;
-    virtual void explode(ExplosionProcessor& processor);
+
+    virtual void collideWith(GameObject& other, Collider& c);
+    virtual void accept(const CollisionDispatcherBase& c);
 };
 
 } // namespace bm

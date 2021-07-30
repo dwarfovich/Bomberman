@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
     //    map->setPlayer(player);
     game_.setPlayer(player);
 
-    game_.setMap(map);
+    // game_.setMap(map);
     game_.setScene(gameView_->scene());
     gameView_->setMap(map);
     setCentralWidget(gameView_);
