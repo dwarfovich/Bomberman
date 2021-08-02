@@ -29,10 +29,10 @@ void GameScene::addCharacter(const std::shared_ptr<MovingObject>&   character,
 {
     addItem(item.get());
     characters_.insert({ character, std::move(item) });
-    characterMoved(character);
+    onCharacterMoved(character);
 }
 
-void GameScene::characterMoved(const std::shared_ptr<MovingObject>& character)
+void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& character)
 {
     auto iter = characters_.find(character);
     if (iter != characters_.cend()) {

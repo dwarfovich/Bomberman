@@ -12,14 +12,19 @@ class Bot : public Character
 public:
     ACCEPT_COLLISION;
 
+    Bot();
+
     bool notifyIfMeetedWall() const override;
     void meetsWall() override;
+    bool acceptsModifiers() const override;
 
     void setAi(std::unique_ptr<BotAi> ai);
 
 private:
     std::unique_ptr<BotAi> ai_;
 
+    // Character interface
+public:
 };
 } // namespace bm
 

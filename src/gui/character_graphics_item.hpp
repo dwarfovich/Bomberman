@@ -23,7 +23,7 @@ public:
 
     void setCharacter(const std::shared_ptr<MovingObject> &newCharacter);
 
-private:
+protected:
     std::shared_ptr<MovingObject> character_;
 };
 

@@ -11,13 +11,13 @@ class Map;
 class BotAi
 {
 public:
-    BotAi(const Map& map, const std::shared_ptr<Bot>& bot);
+    BotAi(const Map& map, const Bot* bot);
 
     virtual Direction nextDirection() const;
 
 private:
-    const Map&           map_;
-    std::shared_ptr<Bot> bot_;
+    const Map& map_;
+    const Bot* bot_;
 };
 
 } // namespace bm

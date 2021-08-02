@@ -1,15 +1,47 @@
 #include "map_loader.hpp"
+#include "cell_structure.hpp"
+#include "bot_factory.hpp"
 
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include <stdexcept>
+
 namespace bm {
-std::unique_ptr<Map> loadFromFile(const QString& filePath)
+namespace map_loader {
+
+namespace {
+CellStructure jsonValueToCellStructure(int value)
 {
-    return nullptr;
+    if (value >= 0 && value < static_cast<int>(CellStructure::EndValue)) {
+        return static_cast<CellStructure>(value);
+    } else {
+        throw std::invalid_argument({});
+    }
 }
+
+void parseRespawnLocations(const QJsonObject& json, MapData& mapData)
+{
+    const auto& array = json["player_respawns"].toArray();
+    for (size_t i = 0; i < array.size(); ++i) {
+        auto index     = array[i].toInt();
+        auto bomberman = std::make_shared<Bomberman>();
+        bomberman->setCoordinates(mapData.map->indexToCellCenterCoordinates(index));
+        mapData.bombermans.push_back(bomberman);
+    }
+
+    const auto& botArray = json["bot_respawns"].toArray();
+    for (size_t i = 0; i < botArray.size(); ++i) {
+        auto index = botArray[i].toInt();
+        auto bot   = createBot(BotType::Regular, *mapData.map);
+        bot->setCoordinates(mapData.map->indexToCellCenterCoordinates(index));
+        mapData.bots.push_back(std::move(bot));
+    }
+}
+
+} // namespace
 
 std::unique_ptr<Map> createTestMap()
 {
@@ -36,7 +68,7 @@ std::unique_ptr<Map> createTestMap()
         map->setCellType(46, CellStructure::Bricks);
         map->setCellType(64, CellStructure::Bricks);
 
-        map->setRespawnPlaces(RespawnType::Bot, {11, 18});
+        map->setRespawnPlaces(RespawnType::Bot, { 11, 18 });
 
         return map;
     } catch (...) {
@@ -44,43 +76,52 @@ std::unique_ptr<Map> createTestMap()
     }
 }
 
-std::unique_ptr<Map> map_loader::loadFromFile(const QString &filePath)
+MapData loadFromFile(const QString& filePath)
 {
     qDebug() << filePath;
-    QFile  file {filePath};
+    QFile file { filePath };
     if (!file.open(QIODevice::ReadOnly)) {
-        return nullptr;
+        return {};
     }
 
-    auto jsonData = file.readAll();
+    auto            jsonData = file.readAll();
     QJsonParseError error;
-    auto document = QJsonDocument::fromJson(jsonData, & error);
+    auto            document = QJsonDocument::fromJson(jsonData, &error);
     if (error.error != QJsonParseError::NoError) {
         qDebug() << "Error parsing json:" << error.errorString();
-        return nullptr;
+        return {};
     }
 
     const auto& jsonObject = document.object();
-    size_t width = jsonObject["width"].toInt(0);
-    size_t height = jsonObject["height"].toInt(0);
+    size_t      width      = jsonObject["width"].toInt(0);
+    size_t      height     = jsonObject["height"].toInt(0);
     if (width == 0 || height == 0) {
-        return nullptr;
+        return {};
     }
 
-    auto map = std::make_shared<Map>(width, height);
-    const auto& mapJsonArray = jsonObject["map"].toArray();
-    if (mapJsonArray.size() != width * height) {
-        return nullptr;
-    }
+    try {
+        auto        map          = std::make_unique<Map>(width, height);
+        const auto& mapJsonArray = jsonObject["map"].toArray();
+        if (mapJsonArray.size() != width * height) {
+            return {};
+        }
 
-    for (int i = 0; i < mapJsonArray.size(); ++i) {
-        const auto& cellObject = mapJsonArray[i].toObject();
+        for (qsizetype i = 0; i < mapJsonArray.size(); ++i) {
+            map->setCellType(static_cast<size_t>(i), jsonValueToCellStructure(mapJsonArray[i].toInt()));
+        }
 
+        MapData mapData;
+        mapData.map = std::move(map);
+
+        parseRespawnLocations(jsonObject, mapData);
+
+        return mapData;
+    } catch (const std::exception& e) {
+        return {};
     }
 
     qDebug() << width << height;
-
-    return nullptr;
 }
 
+} // namespace map_loader
 } // namespace bm

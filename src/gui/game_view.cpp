@@ -10,7 +10,7 @@ GameView::GameView(QWidget* parent) : QGraphicsView { parent }, scene_ { new Gam
 void GameView::setMap(const std::shared_ptr<bm::Map>& map)
 {
     map_ = map;
-    connect(map.get(), &Map::characterMoved, scene_, &GameScene::characterMoved);
+    connect(map.get(), &Map::characterMoved, scene_, &GameScene::onCharacterMoved);
     updateMap();
 }
 

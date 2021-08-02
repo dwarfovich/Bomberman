@@ -191,10 +191,10 @@ const std::vector<Cell>& Map::cells() const
 QPoint Map::indexToCellCenterCoordinates(size_t index) const
 {
     return { static_cast<int>((index % widthInCells_) * cellSize + cellHalfSize),
-                static_cast<int>((index / widthInCells_) * cellSize + cellHalfSize) };
+             static_cast<int>((index / widthInCells_) * cellSize + cellHalfSize) };
 }
 
-bool Map::isCellCenter(const QPoint &coordinates) const
+bool Map::isCellCenter(const QPoint& coordinates) const
 {
     return (coordinates.x() % cellSize == cellHalfSize && coordinates.y() % cellSize == cellHalfSize);
 }
@@ -607,7 +607,7 @@ void Map::moveObjects(double timeDelta)
     checkCollisions();
 }
 
-const Map::RespawnPlaces &Map::respawnPlaces(RespawnType type) const
+const Map::RespawnPlaces& Map::respawnPlaces(RespawnType type) const
 {
     auto iter = respawnPlaces_.find(type);
     if (iter != respawnPlaces_.cend()) {
@@ -618,7 +618,7 @@ const Map::RespawnPlaces &Map::respawnPlaces(RespawnType type) const
     }
 }
 
-void Map::setRespawnPlaces(RespawnType type, const RespawnPlaces &places)
+void Map::setRespawnPlaces(RespawnType type, const RespawnPlaces& places)
 {
     respawnPlaces_[type] = places;
 }

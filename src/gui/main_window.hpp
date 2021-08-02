@@ -16,11 +16,7 @@ QT_END_NAMESPACE
 namespace bm {
 namespace gui {
 class GameView;
-}
-} // namespace bm
 
-namespace bm {
-namespace gui {
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

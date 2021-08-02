@@ -1,7 +1,8 @@
 #include "main_window.hpp"
 #include "ui_main_window.h"
-#include "gui/game_view.hpp"
 #include "game/map_loader.hpp"
+#include "game/game_initializer.hpp"
+#include "gui/game_view.hpp"
 
 #include <QKeyEvent>
 #include <QDir>
@@ -17,28 +18,39 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui_->setupUi(this);
 
-    //std::shared_ptr<Map> map = map_loader::createTestMap();
+    // std::shared_ptr<Map> map = map_loader::createTestMap();
+
+    // game_.setScene(gameView_->scene());
+    // game_.setMap(mapData.map);
+
+    // auto player = std::make_shared<Bomberman>();
+    // 44
+    // player->movementData().coordinates = map->indexToCellCenterCoordinates(44);
+    // player->setCoordinates(mapData.map->indexToCellCenterCoordinates(44));
+    //    map->setPlayer(player);
+    // game_.setPlayer(player);
+
+    // game_.setMap(map);
+    // game_.setScene(gameView_->scene());
+    // gameView_->setMap(mapData.map);
+    setCentralWidget(gameView_);
+
     const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
-    std::shared_ptr<Map> map = map_loader::loadFromFile(mapFile);
-    if (!map) {
+    auto       mapData = map_loader::loadFromFile(mapFile);
+    if (!mapData.map) {
         exit(1);
     }
 
-    game_.setScene(gameView_->scene());
-    game_.setMap(map);
-
-    auto player = std::make_shared<Bomberman>();
-    // 44
-    // player->movementData().coordinates = map->indexToCellCenterCoordinates(44);
-    player->setCoordinates(map->indexToCellCenterCoordinates(44));
-    //    map->setPlayer(player);
-    game_.setPlayer(player);
-
-    // game_.setMap(map);
-    game_.setScene(gameView_->scene());
-    gameView_->setMap(map);
-    setCentralWidget(gameView_);
-    game_.start();
+    GameData data;
+    data.mapData = &mapData;
+    data.game    = &game_;
+    data.view    = gameView_;
+    bool success = initializeGame(data);
+    if (success) {
+        game_.start();
+    } else {
+        exit(1);
+    }
 }
 
 MainWindow::~MainWindow()

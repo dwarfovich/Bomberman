@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace bm {
-Game::Game() : collider_ { this }, explosionProcessor { *this }
+Game::Game() : collider_ { this }
 {}
 
 void Game::start()
@@ -25,23 +25,23 @@ void Game::start()
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
     map_ = map;
-    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
+    //    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
 
-    // moveProcessor_ = std::make_unique<MoveProcessor>(*map);
+    //    // moveProcessor_ = std::make_unique<MoveProcessor>(*map);
     connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-    connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::characterMoved);
+    //    connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::onCharacterMoved);
     connect(&moveTimer, &QTimer::timeout, [this]() {
         map_->moveObjects(timeout_);
     });
 }
 void Game::setPlayer(const std::shared_ptr<Bomberman>& player)
 {
-    player_            = player;
-    auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
-    characterItem->setCharacter(player);
-    map_->addMovingObject(player);
+    player_ = player;
+    // auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
+    // characterItem->setCharacter(player);
+    // map_->addMovingObject(player);
     // moveProcessor_->addObject(player);
-    scene_->addCharacter(player, std::move(characterItem));
+    // scene_->addCharacter(player, std::move(characterItem));
 }
 
 bool Game::movePlayer(Direction direction)
@@ -105,8 +105,7 @@ void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, siz
 }
 
 void Game::initializeBots()
-{
-}
+{}
 
 void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 {

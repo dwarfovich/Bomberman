@@ -5,9 +5,10 @@ namespace bm {
 
 enum class CellStructure
 {
-    Empty,
+    Empty = 0,
     Concrete,
-    Bricks
+    Bricks,
+    EndValue
 };
 
 } // namespace bm

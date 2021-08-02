@@ -24,7 +24,7 @@ public:
     void addCharacter(const std::shared_ptr<MovingObject>& character, std::unique_ptr<CharacterGraphicsItem>);
 
 public slots:
-    void characterMoved(const std::shared_ptr<MovingObject>& character);
+    void onCharacterMoved(const std::shared_ptr<MovingObject>& character);
     void cellChanged(size_t index);
 
 private:

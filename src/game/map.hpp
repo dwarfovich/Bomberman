@@ -7,7 +7,7 @@
 #include "cell_structure.hpp"
 #include "bomb.hpp"
 #include "explosion.hpp"
-#include "respawn_place.hpp"
+#include "respawn_type.hpp"
 
 #include <QObject>
 #include <QPoint>
@@ -42,9 +42,9 @@ public:
     size_t                   locationToIndex(const CellLocation& location) const;
     CellLocation             indexToLocation(size_t index) const;
     QPoint                   indexToCellCenterCoordinates(size_t index) const;
-    bool isCellCenter(const QPoint& coordinates) const;
+    bool                     isCellCenter(const QPoint& coordinates) const;
     bool                     cellIsMovable(const CellLocation& location) const;
-    bool                     nextCellIsMovable(const MovingObject &object, Direction direction) const;
+    bool                     nextCellIsMovable(const MovingObject& object, Direction direction) const;
     bool                     nextCellIsMovable(const QPoint& coordinates, Direction direction) const;
     bool                     isProperIndex(size_t index) const;
     size_t                   width() const;
@@ -54,7 +54,7 @@ public:
     void moveObjects(double timeDelta);
 
     const RespawnPlaces& respawnPlaces(RespawnType type) const;
-    void setRespawnPlaces(RespawnType type, const RespawnPlaces& places);
+    void                 setRespawnPlaces(RespawnType type, const RespawnPlaces& places);
 
 signals:
     void cellChanged(size_t index);
@@ -94,14 +94,13 @@ public: // methods
     int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
-    size_t                                     widthInCells_  = 0;
-    size_t                                     heightInCells_ = 0;
-    std::vector<Cell>                          cells_;
-    std::vector<std::shared_ptr<MovingObject>> movingObjects_;
-    std::vector<std::shared_ptr<Bomb>>         bombs_;
-    std::vector<Explosion>                     explosions_;
+    size_t                                         widthInCells_  = 0;
+    size_t                                         heightInCells_ = 0;
+    std::vector<Cell>                              cells_;
+    std::vector<std::shared_ptr<MovingObject>>     movingObjects_;
+    std::vector<std::shared_ptr<Bomb>>             bombs_;
+    std::vector<Explosion>                         explosions_;
     std::unordered_map<RespawnType, RespawnPlaces> respawnPlaces_;
-
 };
 
 } // namespace bm
