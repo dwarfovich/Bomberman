@@ -3,6 +3,7 @@
 
 #include <QRect>
 #include <QDebug>
+#define DEB qDebug()
 
 #include <algorithm>
 #include <stdexcept>
@@ -102,6 +103,34 @@ bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
 void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
 {
     movingObjects_.push_back(object);
+}
+
+void Map::removeMovingObject(const std::shared_ptr<MovingObject> &object)
+{
+    movingObjects_.erase(std::remove(movingObjects_.begin(), movingObjects_.end(), object));
+}
+
+const std::shared_ptr<MovingObject> &Map::sharedPtrForObject(const MovingObject &object) const
+{
+    const MovingObject* objectPtr = &object;
+    auto iter = std::find_if(movingObjects_.cbegin(), movingObjects_.cend(), [objectPtr](const auto& pointer){
+        return (pointer.get() == objectPtr);
+    });
+
+    if (iter != movingObjects_.cend()) {
+        return *iter;
+    } else {
+        static const std::shared_ptr<MovingObject> empty = nullptr;
+        return empty;
+    }
+}
+
+void Map::removeMovingObject(const MovingObject &object)
+{
+    const MovingObject* objectPtr = &object;
+    movingObjects_.erase(std::remove_if(movingObjects_.begin(), movingObjects_.end(), [objectPtr](const auto& iter){
+        return iter.get() == objectPtr;
+    }));
 }
 
 const Cell& Map::cell(size_t index) const
@@ -480,20 +509,18 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
 
 void Map::moveObjects(double timeDelta)
 {
+    timeDelta /= 42.;
     for (const auto& object : movingObjects_) {
         if (object->movementData().speed == 0) {
             continue;
         }
 
-        timeDelta /= 42.;
         auto  moveData    = object->movementData();
         auto& coordinates = moveData.coordinates;
         auto  oldIndex    = coordinatesToIndex(coordinates);
-        // const auto& newCoordinates = advanceCoordinates(coordinates, timeDelta, moveData.speed, moveData.direction);
         auto      inCell = coordinatesInCell(coordinates);
-        const int ds     = 5;
+        int ds     = 5;
 
-        // int inCellOrtogonalCoord  = inCellCoordinate(newCoordinates, moveData.direction);
         const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
         const int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
         const int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);

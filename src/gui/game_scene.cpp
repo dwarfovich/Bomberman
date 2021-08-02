@@ -24,18 +24,23 @@ bool GameScene::setCellItem(CellItem* item, size_t index)
     }
 }
 
-void GameScene::addCharacter(const std::shared_ptr<MovingObject>&   character,
+void GameScene::addMovingObject(const std::shared_ptr<MovingObject>&   character,
                              std::unique_ptr<CharacterGraphicsItem> item)
 {
     addItem(item.get());
-    characters_.insert({ character, std::move(item) });
+    movingObjects_.insert({ character, std::move(item) });
     onCharacterMoved(character);
+}
+
+void GameScene::destroyItemForObject(const std::shared_ptr<MovingObject> &object)
+{
+    movingObjects_.erase(object);
 }
 
 void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& character)
 {
-    auto iter = characters_.find(character);
-    if (iter != characters_.cend()) {
+    auto iter = movingObjects_.find(character);
+    if (iter != movingObjects_.cend()) {
         iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
     }
 }

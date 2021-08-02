@@ -33,6 +33,9 @@ public:
     bool removeBomb(size_t index);
     bool setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
     void addMovingObject(const std::shared_ptr<MovingObject>& object);
+    void removeMovingObject(const std::shared_ptr<MovingObject>& object);
+    const std::shared_ptr<MovingObject>& sharedPtrForObject(const MovingObject& object) const;
+    void removeMovingObject(const MovingObject& object);
 
     const Cell&  cell(size_t index) const;
     CellLocation coordinatesToLocation(const QPoint& coordinates) const;

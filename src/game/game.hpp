@@ -27,7 +27,7 @@ public:
     void start();
 
     void       setMap(const std::shared_ptr<Map>& map);
-    const Map& map() const { return *map_; }
+    Map* map() const { return map_.get(); }
 
     void setPlayer(const std::shared_ptr<Bomberman>& player);
     bool movePlayer(Direction direction);
