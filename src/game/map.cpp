@@ -47,7 +47,7 @@ bool Map::reset(size_t width, size_t height)
     widthInCells_  = width;
     heightInCells_ = height;
     for (size_t i = 0; i < cells_.size(); ++i) {
-        cells_[i].index = i;
+        cells_[i].setIndex(i);
     }
 
     return (true);
@@ -56,7 +56,7 @@ bool Map::reset(size_t width, size_t height)
 void Map::setCellType(size_t index, CellStructure structure)
 {
     if (isProperIndex(index)) {
-        cells_[index].structure = structure;
+        cells_[index].setStructure(structure);
     }
 
     emit cellChanged(index);
@@ -65,7 +65,7 @@ void Map::setCellType(size_t index, CellStructure structure)
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     if (isProperIndex(bomb->cellIndex)) {
-        cells_[bomb->cellIndex].hasBomb = true;
+        cells_[bomb->cellIndex].setHasBomb(true);
         bombs_.push_back(bomb);
         emit cellChanged(bomb->cellIndex);
         return true;
@@ -83,7 +83,7 @@ bool Map::removeBomb(size_t index)
         return false;
     }
     bombs_.erase(iter);
-    cells_[index].hasBomb = false;
+    cells_[index].setHasBomb( false);
     emit cellChanged(index);
 
     return true;
@@ -92,11 +92,26 @@ bool Map::removeBomb(size_t index)
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
 {
     if (isProperIndex(index)) {
-        cells_[index].modifier = modifier;
+        cells_[index].setModifier(modifier);
         emit cellChanged(index);
         return true;
     } else {
         return false;
+    }
+}
+
+void Map::addBomberman(const std::shared_ptr<Bomberman> &bomberman)
+{
+    bombermans_.emplace(bomberman.get(), bomberman);
+    movingObjects_.push_back(bomberman);
+}
+
+void Map::removeBomberman(const Bomberman &bomberman)
+{
+    auto iter = bombermans_.find(&bomberman);
+    if (iter != bombermans_.cend()) {
+        removeMovingObject(iter->second);
+        bombermans_.erase(iter);
     }
 }
 
@@ -179,7 +194,7 @@ bool Map::cellIsMovable(const CellLocation& location) const
     if (index == invalidMapIndex) {
         return false;
     } else {
-        return cells_[index].structure == CellStructure::Empty;
+        return cells_[index].structure() == CellStructure::Empty;
     }
 }
 
@@ -194,7 +209,7 @@ bool Map::nextCellIsMovable(const QPoint& coordinates, Direction direction) cons
     const auto targetIndex  = shiftIndex(currentIndex, direction);
 
     return (targetIndex != invalidMapIndex && targetIndex < cells_.size()
-            && cells_[targetIndex].structure == CellStructure::Empty);
+            && cells_[targetIndex].structure() == CellStructure::Empty);
 }
 
 bool Map::isProperIndex(size_t index) const

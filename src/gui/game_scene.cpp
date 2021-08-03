@@ -37,6 +37,14 @@ void GameScene::destroyItemForObject(const std::shared_ptr<MovingObject> &object
     movingObjects_.erase(object);
 }
 
+void GameScene::removeAllObjects()
+{
+    movingObjects_.clear();
+    // TODO: free CellItems' memory.
+    cellItems_.clear();
+    clear();
+}
+
 void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& character)
 {
     auto iter = movingObjects_.find(character);

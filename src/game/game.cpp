@@ -24,58 +24,38 @@ void Game::start()
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
+    // TODO: Disconnect oldies.
     map_ = map;
-    //    connect(map_.get(), &Map::cellChanged, scene_, &gui::GameScene::cellChanged);
-
-    //    // moveProcessor_ = std::make_unique<MoveProcessor>(*map);
     connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-    //    connect(map_.get(), &Map::characterMoved, scene_, &gui::GameScene::onCharacterMoved);
     connect(&moveTimer, &QTimer::timeout, [this]() {
         map_->moveObjects(timeout_);
     });
 }
-void Game::setPlayer(const std::shared_ptr<Bomberman>& player)
+void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
 {
-    player_ = player;
-    // auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
-    // characterItem->setCharacter(player);
-    // map_->addMovingObject(player);
-    // moveProcessor_->addObject(player);
-    // scene_->addCharacter(player, std::move(characterItem));
+    player1_ = player;
 }
 
-bool Game::movePlayer(Direction direction)
+bool Game::movePlayer1(Direction direction)
 {
-    player_->setSpeed(defaultBombermanSpeed);
-    // character->moveData.speed     = defaultBombermanSpeed;
-    // character->moveData.direction = direction;
-    player_->setDirection(direction);
-    if (direction == Direction::Left || direction == Direction::Upward) {
-        if (player_->speed() > 0) {
-            player_->setSpeed(player_->speed() * -1);
-        }
-    } else {
-        // character->moveData.speed = abs(character->moveData.speed);
-    }
-    // character->
-    // character->location += coordinatesShift(direction);
-    // emit characterMoved(character);
+    player1_->setSpeed(defaultBombermanSpeed);
+    player1_->setDirection(direction);
+
     return true;
 }
 
-void Game::stopPlayer(Direction direction)
+void Game::stopPlayer1(Direction direction)
 {
-    if (player_->movementData().direction == direction) {
-        player_->setSpeed(0);
+    if (player1_->movementData().direction == direction) {
+        player1_->setSpeed(0);
     }
 }
 
-void Game::placeBomb()
+void Game::placeBomb1()
 {
-    // const auto&           player = map_->player();
-    std::shared_ptr<Bomb> bomb = player_->createBomb();
+    std::shared_ptr<Bomb> bomb = player1_->createBomb();
     if (bomb) {
-        auto index = map_->coordinatesToIndex(player_->movementData().coordinates);
+        auto index = map_->coordinatesToIndex(player1_->movementData().coordinates);
         if (map_->isProperIndex(index)) {
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
@@ -92,20 +72,17 @@ void Game::setScene(gui::GameScene* newScene)
 void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
 {
     const auto& cell     = map_->cell(index);
-    const auto& modifier = cell.modifier;
-    if (modifier && object == player_) {
+    const auto& modifier = cell.modifier();
+    if (modifier && object == player1_) {
         auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
         if (modifier->type() == ModifierType::Temporary) {
-            auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier);
+            auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
             timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
         }
-        map_->setModifier(cell.index, nullptr);
+        map_->setModifier(cell.index(), nullptr);
     }
 }
-
-void Game::initializeBots()
-{}
 
 void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 {
@@ -115,20 +92,11 @@ void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 
 void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
-    qDebug() << "Game::explodeBomb";
-    // explosionProcessor.setBomb(bomb);
     auto  explosionData = bm::explodeBomb(*map_, *bomb);
     auto& explosion     = explosionData.explosion;
-    qDebug() << explosionData.affectedObjects.size();
     for (auto* affectedObject : explosionData.affectedObjects) {
         explosion.collideWith(*affectedObject, collider_);
     }
-
-    //    auto affectedObjects = map_->removeBomb(bomb);
-    //    qDebug() << "exploded objects:" << affectedObjects.size();
-    //    for (auto* object : affectedObjects) {
-    //        object->explode(explosionProcessor);
-    //    }
 
     const auto& bomberman = bomb->owner;
     bomberman->decreaseActiveBombs();

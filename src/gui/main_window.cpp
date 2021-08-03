@@ -18,21 +18,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui_->setupUi(this);
 
-    // std::shared_ptr<Map> map = map_loader::createTestMap();
-
-    // game_.setScene(gameView_->scene());
-    // game_.setMap(mapData.map);
-
-    // auto player = std::make_shared<Bomberman>();
-    // 44
-    // player->movementData().coordinates = map->indexToCellCenterCoordinates(44);
-    // player->setCoordinates(mapData.map->indexToCellCenterCoordinates(44));
-    //    map->setPlayer(player);
-    // game_.setPlayer(player);
-
-    // game_.setMap(map);
-    // game_.setScene(gameView_->scene());
-    // gameView_->setMap(mapData.map);
     setCentralWidget(gameView_);
 
     const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
@@ -61,16 +46,14 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_W) {
-        game_.movePlayer(Direction::Upward);
+        game_.movePlayer1(Direction::Upward);
     } else if (event->key() == Qt::Key_D) {
-        game_.movePlayer(Direction::Right);
+        game_.movePlayer1(Direction::Right);
     } else if (event->key() == Qt::Key_S) {
-        game_.movePlayer(Direction::Downward);
+        game_.movePlayer1(Direction::Downward);
     } else if (event->key() == Qt::Key_A) {
-        game_.movePlayer(Direction::Left);
+        game_.movePlayer1(Direction::Left);
     }
-
-    std::cout << "Moving" << std::endl;
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent* event)
@@ -78,16 +61,17 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     if (event->isAutoRepeat()) {
         return;
     }
+
     if (event->key() == Qt::Key_W) {
-        game_.stopPlayer(Direction::Upward);
+        game_.stopPlayer1(Direction::Upward);
     } else if (event->key() == Qt::Key_D) {
-        game_.stopPlayer(Direction::Right);
+        game_.stopPlayer1(Direction::Right);
     } else if (event->key() == Qt::Key_S) {
-        game_.stopPlayer(Direction::Downward);
+        game_.stopPlayer1(Direction::Downward);
     } else if (event->key() == Qt::Key_A) {
-        game_.stopPlayer(Direction::Left);
+        game_.stopPlayer1(Direction::Left);
     } else if (event->key() == Qt::Key_Space) {
-        game_.placeBomb();
+        game_.placeBomb1();
     }
 }
 

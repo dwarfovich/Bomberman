@@ -23,6 +23,7 @@ public:
     bool setCellItem(CellItem* item, size_t index);
     void addMovingObject(const std::shared_ptr<MovingObject>& object, std::unique_ptr<CharacterGraphicsItem> item);
     void destroyItemForObject(const std::shared_ptr<MovingObject>& object);
+    void removeAllObjects();
 
 public slots:
     void onCharacterMoved(const std::shared_ptr<MovingObject>& character);

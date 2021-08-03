@@ -33,19 +33,19 @@ QRectF CellItem::boundingRect() const
 
 void CellItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-    if (cell_->structure != CellStructure::Empty) {
-        if (cell_->structure == CellStructure::Concrete) {
+    if (cell_->structure() != CellStructure::Empty) {
+        if (cell_->structure() == CellStructure::Concrete) {
             painter->setBrush(concreteBrush_);
-        } else if (cell_->structure == CellStructure::Bricks) {
+        } else if (cell_->structure() == CellStructure::Bricks) {
             painter->setBrush(bricksBrush_);
         }
         painter->drawRect(boundingRect());
     } else {
-        if (cell_->hasBomb) {
+        if (cell_->hasBomb()) {
             painter->setBrush(Qt::red);
             painter->drawEllipse(boundingRect());
         }
-        if (cell_->modifier) {
+        if (cell_->modifier()) {
             painter->setBrush(Qt::blue);
             auto rect = boundingRect();
             rect.setHeight(20);

@@ -9,14 +9,28 @@
 
 namespace bm {
 
-struct Cell : public GameObject
+class Cell : public GameObject
 {
+public:
     ACCEPT_COLLISION;
 
-    CellStructure              structure = CellStructure::Empty;
-    bool                       hasBomb   = false;
-    std::shared_ptr<IModifier> modifier  = nullptr;
-    size_t                     index     = 0;
+    CellStructure structure() const;
+    void setStructure(CellStructure structure);
+
+    bool hasBomb() const;
+    void setHasBomb(bool hasBomb);
+
+    const std::shared_ptr<IModifier> &modifier() const;
+    void setModifier(const std::shared_ptr<IModifier> &modifier);
+
+    size_t index() const;
+    void setIndex(size_t index);
+
+private:
+    CellStructure              structure_ = CellStructure::Empty;
+    bool                       hasBomb_   = false;
+    std::shared_ptr<IModifier> modifier_  = nullptr;
+    size_t                     index_     = 0;
 };
 
 } // namespace bm

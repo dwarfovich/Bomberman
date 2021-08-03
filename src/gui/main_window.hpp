@@ -30,14 +30,12 @@ private:
     GameView*       gameView_ = nullptr;
     Game            game_;
 
-    // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent* event) override;
-
-    // QWidget interface
-protected:
     void keyReleaseEvent(QKeyEvent* event) override;
 };
+
 } // namespace gui
 } // namespace bm
+
 #endif // MAINWINDOW_HPP

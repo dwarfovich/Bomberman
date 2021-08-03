@@ -17,8 +17,8 @@ public:
     GameWinnerType winnerType() const;
     const std::shared_ptr<Bomberman> &winnerBomberman() const;
 
-private:
-    GameWinnerType winnerType_ = GameWinnerType::NoWinner;
+protected:
+    GameWinnerType winnerType_ = GameWinnerType::InProgress;
     std::shared_ptr<Bomberman> winnerBomberman_ = nullptr;
 };
 

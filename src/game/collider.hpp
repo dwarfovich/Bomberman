@@ -17,7 +17,7 @@ namespace bm {
 class Game;
 class GameObject;
 class Explosion;
-struct Cell;
+class Cell;
 class Bomberman;
 class Bot;
 

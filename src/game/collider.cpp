@@ -18,9 +18,9 @@ void Collider::collide(Explosion &explosion, GameObject &object) const
 
 void Collider::collide(Explosion &explosion, Cell &cell) const
 {
-    if (cell.structure == CellStructure::Bricks) {
-        game_->map_->setCellType(cell.index, CellStructure::Empty);
-        game_->map_->setModifier(cell.index, modifierCreator_.chooseModifier());
+    if (cell.structure() == CellStructure::Bricks) {
+        game_->map_->setCellType(cell.index(), CellStructure::Empty);
+        game_->map_->setModifier(cell.index(), modifierCreator_.chooseModifier());
     }
 }
 

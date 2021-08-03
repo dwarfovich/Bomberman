@@ -6,7 +6,7 @@
 namespace bm {
 
 enum class GameWinnerType : uint8_t {
-    NoWinner,
+    InProgress,
     Withdraw,
     Player,
     Bot,

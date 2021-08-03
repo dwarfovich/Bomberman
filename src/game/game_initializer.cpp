@@ -13,6 +13,8 @@ namespace bm {
 bool initializeGame(const GameData& gameData)
 {
     auto* scene = gameData.view->scene();
+    //scene->clear();
+
     QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
     QObject::connect(gameData.mapData->map.get(), &Map::characterMoved, scene, &gui::GameScene::onCharacterMoved);
 
@@ -20,16 +22,12 @@ bool initializeGame(const GameData& gameData)
         return false;
     }
 
-    gameData.game->setScene(scene);
-
     const auto& player = gameData.mapData->bombermans[0];
-    gameData.game->setPlayer(player);
-    gameData.mapData->map->addMovingObject(player);
+    gameData.game->setPlayer1Bomberman(player);
+    gameData.mapData->map->addBomberman(player);
     auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
     characterItem->setCharacter(player);
     scene->addMovingObject(player, std::move(characterItem));
-    gameData.game->setMap(gameData.mapData->map);
-    gameData.view->setMap(gameData.mapData->map);
 
     for (const auto& bot : gameData.mapData->bots) {
         gameData.mapData->map->addMovingObject(bot);
@@ -37,6 +35,10 @@ bool initializeGame(const GameData& gameData)
         botItem->setCharacter(bot);
         scene->addMovingObject(bot, std::move(botItem));
     }
+
+    gameData.game->setMap(gameData.mapData->map);
+    gameData.view->setMap(gameData.mapData->map);
+    gameData.game->setScene(scene);
 
     return true;
 }
