@@ -25,6 +25,7 @@ SOURCES += \
     src/game/game.cpp \
     src/game/game_initializer.cpp \
     src/game/game_object.cpp \
+    src/game/game_over_conditions/game_over_condition.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
     src/game/modifier_deactivation_event.cpp \
@@ -63,6 +64,8 @@ HEADERS += \
     src/game/game.hpp \
     src/game/game_initializer.hpp \
     src/game/game_object.hpp \
+    src/game/game_over_conditions/game_over_condition.hpp \
+    src/game/game_over_conditions/game_winner_type.hpp \
     src/game/game_parameters.hpp \
     src/game/interval.hpp \
     src/game/map.hpp \

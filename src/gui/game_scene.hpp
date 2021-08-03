@@ -21,7 +21,8 @@ public:
     explicit GameScene(QObject* parent = nullptr);
 
     bool setCellItem(CellItem* item, size_t index);
-    void addCharacter(const std::shared_ptr<MovingObject>& character, std::unique_ptr<CharacterGraphicsItem>);
+    void addMovingObject(const std::shared_ptr<MovingObject>& object, std::unique_ptr<CharacterGraphicsItem> item);
+    void destroyItemForObject(const std::shared_ptr<MovingObject>& object);
 
 public slots:
     void onCharacterMoved(const std::shared_ptr<MovingObject>& character);
@@ -31,8 +32,8 @@ private:
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
 private:
-    using CharactersItems = std::unordered_map<std::shared_ptr<MovingObject>, std::unique_ptr<CharacterGraphicsItem>>;
-    CharactersItems        characters_;
+    using MovingItems = std::unordered_map<std::shared_ptr<MovingObject>, std::unique_ptr<CharacterGraphicsItem>>;
+    MovingItems        movingObjects_;
     std::vector<CellItem*> cellItems_;
     const int              cellSize_;
 };

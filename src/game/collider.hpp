@@ -26,21 +26,22 @@ class Collider
 public:
     Collider(Game* game = nullptr);
 
-    // void collide(GameObject& lhs, GameObject& rhs) const;
     void collide(Explosion& explosion, GameObject& object) const;
-    // void collide(Explosion& lhs, Explosion& rhs) const;
-    void collide(Bomberman& lhs, GameObject& rhs) const { std::cout << "(Bomberman, GameObject\n"; }
     void collide(Explosion& explosion, Cell& cell) const;
     ADD_INVERSE_COLLISION(Explosion, Cell);
     void collide(Explosion& explosion, Bomberman&) const { qDebug() << "Exploding bomberman\n"; }
     ADD_INVERSE_COLLISION(Explosion, Bomberman);
+    void collide(Explosion& explosion, Bot& bot) const;
+    ADD_INVERSE_COLLISION(Explosion, Bot);
+
     void collide(Cell& lhs, GameObject& rhs) const { std::cout << "(Cell, GameObject\n"; }
     void collide(Cell& lhs, Bomberman& rhs) const { std::cout << "(Cell, GameObject\n"; }
     ADD_INVERSE_COLLISION(Cell, Bomberman);
-    void collide(Cell& explosion, Bot&) const { qDebug() << "Exploding bot\n"; }
+    void collide(Cell& explosion, Bot&) const;
     ADD_INVERSE_COLLISION(Cell, Bot);
-    void collide(Explosion& explosion, Bot&) const { qDebug() << "Exploding bot\n"; }
-    ADD_INVERSE_COLLISION(Explosion, Bot);
+
+    void collide(Bomberman& lhs, GameObject& rhs) const { std::cout << "(Bomberman, GameObject\n"; }
+
     void collide(Bot& explosion, Bomberman&) const { qDebug() << "Exploding bot\n"; }
     ADD_INVERSE_COLLISION(Bot, Bomberman);
     void collide(Bot& explosion, GameObject&) const { qDebug() << "Exploding bot\n"; }

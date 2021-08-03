@@ -13,7 +13,7 @@ class BotAi
 public:
     BotAi(const Map& map, const Bot* bot);
 
-    virtual Direction nextDirection() const;
+    virtual Direction chooseNextDirection() const;
 
 private:
     const Map& map_;

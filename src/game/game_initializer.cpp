@@ -27,7 +27,7 @@ bool initializeGame(const GameData& gameData)
     gameData.mapData->map->addMovingObject(player);
     auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
     characterItem->setCharacter(player);
-    scene->addCharacter(player, std::move(characterItem));
+    scene->addMovingObject(player, std::move(characterItem));
     gameData.game->setMap(gameData.mapData->map);
     gameData.view->setMap(gameData.mapData->map);
 
@@ -35,7 +35,7 @@ bool initializeGame(const GameData& gameData)
         gameData.mapData->map->addMovingObject(bot);
         auto botItem = std::make_unique<gui::BotGraphicsItem>();
         botItem->setCharacter(bot);
-        scene->addCharacter(bot, std::move(botItem));
+        scene->addMovingObject(bot, std::move(botItem));
     }
 
     return true;

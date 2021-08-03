@@ -18,6 +18,11 @@ void MovingObject::setMovementData(const MoveData& data)
 void MovingObject::setSpeed(int speed)
 {
     data_.speed = speed;
+    if ((data_.direction == Direction::Upward || data_.direction == Direction::Left) && speed > 0) {
+        data_.speed *= -1;
+    } else if ((data_.direction == Direction::Downward|| data_.direction == Direction::Right) && speed < 0) {
+        data_.speed *= -1;
+    }
 }
 
 int MovingObject::speed() const
@@ -33,6 +38,11 @@ Direction MovingObject::direction() const
 void MovingObject::setDirection(Direction direction)
 {
     data_.direction = direction;
+    if ((direction == Direction::Left || direction == Direction::Upward) && data_.speed > 0) {
+        data_.speed *= -1;
+    } else if ((direction == Direction::Right|| direction == Direction::Downward) && data_.speed < 0) {
+        data_.speed *= -1;
+    }
 }
 
 const QPoint& MovingObject::coordinates() const
