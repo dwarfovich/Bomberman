@@ -28,16 +28,16 @@ public:
     Map() = default;
     Map(size_t width, size_t height);
 
-    bool reset(size_t width, size_t height);
-    void setCellType(size_t index, CellStructure structure);
-    bool placeBomb(const std::shared_ptr<Bomb>& bomb);
-    bool removeBomb(size_t index);
-    bool setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
-    void addBomberman(const std::shared_ptr<Bomberman>& bomberman);
-    void removeBomberman(const Bomberman& bomberman);
-    void addMovingObject(const std::shared_ptr<MovingObject>& object);
-    void removeMovingObject(const std::shared_ptr<MovingObject>& object);
-    void removeMovingObject(const MovingObject& object);
+    bool                                 reset(size_t width, size_t height);
+    void                                 setCellType(size_t index, CellStructure structure);
+    bool                                 placeBomb(const std::shared_ptr<Bomb>& bomb);
+    bool                                 removeBomb(size_t index);
+    bool                                 setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void                                 addBomberman(const std::shared_ptr<Bomberman>& bomberman);
+    void                                 removeBomberman(const Bomberman& bomberman);
+    void                                 addMovingObject(const std::shared_ptr<MovingObject>& object);
+    void                                 removeMovingObject(const std::shared_ptr<MovingObject>& object);
+    void                                 removeMovingObject(const MovingObject& object);
     const std::shared_ptr<MovingObject>& sharedPtrForObject(const MovingObject& object) const;
 
     const Cell&  cell(size_t index) const;
@@ -57,6 +57,9 @@ public:
     size_t                   height() const;
     const std::vector<Cell>& cells() const;
 
+    void addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects);
+    void addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects);
+
     void moveObjects(double timeDelta);
 
     const RespawnPlaces& respawnPlaces(RespawnType type) const;
@@ -69,14 +72,13 @@ signals:
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
     void objectsCollided(GameObject& lhs, GameObject& rhs);
 
-public: // methods
+private: // methods
     void checkCollisions();
     bool objectsIntersect(MovingObject& lhs, MovingObject& rhs);
 
-    size_t       shiftIndex(size_t index, Direction direction) const;
-    int          alignToCellCenter(int position) const;
-    void         addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects);
-    void         addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects);
+    size_t shiftIndex(size_t index, Direction direction) const;
+    int    alignToCellCenter(int position) const;
+
     QPoint       coordinatesInCell(const QPoint& coordinates) const;
     void         alignToCenter(double timeDelta, Character& character);
     CellLocation upperRightLocation(const CellLocation& location) const;
@@ -100,12 +102,12 @@ public: // methods
     int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
-    size_t                                         widthInCells_  = 0;
-    size_t                                         heightInCells_ = 0;
-    std::vector<Cell>                              cells_;
-    std::vector<std::shared_ptr<MovingObject>>     movingObjects_;
-    using BombermansMap = std::unordered_map<const Bomberman*, std::shared_ptr<Bomberman>> ;
-    BombermansMap bombermans_;
+    size_t                                     widthInCells_  = 0;
+    size_t                                     heightInCells_ = 0;
+    std::vector<Cell>                          cells_;
+    std::vector<std::shared_ptr<MovingObject>> movingObjects_;
+    using BombermansMap = std::unordered_map<const Bomberman*, std::shared_ptr<Bomberman>>;
+    BombermansMap                                  bombermans_;
     std::vector<std::shared_ptr<Bomb>>             bombs_;
     std::vector<Explosion>                         explosions_;
     std::unordered_map<RespawnType, RespawnPlaces> respawnPlaces_;

@@ -23,10 +23,12 @@ SOURCES += \
     src/game/collider.cpp \
     src/game/explosion.cpp \
     src/game/game.cpp \
+    src/game/game_factory.cpp \
     src/game/game_initializer.cpp \
     src/game/game_object.cpp \
     src/game/game_over_conditions/game_over_condition.cpp \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
+    src/game/game_result.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
     src/game/modifier_deactivation_event.cpp \
@@ -35,6 +37,7 @@ SOURCES += \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
     src/game/moving_object.cpp \
+    src/game/single_player_game.cpp \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
@@ -63,12 +66,14 @@ HEADERS += \
     src/game/collider.hpp \
     src/game/explosion.hpp \
     src/game/game.hpp \
+    src/game/game_factory.hpp \
     src/game/game_initializer.hpp \
     src/game/game_object.hpp \
     src/game/game_over_conditions/game_over_condition.hpp \
     src/game/game_over_conditions/game_winner_type.hpp \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
     src/game/game_parameters.hpp \
+    src/game/game_result.hpp \
     src/game/interval.hpp \
     src/game/map.hpp \
     src/game/map_constants.hpp \
@@ -82,6 +87,7 @@ HEADERS += \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
     src/game/respawn_type.hpp \
+    src/game/single_player_game.hpp \
     src/gui/bot_graphics_item.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
