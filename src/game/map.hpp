@@ -40,10 +40,9 @@ public:
     void                                 removeMovingObject(const MovingObject& object);
     const std::shared_ptr<MovingObject>& sharedPtrForObject(const MovingObject& object) const;
 
-    const Cell&  cell(size_t index) const;
-    CellLocation coordinatesToLocation(const QPoint& coordinates) const;
-    QPoint       locationToCellCenterCoordinates(const CellLocation& location) const;
-    //    QPoint                     indexToCoordinates(size_t index) const;
+    const Cell&              cell(size_t index) const;
+    CellLocation             coordinatesToLocation(const QPoint& coordinates) const;
+    QPoint                   locationToCellCenterCoordinates(const CellLocation& location) const;
     size_t                   coordinatesToIndex(const QPoint& point) const;
     size_t                   locationToIndex(const CellLocation& location) const;
     CellLocation             indexToLocation(size_t index) const;
@@ -70,7 +69,7 @@ signals:
     void characterMoved(const std::shared_ptr<MovingObject>& character);
     void objectIndexChanged(const std::shared_ptr<MovingObject>& bomberman, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
-    void objectsCollided(GameObject& lhs, GameObject& rhs);
+    void objectsCollided(bm::GameObject& lhs, bm::GameObject& rhs);
 
 private: // methods
     void checkCollisions();
