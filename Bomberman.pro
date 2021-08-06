@@ -31,13 +31,14 @@ SOURCES += \
     src/game/game_result.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
+    src/game/messagetype.cpp \
     src/game/modifier_deactivation_event.cpp \
     src/game/modifiers/imodifier.cpp \
     src/game/modifiers/modifier_creator.cpp \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
     src/game/moving_object.cpp \
-    src/game/single_player_game.cpp \
+    src/game/server_game.cpp \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
     src/game/map.hpp \
     src/game/map_constants.hpp \
     src/game/map_loader.hpp \
+    src/game/messagetype.hpp \
     src/game/modifier_deactivation_event.hpp \
     src/game/modifiers/imodifier.hpp \
     src/game/modifiers/modifier_creator.hpp \
@@ -87,7 +89,7 @@ HEADERS += \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
     src/game/respawn_type.hpp \
-    src/game/single_player_game.hpp \
+    src/game/server_game.hpp \
     src/gui/bot_graphics_item.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \

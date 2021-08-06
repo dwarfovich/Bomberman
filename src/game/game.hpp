@@ -27,12 +27,14 @@ public:
 
     virtual void start() = 0;
 
-    virtual void movePlayer(int player, Direction) = 0;
-    virtual void stopPlayer(int player)            = 0;
-    virtual void placeBomb(int player)             = 0;
+    virtual void addPlayer(const std::shared_ptr<Bomberman>& player) = 0;
+    virtual void movePlayer(size_t player, Direction) = 0;
+    virtual void stopPlayer(size_t player)            = 0;
+    virtual void placeBomb(size_t player)             = 0;
 
-    void setMap(const std::shared_ptr<Map>& map);
-    Map* map() const { return map_.get(); }
+    virtual void setMap(const std::shared_ptr<Map>& map);
+    virtual Map* map() const { return map_.get(); }
+
     void setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player);
     bool movePlayer1(Direction direction);
     void stopPlayer1(Direction direction);
@@ -51,12 +53,14 @@ private: // methods
 
 private: // data
     static const int           timeout_ = 42;
-    std::shared_ptr<Map>       map_;
     gui::GameScene*            scene_   = nullptr;
     std::shared_ptr<Bomberman> player1_ = nullptr;
     Collider                   collider_;
     QTimer                     moveTimer;
     TimerQueue                 timerQueue;
+
+protected:
+    std::shared_ptr<Map>       map_;
 };
 
 } // namespace bm

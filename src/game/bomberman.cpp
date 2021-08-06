@@ -50,4 +50,14 @@ void Bomberman::setDefaultBomb(const Bomb &newBomb)
     defaultBomb_ = newBomb;
 }
 
+size_t Bomberman::id() const
+{
+    return id_;
+}
+
+void Bomberman::setId(size_t newId)
+{
+    id_ = newId;
+}
+
 } // namespace bm

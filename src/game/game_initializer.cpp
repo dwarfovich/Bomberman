@@ -23,7 +23,7 @@ bool initializeGame(const GameData& gameData)
     }
 
     const auto& player = gameData.mapData->bombermans[0];
-    gameData.game->setPlayer1Bomberman(player);
+    gameData.game->addPlayer(player);
     gameData.mapData->map->addBomberman(player);
     auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
     characterItem->setCharacter(player);
