@@ -16,7 +16,7 @@ bool initializeGame(const GameData& gameData)
     //scene->clear();
 
     QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-    QObject::connect(gameData.mapData->map.get(), &Map::characterMoved, scene, &gui::GameScene::onCharacterMoved);
+    QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
 
     if (gameData.mapData->bombermans.size() < 1) {
         return false;

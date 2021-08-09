@@ -31,7 +31,6 @@ SOURCES += \
     src/game/game_result.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
-    src/game/message_type.cpp \
     src/game/modifier_deactivation_event.cpp \
     src/game/modifiers/imodifier.cpp \
     src/game/modifiers/modifier_creator.cpp \

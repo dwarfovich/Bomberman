@@ -638,7 +638,7 @@ void Map::moveObjects(double timeDelta)
             emit objectIndexChanged(object, newIndex);
         }
 
-        emit characterMoved(object);
+        emit objectMoved(object);
         if (object->notifyIfMeetedWall()) {
             if (!nextCellIsMovable(*object, object->movementData().direction) && isCellCenter(object->coordinates())) {
                 object->meetsWall();
