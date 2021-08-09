@@ -26,10 +26,10 @@ void Game::setMap(const std::shared_ptr<Map>& map)
 {
     // TODO: Disconnect oldies.
     map_ = map;
-    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-    connect(&moveTimer, &QTimer::timeout, [this]() {
-        map_->moveObjects(timeout_);
-    });
+//    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
+//    connect(&moveTimer, &QTimer::timeout, [this]() {
+//        map_->moveObjects(timeout_);
+//    });
 }
 void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
 {

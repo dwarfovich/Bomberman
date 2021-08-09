@@ -30,7 +30,11 @@ public:
     const Bomb& defaultBomb() const;
     void        setDefaultBomb(const Bomb& Bomb);
 
+    size_t id() const;
+    void setId(size_t id);
+
 private:
+    size_t id_ = 0;
     size_t activeBombs_    = 0;
     size_t maxActiveBombs_ = 1;
     Bomb   defaultBomb_;

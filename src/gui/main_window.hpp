@@ -26,9 +26,9 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow* ui_       = nullptr;
-    GameView*       gameView_ = nullptr;
-    Game            game_;
+    Ui::MainWindow*       ui_       = nullptr;
+    GameView*             gameView_ = nullptr;
+    std::unique_ptr<Game> game_;
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
