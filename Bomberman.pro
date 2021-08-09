@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -41,11 +41,15 @@ SOURCES += \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
+    src/gui/create_network_game_dialog.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
+    src/gui/main_menu_widget.cpp \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
     src/main.cpp \
+    src/net/server.cpp \
+    src/net/server_worker.cpp \
     src/timer_queue.cpp
 
 HEADERS += \
@@ -92,15 +96,21 @@ HEADERS += \
     src/gui/bot_graphics_item.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
+    src/gui/create_network_game_dialog.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
+    src/gui/main_menu_widget.hpp \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
+    src/net/server.hpp \
+    src/net/server_worker.hpp \
     src/time.hpp \
     src/timer_event.hpp \
     src/timer_queue.hpp
 
 FORMS += \
+    src/gui/create_network_game_dialog.ui \
+    src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \
     src/gui/map_widget.ui
 
