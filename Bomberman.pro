@@ -31,7 +31,7 @@ SOURCES += \
     src/game/game_result.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
-    src/game/messagetype.cpp \
+    src/game/message_type.cpp \
     src/game/modifier_deactivation_event.cpp \
     src/game/modifiers/imodifier.cpp \
     src/game/modifiers/modifier_creator.cpp \
@@ -79,7 +79,6 @@ HEADERS += \
     src/game/map.hpp \
     src/game/map_constants.hpp \
     src/game/map_loader.hpp \
-    src/game/messagetype.hpp \
     src/game/modifier_deactivation_event.hpp \
     src/game/modifiers/imodifier.hpp \
     src/game/modifiers/modifier_creator.hpp \
@@ -88,6 +87,7 @@ HEADERS += \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
+    src/game/net/message_type.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
     src/gui/bot_graphics_item.hpp \
