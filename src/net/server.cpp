@@ -5,7 +5,9 @@
 namespace bm {
 
 Server::Server(QObject *parent) : QTcpServer { parent }
-{}
+{
+    // hello
+}
 
 void Server::setServerPort(quint16 port)
 {
