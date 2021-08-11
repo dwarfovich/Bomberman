@@ -30,6 +30,7 @@ public:
 public slots:
     void startSinglePlayerGame();
     void startNetworkGame();
+    void connectToServer();
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;

@@ -6,6 +6,7 @@
 #include "gui/game_view.hpp"
 #include "gui/main_menu_widget.hpp"
 #include "gui/create_network_game_dialog.hpp"
+#include "gui/client_game_dialog.hpp"
 
 #include <QKeyEvent>
 #include <QDir>
@@ -31,7 +32,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     connect(mainMenuWidget_, &MainMenuWidget::newSinglePlayerGameRequest, this, &MainWindow::startSinglePlayerGame);
     connect(mainMenuWidget_, &MainMenuWidget::newNetworkGameRequest, this, &MainWindow::startNetworkGame);
-
+    connect(mainMenuWidget_, &MainMenuWidget::connectToServerRequest, this, &MainWindow::connectToServer);
     //        const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
     //        auto       mapData = map_loader::loadFromFile(mapFile);
     //        if (!mapData.map) {
@@ -146,6 +147,12 @@ void MainWindow::startNetworkGame()
         gameView_->show();
         game_->start();
     }
+}
+
+void MainWindow::connectToServer()
+{
+    ClientGameDialog dialog;
+    auto             answer = dialog.exec();
 }
 
 } // namespace gui

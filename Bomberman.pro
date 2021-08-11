@@ -41,6 +41,7 @@ SOURCES += \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
+    src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
@@ -48,8 +49,12 @@ SOURCES += \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
     src/main.cpp \
+    src/net/client.cpp \
+    src/net/message.cpp \
+    src/net/message_factory.cpp \
     src/net/server.cpp \
     src/net/server_worker.cpp \
+    src/net/text_message.cpp \
     src/timer_queue.cpp
 
 HEADERS += \
@@ -90,25 +95,33 @@ HEADERS += \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
-    src/game/net/message_type.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
     src/gui/bot_graphics_item.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
+    src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
+    src/net/client.hpp \
+    src/net/i_message_maker.hpp \
+    src/net/message.hpp \
+    src/net/message_factory.hpp \
+    src/net/message_maker.hpp \
+    src/net/message_type.hpp \
     src/net/server.hpp \
     src/net/server_worker.hpp \
+    src/net/text_message.hpp \
     src/time.hpp \
     src/timer_event.hpp \
     src/timer_queue.hpp
 
 FORMS += \
+    src/gui/client_game_dialog.ui \
     src/gui/create_network_game_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \

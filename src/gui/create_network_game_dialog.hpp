@@ -21,7 +21,7 @@ public:
 
 public slots:
     void logMessage(const QString &message);
-    void restartServer();
+    void startServer();
 
 private slots:
     void onServerPlayerNameChanged(const QString &newName);
