@@ -1,5 +1,6 @@
 #include "text_message.hpp"
 #include "message_maker.hpp"
+#include "i_message_visitor.hpp"
 
 #include <QDataStream>
 
@@ -33,6 +34,11 @@ void TextMessage::dataToStream(QDataStream &stream) const
 void TextMessage::fromStream(QDataStream &stream)
 {
     stream >> data_;
+}
+
+void TextMessage::accept(IMessageVisitor &visitor)
+{
+    visitor.visit(*this);
 }
 
 } // namespace bm

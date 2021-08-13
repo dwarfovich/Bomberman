@@ -2,11 +2,25 @@
 #include "server_worker.hpp"
 #include "message.hpp"
 #include "text_message.hpp"
+#include "client_name_message.hpp"
 
 namespace bm {
 
 Server::Server(QObject *parent) : QTcpServer { parent }
 {}
+
+void Server::visit(const TextMessage &message)
+{
+    emit logMessageRequest(currentMessageClient_->clientName() + ": " + message.toString());
+}
+
+void Server::visit(const ClientNameMessage &message)
+{
+    currentMessageClient_->setClientName(message.toString());
+    auto n = message.toString();
+    int  a = 4;
+    qDebug() << message.toString();
+}
 
 void Server::setServerPort(quint16 port)
 {
@@ -55,13 +69,20 @@ void Server::incomingConnection(qintptr descriptor)
 
 void Server::messageReceived(ServerWorker *client, const std::unique_ptr<Message> &message)
 {
-    if (message->type() == MessageType::Text) {
-        auto textMessage = dynamic_cast<TextMessage *>(message.get());
-        emit logMessageRequest(textMessage->toString());
-    }
+    currentMessageClient_ = client;
+    message->accept(*this);
 }
 
 void Server::onUserDisconnected(ServerWorker *client)
 {}
+
+void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
+{
+    for (auto *client : clients_) {
+        if (client != excludeClient) {
+            client->sendMessage(message);
+        }
+    }
+}
 
 } // namespace bm

@@ -22,6 +22,7 @@ private slots:
     void onLogMessageRequest(const QString& message);
     void connectToServer();
     void sendMessage();
+    void changePlayerName();
 
 private:
     Ui::ClientGameDialog* ui_;

@@ -20,6 +20,10 @@ public:
 
     bool setSocketDescriptor(qintptr descriptor);
 
+    const QString& clientName() const;
+    void           setClientName(const QString& newClientName);
+    void           sendMessage(const Message& message);
+
 signals:
     void messageReceived(const std::unique_ptr<bm::Message>& message);
     void clientDisconnected();
@@ -38,6 +42,7 @@ private:
     MessageReadingStage      currentStage_       = MessageReadingStage::Header;
     int                      currentMessageSize_ = 0;
     std::unique_ptr<Message> currentMessage_     = nullptr;
+    QString                  clientName_         = "Unknown";
 };
 
 } // namespace bm

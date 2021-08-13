@@ -15,6 +15,7 @@ public:
     TextMessage(const QString& text = {});
 
     MessageType type() const override;
+    void        accept(IMessageVisitor& visitor) override;
     int         dataLength() const override;
     void        dataToStream(QDataStream& stream) const override;
     void        fromStream(QDataStream& stream) override;

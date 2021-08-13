@@ -16,6 +16,9 @@ ClientGameDialog::ClientGameDialog(QWidget *parent)
 
     connect(ui_->connectButton, &QPushButton::clicked, this, &ClientGameDialog::connectToServer);
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &ClientGameDialog::sendMessage);
+    connect(ui_->playerNameEdit, &QLineEdit::editingFinished, this, &ClientGameDialog::changePlayerName);
+
+    changePlayerName();
 }
 
 ClientGameDialog::~ClientGameDialog()
@@ -40,8 +43,13 @@ void ClientGameDialog::sendMessage()
     if (!text.isEmpty()) {
         TextMessage message { text };
         client_->sendMessage(message);
-        onLogMessageRequest("Sending message: " + text);
+        onLogMessageRequest("You: " + text);
     }
+}
+
+void ClientGameDialog::changePlayerName()
+{
+    client_->setName(ui_->playerNameEdit->text());
 }
 
 } // namespace bm

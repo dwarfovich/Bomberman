@@ -50,6 +50,8 @@ SOURCES += \
     src/gui/map_widget.cpp \
     src/main.cpp \
     src/net/client.cpp \
+    src/net/client_name_message.cpp \
+    src/net/i_message_visitor.cpp \
     src/net/message.cpp \
     src/net/message_factory.cpp \
     src/net/server.cpp \
@@ -108,7 +110,9 @@ HEADERS += \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
     src/net/client.hpp \
+    src/net/client_name_message.hpp \
     src/net/i_message_maker.hpp \
+    src/net/i_message_visitor.hpp \
     src/net/message.hpp \
     src/net/message_factory.hpp \
     src/net/message_maker.hpp \
