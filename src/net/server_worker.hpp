@@ -9,6 +9,7 @@ class QTcpSocket;
 
 namespace bm {
 class Message;
+class Socket;
 
 class ServerWorker : public QObject
 {
@@ -28,21 +29,9 @@ signals:
     void messageReceived(const std::unique_ptr<bm::Message>& message);
     void clientDisconnected();
 
-private slots:
-    void onReadyRead();
-
 private:
-    enum class MessageReadingStage : uint8_t
-    {
-        Header,
-        Data
-    };
-
-    QTcpSocket*              socket_;
-    MessageReadingStage      currentStage_       = MessageReadingStage::Header;
-    int                      currentMessageSize_ = 0;
-    std::unique_ptr<Message> currentMessage_     = nullptr;
-    QString                  clientName_         = "Unknown";
+    Socket* socket_;
+    QString clientName_ = "Unknown";
 };
 
 } // namespace bm

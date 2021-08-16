@@ -56,6 +56,7 @@ SOURCES += \
     src/net/message_factory.cpp \
     src/net/server.cpp \
     src/net/server_worker.cpp \
+    src/net/socket.cpp \
     src/net/text_message.cpp \
     src/timer_queue.cpp
 
@@ -119,6 +120,7 @@ HEADERS += \
     src/net/message_type.hpp \
     src/net/server.hpp \
     src/net/server_worker.hpp \
+    src/net/socket.hpp \
     src/net/text_message.hpp \
     src/time.hpp \
     src/timer_event.hpp \

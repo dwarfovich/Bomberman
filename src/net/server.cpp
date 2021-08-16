@@ -17,9 +17,6 @@ void Server::visit(const TextMessage &message)
 void Server::visit(const ClientNameMessage &message)
 {
     currentMessageClient_->setClientName(message.toString());
-    auto n = message.toString();
-    int  a = 4;
-    qDebug() << message.toString();
 }
 
 void Server::setServerPort(quint16 port)

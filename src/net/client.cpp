@@ -1,74 +1,43 @@
 #include "client.hpp"
+#include "socket.hpp"
 #include "text_message.hpp"
 #include "client_name_message.hpp"
 #include "message_factory.hpp"
 #include "text_message.hpp"
 
-#include <QTcpSocket>
 #include <QHostAddress>
 #include <QDataStream>
 
 namespace bm {
 
-Client::Client(QObject *parent) : QObject { parent }, socket_ { new QTcpSocket { this } }
+Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { this } }
 {
-    connect(socket_, &QTcpSocket::connected, this, &Client::onConnectedToServer);
-    connect(socket_, &QTcpSocket::disconnected, this, [this]() {
+    connect(socket_, &Socket::connected, this, &Client::onConnectedToServer);
+    connect(socket_, &Socket::disconnected, this, [this]() {
         emit logMessage("Disconnected from server");
     });
-    connect(socket_, &QTcpSocket::errorOccurred, this, &Client::onSocketError);
-    connect(socket_, &QTcpSocket::readyRead, this, &Client::onReadyRead);
+    connect(socket_, &Socket::messageReceived, this, &Client::onMessageReceived);
+    connect(socket_, &Socket::socketError, this, &Client::onSocketError);
 }
 
 void Client::connectToServer(const QHostAddress &address, quint16 port)
 {
-    socket_->connectToHost(address, port, QIODevice::ReadWrite);
+    socket_->connectToHost(address, port);
 }
 
 void Client::disconnect()
-{}
+{
+    socket_->disconnectFromHost();
+}
 
 void Client::sendMessage(const Message &message)
 {
-    QDataStream stream { socket_ };
-    stream << message;
+    socket_->sendMessage(message);
 }
 
 void Client::onSocketError(QAbstractSocket::SocketError error)
 {
     emit logMessage("Socket error: " + socket_->errorString());
-}
-
-void Client::onReadyRead()
-{
-    // qDebug() << "On ready read: " << socket_->bytesAvailable() << " bytes";
-    QDataStream stream { socket_ };
-    bool        canReadMessage = true;
-    while (canReadMessage)
-        if (currentStage_ == MessageReadingStage::Header) {
-            if (socket_->bytesAvailable() >= messageHeaderSize) {
-                MessageType type;
-                stream >> type;
-                currentMessage_ = MessageFactory::get().createMessage(type);
-                stream >> currentMessageSize_;
-                // qDebug() << "Current message size:" << currentMessageSize_;
-                currentStage_ = MessageReadingStage::Data;
-            } else {
-                canReadMessage = false;
-            }
-        } else { // MessageReadingStage::Data
-            // qDebug() << "Comparing" << socket_->bytesAvailable() << currentMessageSize_;
-            if (socket_->bytesAvailable() >= currentMessageSize_) {
-                Q_ASSERT(currentMessage_);
-                stream >> *currentMessage_;
-                // qDebug() << "Message received:" << (int)currentMessage_->type();
-                //                emit messageReceived(std::move(currentMessage_));
-                currentMessage_->accept(*this);
-                currentStage_ = MessageReadingStage::Header;
-            } else {
-                canReadMessage = false;
-            }
-        }
 }
 
 void Client::sendPlayerNameMessage()
@@ -87,6 +56,9 @@ void Client::setName(const QString &newName)
     name_ = newName;
     sendPlayerNameMessage();
 }
+
+void Client::onMessageReceived(const std::unique_ptr<Message> &message)
+{}
 
 void Client::onConnectedToServer()
 {
