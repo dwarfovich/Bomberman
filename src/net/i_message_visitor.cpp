@@ -11,4 +11,7 @@ void IMessageVisitor::visit(const TextMessage &message)
 void IMessageVisitor::visit(const ClientNameMessage &message)
 {}
 
+void IMessageVisitor::visit(const ClientReadyMessage &message)
+{}
+
 } // namespace bm

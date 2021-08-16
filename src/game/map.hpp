@@ -25,6 +25,8 @@ class Map : public QObject
 public:
     using RespawnPlaces = std::vector<size_t>;
 
+    friend QDataStream& operator<<(QDataStream& stream, const Map& map);
+
     Map() = default;
     Map(size_t width, size_t height);
 

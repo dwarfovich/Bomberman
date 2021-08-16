@@ -1,7 +1,17 @@
 #include "explosion.hpp"
 #include "map_constants.hpp"
+#include "utils.hpp"
 
 namespace bm {
+
+QDataStream &operator<<(QDataStream &stream, const Explosion &explosion)
+{
+    stream << explosion.center_;
+    stream << explosion.xMinMax_;
+    stream << explosion.yMinMax_;
+
+    return stream;
+}
 
 Explosion::Explosion(const CellLocation &             center,
                      const std::pair<size_t, size_t> &xMinMax,

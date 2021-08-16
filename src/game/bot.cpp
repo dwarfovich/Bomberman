@@ -29,4 +29,12 @@ bool Bot::acceptsModifiers() const
     return false;
 }
 
+ObjectType Bot::type() const
+{
+    return ObjectType::Bot;
+}
+
+void Bot::toStream(QDataStream &stream) const
+{}
+
 } // namespace bm

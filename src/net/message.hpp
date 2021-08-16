@@ -5,11 +5,6 @@
 
 #include <Qt>
 
-#define REGISTER_MESSAGE_MAKER(messageType, T) \
-    namespace {                                \
-    static MessageMaker<T> maker(messageType); \
-    } // namespace
-
 QT_BEGIN_NAMESPACE
 class QDataStream;
 QT_END_NAMESPACE

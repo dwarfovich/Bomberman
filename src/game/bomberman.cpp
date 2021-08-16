@@ -32,7 +32,7 @@ std::unique_ptr<Bomb> Bomberman::createBomb()
 {
     if (activeBombs_ < maxActiveBombs_) {
         ++activeBombs_;
-        auto bomb   = std::make_unique<Bomb>(defaultBomb_);
+        auto bomb   = std::make_unique<Bomb>(bombPrototype_);
         bomb->owner = shared_from_this();
         return bomb;
     } else {
@@ -40,14 +40,17 @@ std::unique_ptr<Bomb> Bomberman::createBomb()
     }
 }
 
-const Bomb &Bomberman::defaultBomb() const
+const Bomb &Bomberman::bombPrototype() const
 {
-    return defaultBomb_;
+    return bombPrototype_;
+    ;
 }
 
-void Bomberman::setDefaultBomb(const Bomb &newBomb)
+void Bomberman::setBombPrototype(const Bomb &newBomb)
 {
-    defaultBomb_ = newBomb;
+    bombPrototype_           = newBomb;
+    bombPrototype_.owner     = shared_from_this();
+    bombPrototype_.cellIndex = 0;
 }
 
 size_t Bomberman::id() const
@@ -58,6 +61,19 @@ size_t Bomberman::id() const
 void Bomberman::setId(size_t newId)
 {
     id_ = newId;
+}
+
+ObjectType Bomberman::type() const
+{
+    return ObjectType::Bomberman;
+}
+
+void Bomberman::toStream(QDataStream &stream) const
+{
+    stream << id_;
+    stream << activeBombs_;
+    stream << maxActiveBombs_;
+    stream << bombPrototype_;
 }
 
 } // namespace bm

@@ -5,6 +5,11 @@
 #include "i_message_maker.hpp"
 #include "message_factory.hpp"
 
+#define REGISTER_MESSAGE_MAKER(messageType, T) \
+    namespace {                                \
+    static MessageMaker<T> maker(messageType); \
+    } // namespace
+
 namespace bm {
 
 template<typename Type>

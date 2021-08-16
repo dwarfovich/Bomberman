@@ -19,6 +19,8 @@ public:
     explicit CreateNetworkGameDialog(QWidget *parent = nullptr);
     ~CreateNetworkGameDialog();
 
+    Server *server() const;
+
 public slots:
     void logMessage(const QString &message);
     void startServer();

@@ -5,6 +5,7 @@ namespace bm {
 class Message;
 class TextMessage;
 class ClientNameMessage;
+class ClientReadyMessage;
 
 class IMessageVisitor
 {
@@ -14,6 +15,7 @@ public:
     virtual void visit(const Message& message);
     virtual void visit(const TextMessage& message);
     virtual void visit(const ClientNameMessage& message);
+    virtual void visit(const ClientReadyMessage& message);
 };
 
 } // namespace bm

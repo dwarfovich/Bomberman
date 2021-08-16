@@ -17,10 +17,13 @@ class ServerWorker : public QObject
 
 public:
     explicit ServerWorker(QObject* parent = nullptr);
+    ServerWorker(const ServerWorker&) = delete;
+    ServerWorker(ServerWorker&&)      = delete;
     ~ServerWorker();
+    ServerWorker& operator=(const ServerWorker&) = delete;
+    ServerWorker& operator=(ServerWorker&&) = delete;
 
-    bool setSocketDescriptor(qintptr descriptor);
-
+    bool           setSocketDescriptor(qintptr descriptor);
     const QString& clientName() const;
     void           setClientName(const QString& newClientName);
     void           sendMessage(const Message& message);

@@ -1,6 +1,12 @@
 #ifndef CELLLOCATION_HPP
 #define CELLLOCATION_HPP
 
+#include <Qt>
+
+QT_BEGIN_NAMESPACE
+class QDataStream;
+QT_END_NAMESPACE
+
 namespace bm {
 
 class CellLocation
@@ -8,6 +14,8 @@ class CellLocation
 public:
     constexpr CellLocation();
     constexpr CellLocation(size_t aX, size_t aY) : x_ { aX }, y_ { aY } {}
+
+    friend QDataStream& operator<<(QDataStream& stream, const CellLocation& location);
 
     bool   isValid() const;
     size_t x() const;

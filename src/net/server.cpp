@@ -41,6 +41,11 @@ void Server::startListen(const QHostAddress &address, quint16 port)
     }
 }
 
+uint8_t Server::clients() const
+{
+    return clients_.size();
+}
+
 void Server::incomingConnection(qintptr descriptor)
 {
     auto *worker = new ServerWorker(this);
@@ -55,7 +60,7 @@ void Server::incomingConnection(qintptr descriptor)
     connect(worker,
             &ServerWorker::messageReceived,
             this,
-            std::bind(&Server::messageReceived, this, worker, std::placeholders::_1));
+            std::bind(&Server::onMessageReceived, this, worker, std::placeholders::_1));
     // connect(worker, &ServerWorker::error, this, std::bind(&ChatServer::userError, this, worker));
 
     // connect(worker, &ServerWorker::logMessage, this, &ChatServer::logMessage);
@@ -64,10 +69,11 @@ void Server::incomingConnection(qintptr descriptor)
     emit logMessageRequest("New client connected");
 }
 
-void Server::messageReceived(ServerWorker *client, const std::unique_ptr<Message> &message)
+void Server::onMessageReceived(ServerWorker *client, const std::unique_ptr<Message> &message)
 {
     currentMessageClient_ = client;
     message->accept(*this);
+    emit messageReceived(message);
 }
 
 void Server::onUserDisconnected(ServerWorker *client)

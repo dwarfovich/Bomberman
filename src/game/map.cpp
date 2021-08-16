@@ -25,6 +25,31 @@ QPoint advanceCoordinates(const QPoint& coordinates, double timeDelta, int speed
 
 } // namespace
 
+QDataStream& operator<<(QDataStream& stream, const Map& map)
+{
+    stream << map.widthInCells_ << map.heightInCells_;
+    for (const auto& cell : map.cells_) {
+        stream << cell;
+    }
+
+    stream << map.movingObjects_.size();
+    for (const auto& object : map.movingObjects_) {
+        stream << *object;
+    }
+
+    stream << map.bombs_.size();
+    for (const auto& bomb : map.bombs_) {
+        stream << *bomb;
+    }
+
+    stream << map.explosions_.size();
+    for (const auto& explosion : map.explosions_) {
+        stream << explosion;
+    }
+
+    return stream;
+}
+
 Map::Map(size_t width, size_t height)
 {
     if (!reset(width, height)) {
@@ -83,7 +108,7 @@ bool Map::removeBomb(size_t index)
         return false;
     }
     bombs_.erase(iter);
-    cells_[index].setHasBomb( false);
+    cells_[index].setHasBomb(false);
     emit cellChanged(index);
 
     return true;
@@ -100,13 +125,13 @@ bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
     }
 }
 
-void Map::addBomberman(const std::shared_ptr<Bomberman> &bomberman)
+void Map::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
 {
     bombermans_.emplace(bomberman.get(), bomberman);
     movingObjects_.push_back(bomberman);
 }
 
-void Map::removeBomberman(const Bomberman &bomberman)
+void Map::removeBomberman(const Bomberman& bomberman)
 {
     auto iter = bombermans_.find(&bomberman);
     if (iter != bombermans_.cend()) {
@@ -120,15 +145,15 @@ void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
     movingObjects_.push_back(object);
 }
 
-void Map::removeMovingObject(const std::shared_ptr<MovingObject> &object)
+void Map::removeMovingObject(const std::shared_ptr<MovingObject>& object)
 {
     movingObjects_.erase(std::remove(movingObjects_.begin(), movingObjects_.end(), object));
 }
 
-const std::shared_ptr<MovingObject> &Map::sharedPtrForObject(const MovingObject &object) const
+const std::shared_ptr<MovingObject>& Map::sharedPtrForObject(const MovingObject& object) const
 {
     const MovingObject* objectPtr = &object;
-    auto iter = std::find_if(movingObjects_.cbegin(), movingObjects_.cend(), [objectPtr](const auto& pointer){
+    auto iter = std::find_if(movingObjects_.cbegin(), movingObjects_.cend(), [objectPtr](const auto& pointer) {
         return (pointer.get() == objectPtr);
     });
 
@@ -140,10 +165,10 @@ const std::shared_ptr<MovingObject> &Map::sharedPtrForObject(const MovingObject 
     }
 }
 
-void Map::removeMovingObject(const MovingObject &object)
+void Map::removeMovingObject(const MovingObject& object)
 {
     const MovingObject* objectPtr = &object;
-    movingObjects_.erase(std::remove_if(movingObjects_.begin(), movingObjects_.end(), [objectPtr](const auto& iter){
+    movingObjects_.erase(std::remove_if(movingObjects_.begin(), movingObjects_.end(), [objectPtr](const auto& iter) {
         return iter.get() == objectPtr;
     }));
 }
@@ -533,8 +558,8 @@ void Map::moveObjects(double timeDelta)
         auto  moveData    = object->movementData();
         auto& coordinates = moveData.coordinates;
         auto  oldIndex    = coordinatesToIndex(coordinates);
-        auto      inCell = coordinatesInCell(coordinates);
-        int ds     = 5;
+        auto  inCell      = coordinatesInCell(coordinates);
+        int   ds          = 5;
 
         const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
         const int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);

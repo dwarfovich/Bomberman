@@ -18,6 +18,7 @@ namespace gui {
 class GameView;
 class MainMenuWidget;
 class CreateNetworkGameDialog;
+class ClientGameDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -38,6 +39,7 @@ protected:
 
 private: // methods
     void initializeNetworkGame(const CreateNetworkGameDialog& dialog);
+    void initializeClientGame(const ClientGameDialog& dialog);
 
 private: // data
     Ui::MainWindow*       ui_             = nullptr;

@@ -14,6 +14,8 @@ class Explosion : public GameObject
 public:
     ACCEPT_COLLISION;
 
+    friend QDataStream& operator<<(QDataStream& stream, const Explosion& explosion);
+
     Explosion(const CellLocation&              center,
               const std::pair<size_t, size_t>& xMinMax,
               const std::pair<size_t, size_t>& yMinMax);

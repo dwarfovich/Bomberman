@@ -30,6 +30,11 @@ CreateNetworkGameDialog::~CreateNetworkGameDialog()
     delete ui_;
 }
 
+Server *CreateNetworkGameDialog::server() const
+{
+    return server_;
+}
+
 void CreateNetworkGameDialog::logMessage(const QString &message)
 {
     ui_->logView->appendPlainText(message);

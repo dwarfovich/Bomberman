@@ -6,9 +6,10 @@
 #include <QHostAddress>
 
 namespace bm {
+namespace gui {
 
 ClientGameDialog::ClientGameDialog(QWidget *parent)
-    : QDialog(parent), ui_(new Ui::ClientGameDialog), client_ { new Client { this } }
+    : QDialog(parent), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
 {
     ui_->setupUi(this);
 
@@ -24,6 +25,11 @@ ClientGameDialog::ClientGameDialog(QWidget *parent)
 ClientGameDialog::~ClientGameDialog()
 {
     delete ui_;
+}
+
+Client *ClientGameDialog::client() const
+{
+    return client_;
 }
 
 void ClientGameDialog::onLogMessageRequest(const QString &message)
@@ -52,4 +58,5 @@ void ClientGameDialog::changePlayerName()
     client_->setName(ui_->playerNameEdit->text());
 }
 
+} // namespace gui
 } // namespace bm

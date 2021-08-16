@@ -4,11 +4,16 @@
 
 namespace bm {
 
+ModifierType PermanentBombRadiusIncrease::type() const
+{
+    return ModifierType::IncreaseBombRadius;
+}
+
 void PermanentBombRadiusIncrease::activate(Bomberman &bomberman)
 {
-    auto bomb = bomberman.defaultBomb();
+    auto bomb = bomberman.bombPrototype();
     ++bomb.radius;
-    bomberman.setDefaultBomb(bomb);
+    bomberman.setBombPrototype(bomb);
 }
 
 } // namespace bm

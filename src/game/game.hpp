@@ -22,15 +22,15 @@ class Game : public QObject
     friend class Collider;
 
 public:
-    Game();
+    explicit Game(QObject* parent = nullptr);
     virtual ~Game() = default;
 
     virtual void start() = 0;
 
     virtual void addPlayer(const std::shared_ptr<Bomberman>& player) = 0;
-    virtual void movePlayer(size_t player, Direction) = 0;
-    virtual void stopPlayer(size_t player)            = 0;
-    virtual void placeBomb(size_t player)             = 0;
+    virtual void movePlayer(size_t player, Direction)                = 0;
+    virtual void stopPlayer(size_t player)                           = 0;
+    virtual void placeBomb(size_t player)                            = 0;
 
     virtual void setMap(const std::shared_ptr<Map>& map);
     virtual Map* map() const { return map_.get(); }
@@ -42,7 +42,7 @@ public:
     void setScene(gui::GameScene* newScene);
 
 signals:
-    void gameOver(const GameResult& result);
+    void gameOver(const bm::GameResult& result);
 
 private slots:
     void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);
@@ -51,6 +51,9 @@ private: // methods
     void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     void explodeBomb(const std::shared_ptr<Bomb>& bomb);
 
+protected: // data
+    std::shared_ptr<Map> map_;
+
 private: // data
     static const int           timeout_ = 42;
     gui::GameScene*            scene_   = nullptr;
@@ -58,9 +61,6 @@ private: // data
     Collider                   collider_;
     QTimer                     moveTimer;
     TimerQueue                 timerQueue;
-
-protected:
-    std::shared_ptr<Map>       map_;
 };
 
 } // namespace bm

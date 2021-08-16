@@ -4,6 +4,8 @@
 #include "game_object.hpp"
 #include "time.hpp"
 
+#include <QDataStream>
+
 #include <memory>
 
 namespace bm {
@@ -11,6 +13,8 @@ class Bomberman;
 
 struct Bomb : public GameObject
 {
+    friend QDataStream& operator<<(QDataStream& stream, const Bomb& bomb);
+
     std::shared_ptr<Bomberman> owner     = nullptr;
     int                        radius    = 1;
     size_t                     cellIndex = 0;

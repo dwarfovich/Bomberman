@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace bm {
-Game::Game() : collider_ { this }
+Game::Game(QObject* parent) : QObject { parent }, collider_ { this }
 {}
 
 void Game::start()
@@ -26,10 +26,10 @@ void Game::setMap(const std::shared_ptr<Map>& map)
 {
     // TODO: Disconnect oldies.
     map_ = map;
-//    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-//    connect(&moveTimer, &QTimer::timeout, [this]() {
-//        map_->moveObjects(timeout_);
-//    });
+    //    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
+    //    connect(&moveTimer, &QTimer::timeout, [this]() {
+    //        map_->moveObjects(timeout_);
+    //    });
 }
 void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
 {
@@ -76,7 +76,7 @@ void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, siz
     if (modifier && object == player1_) {
         auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
-        if (modifier->type() == ModifierType::Temporary) {
+        if (modifier->durationType() == ModifierDurationType::Temporary) {
             auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
             timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
         }

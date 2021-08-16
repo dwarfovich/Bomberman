@@ -98,7 +98,7 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         exit(1);
     }
 
-    game_ = createSinglePlayerGame(mapData.map);
+    game_ = createNetworkGame(dialog.server(), mapData.map);
 
     GameData data;
     data.mapData = &mapData;
@@ -110,6 +110,9 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         exit(1);
     }
 }
+
+void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
+{}
 
 void MainWindow::startSinglePlayerGame()
 {
@@ -153,6 +156,13 @@ void MainWindow::connectToServer()
 {
     ClientGameDialog dialog;
     auto             answer = dialog.exec();
+    if (answer == QDialog::Accepted) {
+        initializeClientGame(dialog);
+        mainMenuWidget_->hide();
+        setCentralWidget(gameView_);
+        gameView_->show();
+        game_->start();
+    }
 }
 
 } // namespace gui

@@ -8,9 +8,9 @@ namespace bm {
 class PermanentModifier : public IModifier
 {
 public:
-    ModifierType type() const override;
-    Milliseconds duration() const override;
-    void         deactivate(Bomberman &) override;
+    ModifierDurationType durationType() const override;
+    Milliseconds         duration() const override;
+    void                 deactivate(Bomberman &) override;
 };
 
 } // namespace bm

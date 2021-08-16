@@ -23,13 +23,16 @@ class Server : public QTcpServer, public IMessageVisitor
 public:
     explicit Server(QObject* parent = nullptr);
 
-    void visit(const TextMessage& message) override;
-    void visit(const ClientNameMessage& message) override;
-    void setServerPort(quint16 port);
-    void startListen();
-    void startListen(const QHostAddress& address, quint16 port);
+    void    visit(const TextMessage& message) override;
+    void    visit(const ClientNameMessage& message) override;
+    void    setServerPort(quint16 port);
+    void    startListen();
+    void    startListen(const QHostAddress& address, quint16 port);
+    uint8_t clients() const;
+    void    broadcastMessage(const Message& message, ServerWorker* excludeClient = nullptr);
 
 signals:
+    void messageReceived(const std::unique_ptr<Message>& message);
     void logMessageRequest(const QString& message);
     void clientConnected();
 
@@ -37,11 +40,8 @@ protected:
     void incomingConnection(qintptr descriptor) override;
 
 private slots:
-    void messageReceived(bm::ServerWorker* client, const std::unique_ptr<Message>& message);
+    void onMessageReceived(bm::ServerWorker* client, const std::unique_ptr<Message>& message);
     void onUserDisconnected(bm::ServerWorker* client);
-
-private:
-    void broadcastMessage(const Message& message, ServerWorker* excludeClient);
 
 private:
     std::vector<ServerWorker*> clients_;

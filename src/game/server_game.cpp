@@ -5,8 +5,7 @@
 
 namespace bm {
 
-ServerGame::ServerGame()
-    : collider_{this}
+ServerGame::ServerGame(QObject* parent) : Game { parent }, collider_ { this }
 {}
 
 void ServerGame::start()
@@ -25,9 +24,7 @@ void ServerGame::movePlayer(size_t player, Direction direction)
 void ServerGame::stopPlayer(size_t player)
 {
     if (isCorrectPlayerIndex(player)) {
-//        if (player1_->movementData().direction == direction) {
-            bombermans_[player]->setSpeed(0);
-//        }
+        bombermans_[player]->setSpeed(0);
     }
 }
 
@@ -49,7 +46,7 @@ bool ServerGame::isCorrectPlayerIndex(size_t index) const
     return (index < bombermans_.size());
 }
 
-void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject> &object, size_t index)
+void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier();
@@ -57,7 +54,7 @@ void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject> &objec
         // TODO: Get rid of dynamic_cast
         auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
-        if (modifier->type() == ModifierType::Temporary) {
+        if (modifier->durationType() == ModifierDurationType::Temporary) {
             auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
             timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
         }
@@ -65,7 +62,7 @@ void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject> &objec
     }
 }
 
-void ServerGame::addPlayer(const std::shared_ptr<Bomberman> &player)
+void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
 {
     player->setId(bombermans_.size());
     bombermans_.push_back(player);
@@ -89,9 +86,9 @@ void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
     bomberman->decreaseActiveBombs();
 }
 
-void ServerGame::setMap(const std::shared_ptr<Map> &map)
+void ServerGame::setMap(const std::shared_ptr<Map>& map)
 {
-    Game::setMap(map)    ;
+    Game::setMap(map);
     // TODO: Disconnect oldies.
     connect(&moveTimer, &QTimer::timeout, [this]() {
         map_->moveObjects(updateTimeout_);
@@ -100,6 +97,3 @@ void ServerGame::setMap(const std::shared_ptr<Map> &map)
 }
 
 } // namespace bm
-
-
-

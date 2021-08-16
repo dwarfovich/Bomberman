@@ -8,9 +8,18 @@ CONFIG += c++2a
 # In order to do so, uncomment the following line.
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+CONFIG(release, debug|release): DLLDESTDIR +=  c:/Tim/Code/Bomberman-temp
+CONFIG(debug, debug|release): DLLDESTDIR +=  c:/Tim/Code/Bomberman-temp
+
+CONFIG(debug, debug|release) {
+    TARGET_PATH = $$OUT_PWD/debug
+}
+win32: QMAKE_POST_LINK += copy /y "$$shell_path($$OUT_PWD/debug/Bomberman.exe)" "$$shell_path(C:/Tim/Code/Bomberman-temp/Bomberman.exe)"
+
 INCLUDEPATH += $$PWD/src
 
 SOURCES += \
+    src/game/bomb.cpp \
     src/game/bomb_explosion.cpp \
     src/game/bomb_explosion_event.cpp \
     src/game/bomberman.cpp \
@@ -20,6 +29,7 @@ SOURCES += \
     src/game/cell.cpp \
     src/game/cell_location.cpp \
     src/game/character.cpp \
+    src/game/client_game.cpp \
     src/game/collider.cpp \
     src/game/explosion.cpp \
     src/game/game.cpp \
@@ -36,7 +46,9 @@ SOURCES += \
     src/game/modifiers/modifier_creator.cpp \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
+    src/game/move_data.cpp \
     src/game/moving_object.cpp \
+    src/game/network_game.cpp \
     src/game/server_game.cpp \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
@@ -50,15 +62,19 @@ SOURCES += \
     src/gui/map_widget.cpp \
     src/main.cpp \
     src/net/client.cpp \
+    src/net/client_id_message.cpp \
     src/net/client_name_message.cpp \
+    src/net/client_ready_message.cpp \
     src/net/i_message_visitor.cpp \
+    src/net/map_initialization_message.cpp \
     src/net/message.cpp \
     src/net/message_factory.cpp \
     src/net/server.cpp \
     src/net/server_worker.cpp \
     src/net/socket.cpp \
     src/net/text_message.cpp \
-    src/timer_queue.cpp
+    src/timer_queue.cpp \
+    src/utils.cpp
 
 HEADERS += \
     src/direction.hpp \
@@ -75,6 +91,7 @@ HEADERS += \
     src/game/cell_location.hpp \
     src/game/cell_structure.hpp \
     src/game/character.hpp \
+    src/game/client_game.hpp \
     src/game/collider.hpp \
     src/game/explosion.hpp \
     src/game/game.hpp \
@@ -98,6 +115,8 @@ HEADERS += \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
+    src/game/network_game.hpp \
+    src/game/object_type.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
     src/gui/bot_graphics_item.hpp \
@@ -111,9 +130,12 @@ HEADERS += \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
     src/net/client.hpp \
+    src/net/client_id_message.hpp \
     src/net/client_name_message.hpp \
+    src/net/client_ready_message.hpp \
     src/net/i_message_maker.hpp \
     src/net/i_message_visitor.hpp \
+    src/net/map_initialization_message.hpp \
     src/net/message.hpp \
     src/net/message_factory.hpp \
     src/net/message_maker.hpp \
@@ -124,7 +146,8 @@ HEADERS += \
     src/net/text_message.hpp \
     src/time.hpp \
     src/timer_event.hpp \
-    src/timer_queue.hpp
+    src/timer_queue.hpp \
+    src/utils.hpp
 
 FORMS += \
     src/gui/client_game_dialog.ui \

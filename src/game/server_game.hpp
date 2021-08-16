@@ -12,10 +12,9 @@ class ServerGame : public Game
     Q_OBJECT
 
 public:
-    ServerGame();
+    explicit ServerGame(QObject* parent = nullptr);
 
     void start() override;
-
     void movePlayer(size_t player, Direction direction) override;
     void stopPlayer(size_t player) override;
     void placeBomb(size_t player) override;
