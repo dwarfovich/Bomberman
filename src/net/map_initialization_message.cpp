@@ -1,13 +1,14 @@
 #include "map_initialization_message.hpp"
 #include "i_message_visitor.hpp"
 #include "game/map.hpp"
+#include "message_maker.hpp"
 
 namespace bm {
+REGISTER_MESSAGE_MAKER(MessageType::MapInitialization, MapInitializationMessage);
 
 MapInitializationMessage::MapInitializationMessage(const Map &map)
 {
-    QDataStream stream { data_ };
-    stream << map;
+    setMap(map);
 }
 
 MessageType MapInitializationMessage::type() const
@@ -33,6 +34,18 @@ void MapInitializationMessage::dataToStream(QDataStream &stream) const
 void MapInitializationMessage::fromStream(QDataStream &stream)
 {
     stream >> data_;
+}
+
+void MapInitializationMessage::setMap(const Map &map)
+{
+    data_.clear();
+    QDataStream stream { data_ };
+    stream << map;
+}
+
+const QByteArray &MapInitializationMessage::data() const
+{
+    return data_;
 }
 
 } // namespace bm

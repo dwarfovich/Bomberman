@@ -36,4 +36,9 @@ void ClientIdMessage::fromStream(QDataStream &stream)
     stream >> playerId_;
 }
 
+uint8_t ClientIdMessage::playerId() const
+{
+    return playerId_;
+}
+
 } // namespace bm

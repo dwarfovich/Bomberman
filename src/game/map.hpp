@@ -26,6 +26,7 @@ public:
     using RespawnPlaces = std::vector<size_t>;
 
     friend QDataStream& operator<<(QDataStream& stream, const Map& map);
+    friend QDataStream& operator>>(QDataStream& stream, Map& map);
 
     Map() = default;
     Map(size_t width, size_t height);
@@ -57,6 +58,7 @@ public:
     size_t                   width() const;
     size_t                   height() const;
     const std::vector<Cell>& cells() const;
+    const RespawnPlaces&     playerRespawns() const;
 
     void addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects);
     void addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects);

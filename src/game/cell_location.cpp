@@ -13,6 +13,14 @@ QDataStream& operator<<(QDataStream& stream, const CellLocation& location)
     return stream;
 }
 
+QDataStream& operator>>(QDataStream& stream, CellLocation& location)
+{
+    stream >> location.x_;
+    stream >> location.y_;
+
+    return stream;
+}
+
 constexpr CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
 {}
 

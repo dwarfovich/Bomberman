@@ -27,6 +27,7 @@ public:
     Socket& operator=(const Socket&) = delete;
     Socket& operator=(Socket&&) = delete;
 
+    bool    isConnected() const;
     bool    setSocketDescriptor(qintptr descriptor);
     void    connectToHost(const QHostAddress& address, quint16 port);
     void    disconnectFromHost();

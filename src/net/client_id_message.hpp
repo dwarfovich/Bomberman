@@ -16,6 +16,8 @@ public:
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
 
+    uint8_t playerId() const;
+
 private:
     uint8_t playerId_;
 };

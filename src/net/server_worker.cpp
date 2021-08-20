@@ -38,4 +38,14 @@ void ServerWorker::sendMessage(const Message &message)
     socket_->sendMessage(message);
 }
 
+uint8_t ServerWorker::clientId() const
+{
+    return clientId_;
+}
+
+void ServerWorker::setClientId(uint8_t newClientId)
+{
+    clientId_ = newClientId;
+}
+
 } // namespace bm

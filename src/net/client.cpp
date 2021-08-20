@@ -4,6 +4,10 @@
 #include "client_name_message.hpp"
 #include "message_factory.hpp"
 #include "text_message.hpp"
+#include "client_id_message.hpp"
+#include "map_initialization_message.hpp"
+#include "map_initialized_message.hpp"
+#include "game/map.hpp"
 
 #include <QHostAddress>
 #include <QDataStream>
@@ -17,6 +21,7 @@ Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { thi
         emit logMessage("Disconnected from server");
     });
     connect(socket_, &Socket::messageReceived, this, &Client::onMessageReceived);
+    connect(socket_, &Socket::messageReceived, this, &Client::messageReceived);
     connect(socket_, &Socket::socketError, this, &Client::onSocketError);
 }
 
@@ -42,8 +47,15 @@ void Client::onSocketError(QAbstractSocket::SocketError error)
 
 void Client::sendPlayerNameMessage()
 {
-    ClientNameMessage nameMessage { name_ };
-    sendMessage(nameMessage);
+    if (socket_->isConnected()) {
+        ClientNameMessage nameMessage { name_ };
+        sendMessage(nameMessage);
+    }
+}
+
+uint8_t Client::id() const
+{
+    return id_;
 }
 
 const QString &Client::name() const
@@ -58,7 +70,9 @@ void Client::setName(const QString &newName)
 }
 
 void Client::onMessageReceived(const std::unique_ptr<Message> &message)
-{}
+{
+    message->accept(*this);
+}
 
 void Client::onConnectedToServer()
 {
@@ -69,6 +83,27 @@ void Client::onConnectedToServer()
 void Client::visit(const TextMessage &message)
 {
     emit logMessage(message.toString());
+}
+
+void Client::visit(const PrepareToStartGame &message)
+{
+    emit readyForPreparingToGameStart();
+}
+
+void Client::visit(const ClientIdMessage &message)
+{
+    id_ = message.playerId();
+}
+
+void Client::visit(const MapInitializationMessage &message)
+{
+    auto        map = std::make_shared<Map>();
+    QDataStream stream(message.data());
+    stream >> *map;
+
+    MapInitializedMessage mapInitializedMessage;
+    sendMessage(mapInitializedMessage);
+    emit readyToStartGame();
 }
 
 } // namespace bm

@@ -10,21 +10,23 @@ NetworkGame::NetworkGame(Server *server, QObject *parent) : ServerGame { parent 
     server->setParent(this);
 
     connect(server_, &Server::messageReceived, this, &NetworkGame::onMessageReceived);
+    connect(server_, &Server::reallyReadyToStartGame, this, &NetworkGame::startGame);
 }
 
 void NetworkGame::start()
 {
-    if (connectionsMade_) {
-        playersToWait_ = server_->clients();
-        sendMapInitializationMessage();
-    }
+    // ServerGame::start();
+}
+
+void NetworkGame::startPreparing()
+{
+    // createBombermansForPlayers();
+    sendMapInitializationMessage();
 }
 
 void NetworkGame::setMap(const std::shared_ptr<Map> &map)
 {
     ServerGame::setMap(map);
-    playersReady_.clear();
-    playersToWait_ = 0;
     makeConnections();
 }
 
@@ -45,14 +47,8 @@ void NetworkGame::sendMapInitializationMessage()
 }
 
 void NetworkGame::startGame()
-{}
-
-void NetworkGame::visit(const ClientReadyMessage &message)
 {
-    playersReady_.insert(message.playerId());
-    if (playersReady_.size() == playersToWait_) {
-        startGame();
-    }
+    ServerGame::start();
 }
 
 } // namespace bm

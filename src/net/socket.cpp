@@ -14,6 +14,11 @@ Socket::Socket(QObject *parent) : QObject { parent }, socket_ { new QTcpSocket {
     connect(socket_, &QTcpSocket::readyRead, this, &Socket::onReadyRead);
 }
 
+bool Socket::isConnected() const
+{
+    return socket_->isOpen();
+}
+
 bool Socket::setSocketDescriptor(qintptr descriptor)
 {
     return socket_->setSocketDescriptor(descriptor);

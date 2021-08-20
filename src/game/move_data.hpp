@@ -10,6 +10,7 @@ namespace bm {
 struct MoveData
 {
     friend QDataStream& operator<<(QDataStream& stream, const MoveData& data);
+    friend QDataStream& operator>>(QDataStream& stream, MoveData& data);
 
     int       speed       = 0;
     Direction direction   = Direction::Downward;

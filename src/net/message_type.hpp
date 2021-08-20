@@ -10,9 +10,11 @@ enum class MessageType : uint8_t
     ServerReady,
     Text,
     ClientName,
-    MapInitialization,
     ClientId,
     ClientReady,
+    MapInitialization,
+    MapInitialized,
+    PrepareToStartGame,
 
     CellChanged,
     GameObjectAdded,

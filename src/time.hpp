@@ -23,6 +23,15 @@ inline QDataStream& operator<<(QDataStream& stream, const Milliseconds& ms)
     return stream;
 }
 
+inline QDataStream& operator>>(QDataStream& stream, Milliseconds& ms)
+{
+    long long count = 0;
+    stream >> count;
+    ms = Milliseconds { count };
+
+    return stream;
+}
+
 inline TimePoint createDelay(const Milliseconds& delay)
 {
     return TimerType::now() + delay;

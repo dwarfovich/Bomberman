@@ -1,5 +1,8 @@
 #include "map.hpp"
 #include "map_constants.hpp"
+#include "character_factory.hpp"
+#include "bot_factory.hpp"
+#include "bomberman.hpp"
 
 #include <QRect>
 #include <QDebug>
@@ -45,6 +48,52 @@ QDataStream& operator<<(QDataStream& stream, const Map& map)
     stream << map.explosions_.size();
     for (const auto& explosion : map.explosions_) {
         stream << explosion;
+    }
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Map& map)
+{
+    stream >> map.widthInCells_;
+    stream >> map.heightInCells_;
+    size_t cellsCount = map.widthInCells_ * map.heightInCells_;
+    // TODO: Handle exception.
+    map.cells_.resize(cellsCount);
+    for (auto& cell : map.cells_) {
+        stream >> cell;
+    }
+
+    size_t charactersCount = 0;
+    stream >> charactersCount;
+    for (size_t i = 0; i < charactersCount; ++i) {
+        ObjectType type;
+        stream >> type;
+        if (type == ObjectType::Bomberman) {
+            auto bomberman = std::make_shared<Bomberman>();
+            stream >> *bomberman;
+            map.addBomberman(bomberman);
+        } else if (type == ObjectType::Bot) {
+            std::shared_ptr<Bot> bot = createBot(BotType::Regular, map);
+            stream >> *bot;
+            map.addMovingObject(bot);
+        }
+    }
+
+    size_t bombsCount = 0;
+    stream >> bombsCount;
+    for (size_t i = 0; i < bombsCount; ++i) {
+        auto bomb = std::make_shared<Bomb>();
+        stream >> *bomb;
+        map.placeBomb(bomb);
+    }
+
+    // TODO: Refactor dummy read of explosions.
+    size_t explosionsCount = 0;
+    stream >> explosionsCount;
+    for (size_t i = 0; i < explosionsCount; ++i) {
+        Explosion e { {}, { 0, 0 }, { 0, 0 } };
+        stream >> e;
     }
 
     return stream;
@@ -255,6 +304,17 @@ size_t Map::height() const
 const std::vector<Cell>& Map::cells() const
 {
     return (cells_);
+}
+
+const Map::RespawnPlaces& Map::playerRespawns() const
+{
+    auto iter = respawnPlaces_.find(RespawnType::Bomberman);
+    if (iter != respawnPlaces_.cend()) {
+        return iter->second;
+    } else {
+        static const RespawnPlaces empty;
+        return empty;
+    }
 }
 
 QPoint Map::indexToCellCenterCoordinates(size_t index) const

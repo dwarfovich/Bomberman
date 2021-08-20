@@ -15,6 +15,7 @@ public:
     ACCEPT_COLLISION;
 
     friend QDataStream& operator<<(QDataStream& stream, const Cell& cell);
+    friend QDataStream& operator>>(QDataStream& stream, Cell& cell);
 
     CellStructure structure() const;
     void          setStructure(CellStructure structure);

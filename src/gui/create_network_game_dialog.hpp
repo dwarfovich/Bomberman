@@ -27,6 +27,7 @@ public slots:
 
 private slots:
     void onServerPlayerNameChanged(const QString &newName);
+    void onServerReadyToStartGame();
 
 private: // methods
     void addServerPlayerToModel();

@@ -15,6 +15,7 @@ public:
     ACCEPT_COLLISION;
 
     friend QDataStream& operator<<(QDataStream& stream, const Explosion& explosion);
+    friend QDataStream& operator>>(QDataStream& stream, Explosion& explosion);
 
     Explosion(const CellLocation&              center,
               const std::pair<size_t, size_t>& xMinMax,

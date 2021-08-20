@@ -30,6 +30,9 @@ public:
 
 signals:
     void logMessage(const QString& message);
+    void readyForPreparingToGameStart();
+    void messageReceived(const std::unique_ptr<Message>& message);
+    void readyToStartGame();
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -42,6 +45,20 @@ private: // methods
 private: // data
     Socket* socket_;
     QString name_;
+    uint8_t id_;
+
+    // IMessageVisitor interface
+public:
+    void    visit(const PrepareToStartGame& message) override;
+    uint8_t id() const;
+
+    // IMessageVisitor interface
+public:
+    void visit(const ClientIdMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const MapInitializationMessage& message) override;
 };
 
 } // namespace bm

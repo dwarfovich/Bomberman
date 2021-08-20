@@ -28,6 +28,10 @@ public:
     void           setClientName(const QString& newClientName);
     void           sendMessage(const Message& message);
 
+    uint8_t clientId() const;
+
+    void setClientId(uint8_t newClientId);
+
 signals:
     void messageReceived(const std::unique_ptr<bm::Message>& message);
     void clientDisconnected();
@@ -35,6 +39,7 @@ signals:
 private:
     Socket* socket_;
     QString clientName_ = "Unknown";
+    uint8_t clientId_;
 };
 
 } // namespace bm

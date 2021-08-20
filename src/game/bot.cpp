@@ -37,4 +37,7 @@ ObjectType Bot::type() const
 void Bot::toStream(QDataStream &stream) const
 {}
 
+void Bot::fromStream(QDataStream &stream)
+{}
+
 } // namespace bm

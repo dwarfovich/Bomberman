@@ -22,10 +22,12 @@ public:
     Client* client() const;
 
 private slots:
+    void onReady();
     void onLogMessageRequest(const QString& message);
     void connectToServer();
     void sendMessage();
     void changePlayerName();
+    void onReadyForPreparingToStartGame();
 
 private:
     ::Ui::ClientGameDialog* ui_;

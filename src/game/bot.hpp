@@ -16,6 +16,7 @@ public:
 
     ObjectType type() const override;
     void       toStream(QDataStream &stream) const override;
+    void       fromStream(QDataStream &stream) override;
     bool       notifyIfMeetedWall() const override;
     void       meetsWall() override;
     bool       acceptsModifiers() const override;

@@ -19,9 +19,8 @@ public:
     explicit NetworkGame(Server* server, QObject* parent = nullptr);
 
     void start() override;
+    void startPreparing();
     void setMap(const std::shared_ptr<Map>& map) override;
-
-    void visit(const ClientReadyMessage& message) override;
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -32,10 +31,8 @@ private: // methods
     void startGame();
 
 private: // data
-    Server*                     server_;
-    bool                        connectionsMade_ = false;
-    std::unordered_set<uint8_t> playersReady_;
-    uint8_t                     playersToWait_ = 0;
+    Server* server_;
+    bool    connectionsMade_ = false;
 };
 
 } // namespace bm

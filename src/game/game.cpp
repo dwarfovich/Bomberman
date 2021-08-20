@@ -98,8 +98,8 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         explosion.collideWith(*affectedObject, collider_);
     }
 
-    const auto& bomberman = bomb->owner;
-    bomberman->decreaseActiveBombs();
+    // const auto& bomberman = bomb->owner;
+    bomberman(bomb->playerId)->decreaseActiveBombs();
 }
 
 } // namespace bm

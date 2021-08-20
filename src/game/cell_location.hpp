@@ -16,6 +16,7 @@ public:
     constexpr CellLocation(size_t aX, size_t aY) : x_ { aX }, y_ { aY } {}
 
     friend QDataStream& operator<<(QDataStream& stream, const CellLocation& location);
+    friend QDataStream& operator>>(QDataStream& stream, CellLocation& location);
 
     bool   isValid() const;
     size_t x() const;

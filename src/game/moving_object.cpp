@@ -13,12 +13,25 @@ QDataStream& operator<<(QDataStream& stream, const MovingObject& object)
     return stream;
 }
 
+QDataStream& operator>>(QDataStream& stream, MovingObject& object)
+{
+    stream >> object.data_;
+    object.fromStream(stream);
+
+    return stream;
+}
+
 MovingObject::MovingObject(const MoveData& data) : data_ { data }
 {}
 
 void MovingObject::toStream(QDataStream& stream) const
 {
     stream << data_;
+}
+
+void MovingObject::fromStream(QDataStream& stream)
+{
+    stream >> data_;
 }
 
 const MoveData& MovingObject::movementData() const

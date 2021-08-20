@@ -11,11 +11,13 @@ class MovingObject : public GameObject
 {
 public:
     friend QDataStream& operator<<(QDataStream& stream, const MovingObject& object);
+    friend QDataStream& operator>>(QDataStream& stream, MovingObject& object);
 
     MovingObject(const MoveData& data = {});
 
     virtual ObjectType      type() const                        = 0;
     virtual void            toStream(QDataStream& stream) const = 0;
+    virtual void            fromStream(QDataStream& stream)     = 0;
     virtual const MoveData& movementData() const;
     virtual void            setMovementData(const MoveData& data);
     virtual void            setSpeed(int speed);

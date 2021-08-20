@@ -7,11 +7,13 @@
 #include "gui/main_menu_widget.hpp"
 #include "gui/create_network_game_dialog.hpp"
 #include "gui/client_game_dialog.hpp"
+#include "bot_graphics_item.hpp"
 
 #include <QKeyEvent>
 #include <QDir>
+#include <QMessageBox>
 
-#include <iostream>
+//#include <iostream>
 
 #include <QDebug>
 
@@ -33,24 +35,6 @@ MainWindow::MainWindow(QWidget* parent)
     connect(mainMenuWidget_, &MainMenuWidget::newSinglePlayerGameRequest, this, &MainWindow::startSinglePlayerGame);
     connect(mainMenuWidget_, &MainMenuWidget::newNetworkGameRequest, this, &MainWindow::startNetworkGame);
     connect(mainMenuWidget_, &MainMenuWidget::connectToServerRequest, this, &MainWindow::connectToServer);
-    //        const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
-    //        auto       mapData = map_loader::loadFromFile(mapFile);
-    //        if (!mapData.map) {
-    //            exit(1);
-    //        }
-
-    //    game_ = createSinglePlayerGame(mapData.map);
-
-    //        GameData data;
-    //        data.mapData = &mapData;
-    //        data.game    = game_.get();
-    //        data.view    = gameView_;
-    //        bool success = initializeGame(data);
-    //        if (success) {
-    //            game_->start();
-    //        } else {
-    //            exit(1);
-    //        }
 }
 
 MainWindow::~MainWindow()
@@ -100,12 +84,46 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
 
     game_ = createNetworkGame(dialog.server(), mapData.map);
 
-    GameData data;
-    data.mapData = &mapData;
-    data.game    = game_.get();
-    data.view    = gameView_;
-    bool success = initializeGame(data);
+    if (!game_) {
+        QMessageBox::critical(this, "Error", "Cannot create network game");
+    }
+
+    GameData gameData;
+    gameData.mapData = &mapData;
+    gameData.game    = game_.get();
+    gameData.view    = gameView_;
+    // bool success = initializeGame(data);
+    bool success = true;
     if (success) {
+        // TODO: Move game initialization into it's own function.
+        // TODO: And refactor it.
+        auto* scene = gameData.view->scene();
+
+        QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+
+        for (uint8_t i = 0; i < 255; ++i) {
+            auto bomberman = game_->bomberman(i);
+
+            if (bomberman) {
+                auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
+                characterItem->setCharacter(bomberman);
+                scene->addMovingObject(bomberman, std::move(characterItem));
+            }
+        }
+
+        for (const auto& bot : gameData.mapData->bots) {
+            gameData.mapData->map->addMovingObject(bot);
+            auto botItem = std::make_unique<gui::BotGraphicsItem>();
+            botItem->setCharacter(bot);
+            scene->addMovingObject(bot, std::move(botItem));
+        }
+
+        gameData.game->setMap(gameData.mapData->map);
+        gameData.view->setMap(gameData.mapData->map);
+        gameData.game->setScene(scene);
+
+        game_->start();
     } else {
         exit(1);
     }
@@ -145,10 +163,12 @@ void MainWindow::startNetworkGame()
     auto                    answer = dialog.exec();
     if (answer == QDialog::Accepted) {
         initializeNetworkGame(dialog);
-        mainMenuWidget_->hide();
-        setCentralWidget(gameView_);
-        gameView_->show();
-        game_->start();
+        if (game_) {
+            mainMenuWidget_->hide();
+            setCentralWidget(gameView_);
+            gameView_->show();
+            game_->start();
+        }
     }
 }
 

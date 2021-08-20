@@ -16,11 +16,14 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     addServerPlayerToModel();
 
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
+    connect(server_, &Server::readyToStartGame, this, &CreateNetworkGameDialog::onServerReadyToStartGame);
 
     connect(
         ui_->serverPlayerNameEdit, &QLineEdit::textChanged, this, &CreateNetworkGameDialog::onServerPlayerNameChanged);
     connect(ui_->startGameButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::accept);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::reject);
+
+    ui_->startGameButton->setDisabled(true);
 
     startServer();
 }
@@ -55,6 +58,13 @@ void CreateNetworkGameDialog::onServerPlayerNameChanged(const QString &newName)
     if (item) {
         item->setText(newName);
     }
+}
+
+void CreateNetworkGameDialog::onServerReadyToStartGame()
+{
+    emit logMessage("Ready to start game");
+    ui_->startGameButton->setEnabled(true);
+    // accept();
 }
 
 void CreateNetworkGameDialog::addServerPlayerToModel()

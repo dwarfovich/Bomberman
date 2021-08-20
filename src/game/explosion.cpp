@@ -13,6 +13,15 @@ QDataStream &operator<<(QDataStream &stream, const Explosion &explosion)
     return stream;
 }
 
+QDataStream &operator>>(QDataStream &stream, Explosion &explosion)
+{
+    stream >> explosion.center_;
+    stream >> explosion.xMinMax_;
+    stream >> explosion.yMinMax_;
+
+    return stream;
+}
+
 Explosion::Explosion(const CellLocation &             center,
                      const std::pair<size_t, size_t> &xMinMax,
                      const std::pair<size_t, size_t> &yMinMax)

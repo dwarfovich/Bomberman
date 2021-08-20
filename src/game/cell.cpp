@@ -1,4 +1,5 @@
 #include "cell.hpp"
+#include "modifiers/modifier_factory.hpp"
 
 namespace bm {
 
@@ -9,8 +10,20 @@ QDataStream& operator<<(QDataStream& stream, const Cell& cell)
     if (cell.modifier_) {
         stream << cell.modifier_->type();
     } else {
-        stream << uint8_t(0);
+        stream << ModifierType::Dummy;
     }
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Cell& cell)
+{
+    stream >> cell.structure_;
+    stream >> cell.hasBomb_;
+    ModifierType modifierType;
+    stream >> modifierType;
+    ModifierFactory factory;
+    cell.modifier_ = factory.createModifier(modifierType);
 
     return stream;
 }

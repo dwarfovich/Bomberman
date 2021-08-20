@@ -46,6 +46,19 @@ bool ServerGame::isCorrectPlayerIndex(size_t index) const
     return (index < bombermans_.size());
 }
 
+const std::shared_ptr<Bomberman>& ServerGame::bomberman(uint8_t playerId) const
+{
+    auto iter = std::find_if(bombermans_.cbegin(), bombermans_.cend(), [playerId](const auto& bomberman) {
+        return bomberman->playerId() == playerId;
+    });
+    if (iter == bombermans_.cend()) {
+        static const std::shared_ptr<Bomberman> empty { nullptr };
+        return empty;
+    } else {
+        return *iter;
+    }
+}
+
 void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
 {
     const auto& cell     = map_->cell(index);
@@ -64,7 +77,7 @@ void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& objec
 
 void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
 {
-    player->setId(bombermans_.size());
+    player->setPlayerId(bombermans_.size());
     bombermans_.push_back(player);
 }
 
@@ -82,8 +95,7 @@ void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         explosion.collideWith(*affectedObject, collider_);
     }
 
-    const auto& bomberman = bomb->owner;
-    bomberman->decreaseActiveBombs();
+    bomberman(bomb->playerId)->decreaseActiveBombs();
 }
 
 void ServerGame::setMap(const std::shared_ptr<Map>& map)
