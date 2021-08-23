@@ -12,7 +12,7 @@ namespace bm {
 class CellLocation
 {
 public:
-    constexpr CellLocation();
+    CellLocation();
     constexpr CellLocation(size_t aX, size_t aY) : x_ { aX }, y_ { aY } {}
 
     friend QDataStream& operator<<(QDataStream& stream, const CellLocation& location);
