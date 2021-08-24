@@ -30,4 +30,18 @@ void ClientGame::onReadyToStart()
     Game::start();
 }
 
+const std::shared_ptr<Bomberman> &ClientGame::bomberman(uint8_t playerId) const
+{
+    const auto &bombermans = map_->bombermans();
+    auto        iter       = std::find_if(bombermans.cbegin(), bombermans.cend(), [playerId](const auto &iter) {
+        return iter.second->playerId() == playerId;
+    });
+    if (iter != bombermans.cend()) {
+        return iter->second;
+    } else {
+        const static std::shared_ptr<Bomberman> empty;
+        return empty;
+    }
+}
+
 } // namespace bm

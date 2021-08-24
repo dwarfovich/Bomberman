@@ -13,6 +13,7 @@ QT_END_NAMESPACE
 
 namespace bm {
 class Socket;
+class Map;
 
 class Client : public QObject, public IMessageVisitor
 {
@@ -43,10 +44,10 @@ private: // methods
     void sendPlayerNameMessage();
 
 private: // data
-    Socket* socket_;
-    QString name_;
-    uint8_t id_;
-
+    Socket*              socket_;
+    QString              name_;
+    uint8_t              id_;
+    std::shared_ptr<Map> initializedMap_ = nullptr;
     // IMessageVisitor interface
 public:
     void    visit(const PrepareToStartGame& message) override;
@@ -58,7 +59,8 @@ public:
 
     // IMessageVisitor interface
 public:
-    void visit(const MapInitializationMessage& message) override;
+    void                        visit(const MapInitializationMessage& message) override;
+    const std::shared_ptr<Map>& initializedMap() const;
 };
 
 } // namespace bm

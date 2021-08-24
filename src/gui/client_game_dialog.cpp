@@ -17,7 +17,8 @@ ClientGameDialog::ClientGameDialog(QWidget *parent)
     connect(client_, &Client::logMessage, this, &ClientGameDialog::onLogMessageRequest);
     // connect(client_, &Client::readyForPreparingToGameStart, this, &ClientGameDialog::onReadyForPreparingToStartGame);
     // connect(client_, &Client::readyForPreparingToGameStart, this, &ClientGameDialog::accepted);
-    connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::accepted);
+    connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::accept);
+    // connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::onReadyToStartGame);
 
     connect(ui_->connectButton, &QPushButton::clicked, this, &ClientGameDialog::connectToServer);
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &ClientGameDialog::sendMessage);

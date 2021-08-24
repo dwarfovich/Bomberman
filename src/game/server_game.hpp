@@ -22,7 +22,7 @@ public:
     void setMap(const std::shared_ptr<Map>& map) override;
 
     bool                              isCorrectPlayerIndex(size_t index) const;
-    const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const;
+    const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const override;
 
 protected slots:
     void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);

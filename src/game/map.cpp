@@ -35,20 +35,21 @@ QDataStream& operator<<(QDataStream& stream, const Map& map)
         stream << cell;
     }
 
+    auto s = map.movingObjects_;
     stream << map.movingObjects_.size();
     for (const auto& object : map.movingObjects_) {
         stream << *object;
     }
 
-    stream << map.bombs_.size();
-    for (const auto& bomb : map.bombs_) {
-        stream << *bomb;
-    }
+    //    stream << map.bombs_.size();
+    //    for (const auto& bomb : map.bombs_) {
+    //        stream << *bomb;
+    //    }
 
-    stream << map.explosions_.size();
-    for (const auto& explosion : map.explosions_) {
-        stream << explosion;
-    }
+    //    stream << map.explosions_.size();
+    //    for (const auto& explosion : map.explosions_) {
+    //        stream << explosion;
+    //    }
 
     return stream;
 }
@@ -76,25 +77,26 @@ QDataStream& operator>>(QDataStream& stream, Map& map)
         } else if (type == ObjectType::Bot) {
             std::shared_ptr<Bot> bot = createBot(BotType::Regular, map);
             stream >> *bot;
-            map.addMovingObject(bot);
+            map.addBot(bot);
+            // map.addMovingObject(bot);
         }
     }
 
-    size_t bombsCount = 0;
-    stream >> bombsCount;
-    for (size_t i = 0; i < bombsCount; ++i) {
-        auto bomb = std::make_shared<Bomb>();
-        stream >> *bomb;
-        map.placeBomb(bomb);
-    }
+    //    size_t bombsCount = 0;
+    //    stream >> bombsCount;
+    //    for (size_t i = 0; i < bombsCount; ++i) {
+    //        auto bomb = std::make_shared<Bomb>();
+    //        stream >> *bomb;
+    //        map.placeBomb(bomb);
+    //    }
 
-    // TODO: Refactor dummy read of explosions.
-    size_t explosionsCount = 0;
-    stream >> explosionsCount;
-    for (size_t i = 0; i < explosionsCount; ++i) {
-        Explosion e { {}, { 0, 0 }, { 0, 0 } };
-        stream >> e;
-    }
+    //    // TODO: Refactor dummy read of explosions.
+    //    size_t explosionsCount = 0;
+    //    stream >> explosionsCount;
+    //    for (size_t i = 0; i < explosionsCount; ++i) {
+    //        Explosion e { {}, { 0, 0 }, { 0, 0 } };
+    //        stream >> e;
+    //    }
 
     return stream;
 }
@@ -189,13 +191,20 @@ void Map::removeBomberman(const Bomberman& bomberman)
     }
 }
 
-void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
+void Map::addBot(const std::shared_ptr<Bot>& bot)
 {
-    movingObjects_.push_back(object);
+    bots_.push_back(bot);
+    movingObjects_.push_back(bot);
 }
+
+// void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
+//{
+//    movingObjects_.push_back(object);
+//}
 
 void Map::removeMovingObject(const std::shared_ptr<MovingObject>& object)
 {
+    // TODO: Also remove from bombermans_ and bots_.
     movingObjects_.erase(std::remove(movingObjects_.begin(), movingObjects_.end(), object));
 }
 
@@ -605,6 +614,11 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     } else {
         return inCell.y();
     }
+}
+
+const std::vector<std::shared_ptr<Bot>>& Map::bots() const
+{
+    return bots_;
 }
 
 void Map::moveObjects(double timeDelta)

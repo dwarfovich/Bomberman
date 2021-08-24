@@ -111,6 +111,10 @@ uint8_t Server::generateClientId() const
 
 void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
 {
+    if (message.type() == MessageType::MapInitialization) {
+        emit logMessageRequest("Broadcasting MapInitialization message: " + QString::number(message.dataLength())
+                               + " bytes");
+    }
     for (auto *client : clients_) {
         if (client != excludeClient) {
             client->sendMessage(message);

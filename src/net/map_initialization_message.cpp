@@ -3,6 +3,8 @@
 #include "game/map.hpp"
 #include "message_maker.hpp"
 
+#include <QIODevice>
+
 namespace bm {
 REGISTER_MESSAGE_MAKER(MessageType::MapInitialization, MapInitializationMessage);
 
@@ -39,7 +41,7 @@ void MapInitializationMessage::fromStream(QDataStream &stream)
 void MapInitializationMessage::setMap(const Map &map)
 {
     data_.clear();
-    QDataStream stream { data_ };
+    QDataStream stream { &data_, QDataStream::WriteOnly };
     stream << map;
 }
 

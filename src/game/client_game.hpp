@@ -26,6 +26,10 @@ private slots:
 
 private:
     Client* client_;
+
+    // Game interface
+public:
+    const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const override;
 };
 
 } // namespace bm

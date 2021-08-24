@@ -8,6 +8,7 @@
 #include "gui/create_network_game_dialog.hpp"
 #include "gui/client_game_dialog.hpp"
 #include "bot_graphics_item.hpp"
+#include "net/client.hpp"
 
 #include <QKeyEvent>
 #include <QDir>
@@ -82,10 +83,11 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         exit(1);
     }
 
-    game_ = createNetworkGame(dialog.server(), mapData.map);
+    game_ = createNetworkGame(dialog.server(), mapData.map, mapData);
 
     if (!game_) {
         QMessageBox::critical(this, "Error", "Cannot create network game");
+        return;
     }
 
     GameData gameData;
@@ -113,7 +115,8 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         }
 
         for (const auto& bot : gameData.mapData->bots) {
-            gameData.mapData->map->addMovingObject(bot);
+            // gameData.mapData->map->addMovingObject(bot);
+
             auto botItem = std::make_unique<gui::BotGraphicsItem>();
             botItem->setCharacter(bot);
             scene->addMovingObject(bot, std::move(botItem));
@@ -130,7 +133,64 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
 }
 
 void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
-{}
+{
+    //    const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
+    //    auto       mapData = map_loader::loadFromFile(mapFile);
+    //    if (!mapData.map) {
+    //        exit(1);
+    //    }
+
+    game_ = createClientGame(dialog.client());
+
+    if (!game_) {
+        QMessageBox::critical(this, "Error", "Cannot create client game");
+        return;
+    }
+
+    //    GameData gameData;
+    //    gameData.mapData = &mapData;
+    //    gameData.game    = game_.get();
+    //    gameData.view    = gameView_;
+    // bool success = initializeGame(data);
+    bool success = true;
+    if (success) {
+        // TODO: Move game initialization into it's own function.
+        // TODO: And refactor it.
+        auto* scene = gameView_->scene();
+
+        QObject::connect(
+            dialog.client()->initializedMap().get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(
+            dialog.client()->initializedMap().get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+
+        // TODO: Refactor - get bombermans count.
+        for (uint8_t i = 0; i < 255; ++i) {
+            auto bomberman = game_->bomberman(i);
+
+            if (bomberman) {
+                auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
+                characterItem->setCharacter(bomberman);
+                scene->addMovingObject(bomberman, std::move(characterItem));
+            }
+        }
+
+        auto bm   = game_->map()->bots();
+        auto bots = dialog.client()->initializedMap()->bots();
+        for (const auto& bot : dialog.client()->initializedMap()->bots()) {
+            auto botItem = std::make_unique<gui::BotGraphicsItem>();
+            botItem->setCharacter(bot);
+            scene->addMovingObject(bot, std::move(botItem));
+        }
+
+        // gameData.game->setMap(dialog.client()->initializedMap());
+        gameView_->setMap(dialog.client()->initializedMap());
+        // game_->setScene(scene);
+
+        // game_->start();
+    } else {
+        exit(1);
+    }
+}
 
 void MainWindow::startSinglePlayerGame()
 {

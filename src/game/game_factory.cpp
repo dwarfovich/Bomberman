@@ -1,7 +1,10 @@
 #include "game_factory.hpp"
 #include "server_game.hpp"
 #include "network_game.hpp"
+#include "client_game.hpp"
+#include "game/map_loader.hpp"
 #include "net/server.hpp"
+#include "net/client.hpp"
 
 namespace bm {
 
@@ -35,7 +38,9 @@ std::unique_ptr<Game> createSinglePlayerGame(const std::shared_ptr<Map>& map)
     return game;
 }
 
-std::unique_ptr<Game> createNetworkGame(Server* server, const std::shared_ptr<Map>& map)
+std::unique_ptr<Game> createNetworkGame(Server*                     server,
+                                        const std::shared_ptr<Map>& map,
+                                        const map_loader::MapData&  mapData)
 {
     auto        game       = std::make_unique<NetworkGame>(server);
     const auto& playersIds = server->playersIds();
@@ -45,8 +50,24 @@ std::unique_ptr<Game> createNetworkGame(Server* server, const std::shared_ptr<Ma
         return nullptr;
     }
 
+    auto bots = mapData.bots;
+    for (const auto& bot : mapData.bots) {
+        // mapData.map->addMovingObject(bot);
+        mapData.map->addBot(bot);
+    }
+
     game->setMap(map);
     game->startPreparing();
+
+    return game;
+}
+
+std::unique_ptr<Game> createClientGame(Client* client)
+{
+    auto game = std::make_unique<ClientGame>(client);
+    auto map2 = client->initializedMap();
+    game->setMap(client->initializedMap());
+    //    game->startPreparing();
 
     return game;
 }

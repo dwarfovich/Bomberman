@@ -13,7 +13,7 @@ namespace bm {
 bool initializeGame(const GameData& gameData)
 {
     auto* scene = gameData.view->scene();
-    //scene->clear();
+    // scene->clear();
 
     QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
     QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
@@ -30,7 +30,7 @@ bool initializeGame(const GameData& gameData)
     scene->addMovingObject(player, std::move(characterItem));
 
     for (const auto& bot : gameData.mapData->bots) {
-        gameData.mapData->map->addMovingObject(bot);
+        gameData.mapData->map->addBot(bot);
         auto botItem = std::make_unique<gui::BotGraphicsItem>();
         botItem->setCharacter(bot);
         scene->addMovingObject(bot, std::move(botItem));
