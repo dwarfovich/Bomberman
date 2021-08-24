@@ -182,11 +182,7 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
             scene->addMovingObject(bot, std::move(botItem));
         }
 
-        // gameData.game->setMap(dialog.client()->initializedMap());
         gameView_->setMap(dialog.client()->initializedMap());
-        // game_->setScene(scene);
-
-        // game_->start();
     } else {
         exit(1);
     }
