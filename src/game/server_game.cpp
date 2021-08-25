@@ -15,30 +15,42 @@ void ServerGame::start()
 
 void ServerGame::movePlayer(size_t player, Direction direction)
 {
-    if (isCorrectPlayerIndex(player)) {
-        bombermans_[player]->setSpeed(defaultBombermanSpeed);
-        bombermans_[player]->setDirection(direction);
-    }
+    //    if (isCorrectPlayerIndex(player)) {
+    //        bombermans_[player]->setSpeed(defaultBombermanSpeed);
+    //        bombermans_[player]->setDirection(direction);
+    //    }
+    playerBomberman_->setSpeed(defaultBombermanSpeed);
+    playerBomberman_->setDirection(direction);
 }
 
 void ServerGame::stopPlayer(size_t player)
 {
-    if (isCorrectPlayerIndex(player)) {
-        bombermans_[player]->setSpeed(0);
-    }
+    playerBomberman_->setSpeed(0);
+    //    if (isCorrectPlayerIndex(player)) {
+    //        bombermans_[player]->setSpeed(0);
+    //    }
 }
 
 void ServerGame::placeBomb(size_t player)
 {
-    std::shared_ptr<Bomb> bomb = bombermans_[player]->createBomb();
+    std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
     if (bomb) {
-        auto index = map_->coordinatesToIndex(bombermans_[player]->movementData().coordinates);
+        auto index = map_->coordinatesToIndex(playerBomberman_->movementData().coordinates);
         if (map_->isProperIndex(index)) {
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
             addExplosionEvent(bomb);
         }
     }
+    //    std::shared_ptr<Bomb> bomb = bombermans_[player]->createBomb();
+    //    if (bomb) {
+    //        auto index = map_->coordinatesToIndex(bombermans_[player]->movementData().coordinates);
+    //        if (map_->isProperIndex(index)) {
+    //            bomb->cellIndex = index;
+    //            map_->placeBomb(bomb);
+    //            addExplosionEvent(bomb);
+    //        }
+    //    }
 }
 
 bool ServerGame::isCorrectPlayerIndex(size_t index) const
@@ -49,7 +61,7 @@ bool ServerGame::isCorrectPlayerIndex(size_t index) const
 const std::shared_ptr<Bomberman>& ServerGame::bomberman(uint8_t playerId) const
 {
     auto iter = std::find_if(bombermans_.cbegin(), bombermans_.cend(), [playerId](const auto& bomberman) {
-        return bomberman->playerId() == playerId;
+        return bomberman->id() == playerId;
     });
     if (iter == bombermans_.cend()) {
         static const std::shared_ptr<Bomberman> empty { nullptr };
@@ -77,7 +89,7 @@ void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& objec
 
 void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
 {
-    player->setPlayerId(bombermans_.size());
+    player->setId(bombermans_.size());
     bombermans_.push_back(player);
 }
 
@@ -106,6 +118,11 @@ void ServerGame::setMap(const std::shared_ptr<Map>& map)
         map_->moveObjects(updateTimeout_);
     });
     connect(map_.get(), &Map::objectIndexChanged, this, &ServerGame::onObjectIndexChanged);
+}
+
+uint8_t ServerGame::playerId() const
+{
+    return 0;
 }
 
 } // namespace bm

@@ -51,20 +51,20 @@ const Bomb &Bomberman::bombPrototype() const
 void Bomberman::setBombPrototype(const Bomb &newBomb)
 {
     bombPrototype_           = newBomb;
-    bombPrototype_.playerId  = playerId_;
+    bombPrototype_.playerId  = id();
     bombPrototype_.cellIndex = 0;
 }
 
-uint8_t Bomberman::playerId() const
-{
-    return playerId_;
-}
+// uint8_t Bomberman::playerId() const
+//{
+//    return playerId_;
+//}
 
-void Bomberman::setPlayerId(uint8_t newId)
-{
-    playerId_               = newId;
-    bombPrototype_.playerId = playerId_;
-}
+// void Bomberman::setPlayerId(uint8_t newId)
+//{
+//    playerId_               = newId;
+//    bombPrototype_.playerId = playerId_;
+//}
 
 ObjectType Bomberman::type() const
 {
@@ -73,7 +73,7 @@ ObjectType Bomberman::type() const
 
 void Bomberman::toStream(QDataStream &stream) const
 {
-    stream << playerId_;
+    // stream << playerId_;
     stream << activeBombs_;
     stream << maxActiveBombs_;
     stream << bombPrototype_;
@@ -81,7 +81,7 @@ void Bomberman::toStream(QDataStream &stream) const
 
 void Bomberman::fromStream(QDataStream &stream)
 {
-    stream >> playerId_;
+    // stream >> playerId_;
     stream >> activeBombs_;
     stream >> maxActiveBombs_;
     stream >> bombPrototype_;

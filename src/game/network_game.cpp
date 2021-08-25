@@ -2,6 +2,7 @@
 #include "net/server.hpp"
 #include "net/client_ready_message.hpp"
 #include "net/map_initialization_message.hpp"
+#include "net/start_game_message.hpp"
 
 namespace bm {
 
@@ -22,6 +23,9 @@ void NetworkGame::startPreparing()
 {
     // createBombermansForPlayers();
     sendMapInitializationMessage();
+    //    const auto &playerBomberman = map_->bombermans().at(0);
+    //    setPlayerBomberman(playerBomberman);
+    playerBomberman_ = bomberman(0);
 }
 
 void NetworkGame::setMap(const std::shared_ptr<Map> &map)
@@ -48,6 +52,8 @@ void NetworkGame::sendMapInitializationMessage()
 
 void NetworkGame::startGame()
 {
+    StartGameMessage message;
+    server_->broadcastMessage(message);
     ServerGame::start();
 }
 

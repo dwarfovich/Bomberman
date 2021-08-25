@@ -40,7 +40,7 @@ Client *ClientGameDialog::client() const
 
 void ClientGameDialog::onReady()
 {
-    ClientReadyMessage message(client_->id());
+    ClientReadyMessage message(client_->playerId());
     client_->sendMessage(message);
 }
 

@@ -16,10 +16,10 @@ Game::Game(QObject* parent) : QObject { parent }, collider_ { this }
 
 void Game::start()
 {
-    if (!scene_) {
-        return;
-    }
-    moveTimer.start(timeout_);
+    //    if (!scene_) {
+    //        return;
+    //    }
+    // moveTimer.start(timeout_);
 }
 
 void Game::setMap(const std::shared_ptr<Map>& map)
@@ -100,6 +100,11 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 
     // const auto& bomberman = bomb->owner;
     bomberman(bomb->playerId)->decreaseActiveBombs();
+}
+
+void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)
+{
+    playerBomberman_ = newPlayerBomberman;
 }
 
 } // namespace bm

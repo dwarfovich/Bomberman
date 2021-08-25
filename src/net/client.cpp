@@ -58,9 +58,9 @@ const std::shared_ptr<Map> &Client::initializedMap() const
     return initializedMap_;
 }
 
-uint8_t Client::id() const
+uint8_t Client::playerId() const
 {
-    return id_;
+    return playerId_;
 }
 
 const QString &Client::name() const
@@ -97,7 +97,7 @@ void Client::visit(const PrepareToStartGame &message)
 
 void Client::visit(const ClientIdMessage &message)
 {
-    id_ = message.playerId();
+    playerId_ = message.playerId();
 }
 
 void Client::visit(const MapInitializationMessage &message)
@@ -106,10 +106,9 @@ void Client::visit(const MapInitializationMessage &message)
     QDataStream stream(message.data());
     stream >> *initializedMap_;
 
-    auto                  bots = initializedMap_->bots();
     MapInitializedMessage mapInitializedMessage;
+    emit                  readyToStartGame();
     sendMessage(mapInitializedMessage);
-    emit readyToStartGame();
 }
 
 } // namespace bm

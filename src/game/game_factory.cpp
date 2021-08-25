@@ -20,7 +20,7 @@ bool createBombermansForPlayers(const std::unordered_set<uint8_t>& playersIds, M
     for (uint8_t id : playersIds) {
         auto bomberman = std::make_shared<Bomberman>();
         bomberman->setBombPrototype({});
-        bomberman->setPlayerId(id);
+        bomberman->setId(id);
         bomberman->setCoordinates(map.indexToCellCenterCoordinates(respawns[currentRespawn]));
         ++currentRespawn;
         map.addBomberman(bomberman);

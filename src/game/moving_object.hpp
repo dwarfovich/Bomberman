@@ -29,8 +29,12 @@ public:
     virtual bool            notifyIfMeetedWall() const;
     virtual void            meetsWall();
 
+    uint8_t id() const;
+    void    setId(uint8_t newId);
+
 private:
     MoveData data_;
+    uint8_t  id_;
 };
 
 } // namespace bm

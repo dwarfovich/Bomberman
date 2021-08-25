@@ -4,6 +4,7 @@
 #include "bot_factory.hpp"
 #include "bomberman.hpp"
 
+#include <QDateTime>
 #include <QRect>
 #include <QDebug>
 #define DEB qDebug()
@@ -30,6 +31,8 @@ QPoint advanceCoordinates(const QPoint& coordinates, double timeDelta, int speed
 
 QDataStream& operator<<(QDataStream& stream, const Map& map)
 {
+    stream << map.randomSeed_;
+
     stream << map.widthInCells_ << map.heightInCells_;
     for (const auto& cell : map.cells_) {
         stream << cell;
@@ -56,6 +59,8 @@ QDataStream& operator<<(QDataStream& stream, const Map& map)
 
 QDataStream& operator>>(QDataStream& stream, Map& map)
 {
+    stream >> map.randomSeed_;
+
     stream >> map.widthInCells_;
     stream >> map.heightInCells_;
     size_t cellsCount = map.widthInCells_ * map.heightInCells_;
@@ -78,7 +83,6 @@ QDataStream& operator>>(QDataStream& stream, Map& map)
             std::shared_ptr<Bot> bot = createBot(BotType::Regular, map);
             stream >> *bot;
             map.addBot(bot);
-            // map.addMovingObject(bot);
         }
     }
 
@@ -614,6 +618,11 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     } else {
         return inCell.y();
     }
+}
+
+uint32_t Map::randomSeed() const
+{
+    return randomSeed_;
 }
 
 const std::vector<std::shared_ptr<Bot>>& Map::bots() const

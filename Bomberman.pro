@@ -56,7 +56,9 @@ SOURCES += \
     src/gui/main_menu_widget.cpp \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
+    src/gui/player_key_controls.cpp \
     src/main.cpp \
+    src/net/character_moved_message.cpp \
     src/net/client.cpp \
     src/net/client_id_message.cpp \
     src/net/client_name_message.cpp \
@@ -71,6 +73,7 @@ SOURCES += \
     src/net/server.cpp \
     src/net/server_worker.cpp \
     src/net/socket.cpp \
+    src/net/start_game_message.cpp \
     src/net/text_message.cpp \
     src/timer_queue.cpp \
     src/utils.cpp
@@ -130,6 +133,8 @@ HEADERS += \
     src/gui/main_menu_widget.hpp \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
+    src/gui/player_key_controls.hpp \
+    src/net/character_moved_message.hpp \
     src/net/client.hpp \
     src/net/client_id_message.hpp \
     src/net/client_name_message.hpp \
@@ -147,6 +152,7 @@ HEADERS += \
     src/net/server.hpp \
     src/net/server_worker.hpp \
     src/net/socket.hpp \
+    src/net/start_game_message.hpp \
     src/net/text_message.hpp \
     src/time.hpp \
     src/timer_event.hpp \

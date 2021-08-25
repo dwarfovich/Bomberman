@@ -12,7 +12,7 @@ QT_END_NAMESPACE
 namespace bm {
 class IMessageVisitor;
 
-inline const qint64 messageHeaderSize = sizeof(MessageType) + sizeof(int);
+inline const qint64 messageHeaderSize = sizeof(MessageType) + sizeof(int /*length*/);
 
 class Message
 {

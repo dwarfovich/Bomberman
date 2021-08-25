@@ -7,6 +7,7 @@ namespace bm {
 QDataStream& operator<<(QDataStream& stream, const MovingObject& object)
 {
     stream << object.type();
+    stream << object.id();
     stream << object.data_;
     object.toStream(stream);
 
@@ -15,6 +16,7 @@ QDataStream& operator<<(QDataStream& stream, const MovingObject& object)
 
 QDataStream& operator>>(QDataStream& stream, MovingObject& object)
 {
+    stream >> object.id_;
     stream >> object.data_;
     object.fromStream(stream);
 
@@ -91,5 +93,15 @@ bool MovingObject::notifyIfMeetedWall() const
 
 void MovingObject::meetsWall()
 {}
+
+uint8_t MovingObject::id() const
+{
+    return id_;
+}
+
+void MovingObject::setId(uint8_t newId)
+{
+    id_ = newId;
+}
 
 } // namespace bm

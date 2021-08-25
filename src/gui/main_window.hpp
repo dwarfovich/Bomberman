@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include "game/game.hpp"
+#include "player_key_controls.hpp"
 
 #include <QMainWindow>
 
@@ -44,7 +45,8 @@ private: // methods
 private: // data
     Ui::MainWindow*       ui_             = nullptr;
     MainMenuWidget*       mainMenuWidget_ = nullptr;
-    GameView*             gameView_       = nullptr;
+    PlayerKeyControls     keyControls_;
+    GameView*             gameView_ = nullptr;
     std::unique_ptr<Game> game_;
 };
 

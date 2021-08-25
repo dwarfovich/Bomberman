@@ -37,6 +37,10 @@ protected: // data
     Collider                                collider_;
     QTimer                                  moveTimer;
     TimerQueue                              timerQueue;
+
+    // Game interface
+public:
+    uint8_t playerId() const override;
 };
 
 } // namespace bm

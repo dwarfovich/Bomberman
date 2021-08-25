@@ -45,14 +45,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
-    if (event->key() == Qt::Key_W) {
-        game_->movePlayer(0, Direction::Upward);
-    } else if (event->key() == Qt::Key_D) {
-        game_->movePlayer(0, Direction::Right);
-    } else if (event->key() == Qt::Key_S) {
-        game_->movePlayer(0, Direction::Downward);
-    } else if (event->key() == Qt::Key_A) {
-        game_->movePlayer(0, Direction::Left);
+    if (event->key() == keyControls_.moveUp) {
+        game_->movePlayer(keyControls_.playerId, Direction::Upward);
+    } else if (event->key() == keyControls_.moveRight) {
+        game_->movePlayer(keyControls_.playerId, Direction::Right);
+    } else if (event->key() == keyControls_.moveDown) {
+        game_->movePlayer(keyControls_.playerId, Direction::Downward);
+    } else if (event->key() == keyControls_.moveLeft) {
+        game_->movePlayer(keyControls_.playerId, Direction::Left);
     }
 }
 
@@ -62,16 +62,16 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
         return;
     }
 
-    if (event->key() == Qt::Key_W) {
-        game_->stopPlayer(0);
-    } else if (event->key() == Qt::Key_D) {
-        game_->stopPlayer(0);
-    } else if (event->key() == Qt::Key_S) {
-        game_->stopPlayer(0);
-    } else if (event->key() == Qt::Key_A) {
-        game_->stopPlayer(0);
-    } else if (event->key() == Qt::Key_Space) {
-        game_->placeBomb(0);
+    if (event->key() == keyControls_.moveUp) {
+        game_->stopPlayer(keyControls_.playerId);
+    } else if (event->key() == keyControls_.moveRight) {
+        game_->stopPlayer(keyControls_.playerId);
+    } else if (event->key() == keyControls_.moveDown) {
+        game_->stopPlayer(keyControls_.playerId);
+    } else if (event->key() == keyControls_.moveLeft) {
+        game_->stopPlayer(keyControls_.playerId);
+    } else if (event->key() == keyControls_.placeBomb) {
+        game_->placeBomb(keyControls_.playerId);
     }
 }
 
@@ -122,9 +122,11 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
             scene->addMovingObject(bot, std::move(botItem));
         }
 
-        gameData.game->setMap(gameData.mapData->map);
+        // gameData.game->setMap(gameData.mapData->map);
         gameData.view->setMap(gameData.mapData->map);
         gameData.game->setScene(scene);
+
+        keyControls_.playerId = game_->playerId();
 
         game_->start();
     } else {

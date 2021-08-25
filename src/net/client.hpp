@@ -46,12 +46,12 @@ private: // methods
 private: // data
     Socket*              socket_;
     QString              name_;
-    uint8_t              id_;
+    uint8_t              playerId_;
     std::shared_ptr<Map> initializedMap_ = nullptr;
     // IMessageVisitor interface
 public:
     void    visit(const PrepareToStartGame& message) override;
-    uint8_t id() const;
+    uint8_t playerId() const;
 
     // IMessageVisitor interface
 public:

@@ -74,6 +74,8 @@ public:
 
     const std::vector<std::shared_ptr<Bot>>& bots() const;
 
+    uint32_t randomSeed() const;
+
 signals:
     void cellChanged(size_t index);
     void objectMoved(const std::shared_ptr<MovingObject>& object);
@@ -112,6 +114,7 @@ private: // methods
     int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
+    uint32_t                                   randomSeed_    = 0;
     size_t                                     widthInCells_  = 0;
     size_t                                     heightInCells_ = 0;
     std::vector<Cell>                          cells_;

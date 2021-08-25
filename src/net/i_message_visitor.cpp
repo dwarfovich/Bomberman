@@ -23,6 +23,9 @@ void IMessageVisitor::visit(const MapInitializedMessage &message)
 void IMessageVisitor::visit(const PrepareToStartGame &message)
 {}
 
+void IMessageVisitor::visit(const StartGameMessage &message)
+{}
+
 void IMessageVisitor::visit(const ClientIdMessage &message)
 {}
 

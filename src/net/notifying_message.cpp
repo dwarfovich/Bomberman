@@ -5,7 +5,7 @@ namespace bm {
 
 int NotifyingMessage::dataLength() const
 {
-    return 1;
+    return 0;
 }
 
 void NotifyingMessage::dataToStream(QDataStream &stream) const

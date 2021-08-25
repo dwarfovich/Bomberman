@@ -35,14 +35,11 @@ public:
     const Bomb& bombPrototype() const;
     void        setBombPrototype(const Bomb& Bomb);
 
-    uint8_t playerId() const;
-    void    setPlayerId(uint8_t id);
-
 private:
-    uint8_t playerId_       = 0;
-    size_t  activeBombs_    = 0;
-    size_t  maxActiveBombs_ = 1;
-    Bomb    bombPrototype_;
+    // uint8_t playerId_       = 0;
+    size_t activeBombs_    = 0;
+    size_t maxActiveBombs_ = 1;
+    Bomb   bombPrototype_;
 };
 } // namespace bm
 

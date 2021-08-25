@@ -57,6 +57,9 @@ void Socket::onReadyRead()
                 canReadMessage = false;
             }
         } else { // MessageReadingStage::Data
+            auto typ   = currentMessage_->type();
+            auto ava   = socket_->bytesAvailable();
+            auto expec = currentMessageSize_;
             if (socket_->bytesAvailable() >= currentMessageSize_) {
                 readData(stream);
             } else {
@@ -68,6 +71,8 @@ void Socket::onReadyRead()
 
 void Socket::readHeader(QDataStream &stream)
 {
+    assert(!currentMessage_);
+
     MessageType type;
     stream >> type;
     currentMessage_ = MessageFactory::get().createMessage(type);
@@ -80,7 +85,8 @@ void Socket::readData(QDataStream &stream)
     Q_ASSERT(currentMessage_);
     stream >> *currentMessage_;
     emit messageReceived(currentMessage_);
-    currentStage_ = MessageReadingStage::Header;
+    currentMessage_ = nullptr;
+    currentStage_   = MessageReadingStage::Header;
 }
 
 } // namespace bm

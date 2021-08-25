@@ -24,6 +24,7 @@ std::unique_ptr<Message> MessageFactory::createMessage(MessageType type) const
     if (index < makers_.size()) {
         return makers_[index]->create();
     } else {
+        assert(false);
         return nullptr;
     }
 }

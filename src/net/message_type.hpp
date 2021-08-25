@@ -15,7 +15,9 @@ enum class MessageType : uint8_t
     MapInitialization,
     MapInitialized,
     PrepareToStartGame,
+    StartGame,
 
+    CharacterMoved,
     CellChanged,
     GameObjectAdded,
     GameObjectChanged,

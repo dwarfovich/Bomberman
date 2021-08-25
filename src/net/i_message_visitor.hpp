@@ -9,6 +9,7 @@ class ClientReadyMessage;
 class MapInitializationMessage;
 class MapInitializedMessage;
 class PrepareToStartGame;
+class StartGameMessage;
 class ClientIdMessage;
 
 class IMessageVisitor
@@ -23,6 +24,7 @@ public:
     virtual void visit(const MapInitializationMessage& message);
     virtual void visit(const MapInitializedMessage& message);
     virtual void visit(const PrepareToStartGame& message);
+    virtual void visit(const StartGameMessage& message);
     virtual void visit(const ClientIdMessage& message);
 };
 
