@@ -18,7 +18,9 @@ enum class MessageType : uint8_t
     StartGame,
 
     CharacterMoved,
+    BombPlaced,
     CellChanged,
+
     GameObjectAdded,
     GameObjectChanged,
     GameObjectDestroyed,

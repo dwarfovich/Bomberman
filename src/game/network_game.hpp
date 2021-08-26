@@ -24,6 +24,7 @@ public:
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
+    void onMapCellChanged(size_t index);
 
 private: // methods
     void makeConnections();
@@ -33,6 +34,20 @@ private: // methods
 private: // data
     Server* server_;
     bool    connectionsMade_ = false;
+
+    // Game interface
+public:
+    void                  movePlayer(size_t player, Direction direction) override;
+    void                  stopPlayer(size_t player) override;
+    std::shared_ptr<Bomb> placeBomb(size_t player) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const CharacterMovedMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const BombPlacedMessage& message) override;
 };
 
 } // namespace bm

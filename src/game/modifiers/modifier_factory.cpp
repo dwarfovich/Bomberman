@@ -5,7 +5,7 @@ namespace bm {
 
 std::unique_ptr<IModifier> ModifierFactory::createModifier(ModifierType type)
 {
-    std::unique_ptr<IModifier> modifier;
+    std::unique_ptr<IModifier> modifier = nullptr;
     switch (type) {
         case ModifierType::IncreaseBombRadius: modifier = std::make_unique<PermanentBombRadiusIncrease>(); break;
     }

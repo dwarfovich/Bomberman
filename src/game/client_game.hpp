@@ -16,11 +16,11 @@ class ClientGame : public Game, public IMessageVisitor
 public:
     explicit ClientGame(Client* client, QObject* parent = nullptr);
 
-    void start() override;
-    void addPlayer(const std::shared_ptr<Bomberman>& player) override;
-    void movePlayer(size_t player, Direction direction) override;
-    void stopPlayer(size_t player) override;
-    void placeBomb(size_t player) override;
+    void                  start() override;
+    void                  addPlayer(const std::shared_ptr<Bomberman>& player) override;
+    void                  movePlayer(size_t player, Direction direction) override;
+    void                  stopPlayer(size_t player) override;
+    std::shared_ptr<Bomb> placeBomb(size_t player) override;
 
 private slots:
     void onReadyToStart();
@@ -45,6 +45,18 @@ public:
     // Game interface
 public:
     uint8_t playerId() const override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const CharacterMovedMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const BombPlacedMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const CellChangedMessage& message) override;
 };
 
 } // namespace bm

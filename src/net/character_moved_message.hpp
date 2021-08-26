@@ -2,6 +2,7 @@
 #define BM_CHARACTERMOVEDMESSAGE_HPP
 
 #include "message.hpp"
+#include "game/move_data.hpp"
 
 #include <QByteArray>
 
@@ -11,6 +12,7 @@ class MovingObject;
 class CharacterMovedMessage : public Message
 {
 public:
+    CharacterMovedMessage() = default;
     CharacterMovedMessage(const MovingObject &object);
 
     MessageType type() const override;
@@ -18,6 +20,8 @@ public:
     int         dataLength() const override;
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
+
+    std::pair<uint8_t, MoveData> moveData() const;
 
 private:
     QByteArray data_;

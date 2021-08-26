@@ -109,6 +109,11 @@ uint8_t Server::generateClientId() const
     return wrongClientId;
 }
 
+ServerWorker *Server::currentMessageClient() const
+{
+    return currentMessageClient_;
+}
+
 void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
 {
     if (message.type() == MessageType::MapInitialization) {

@@ -11,6 +11,9 @@ class MapInitializedMessage;
 class PrepareToStartGame;
 class StartGameMessage;
 class ClientIdMessage;
+class CharacterMovedMessage;
+class BombPlacedMessage;
+class CellChangedMessage;
 
 class IMessageVisitor
 {
@@ -23,6 +26,10 @@ public:
     virtual void visit(const ClientReadyMessage& message);
     virtual void visit(const MapInitializationMessage& message);
     virtual void visit(const MapInitializedMessage& message);
+    virtual void visit(const CharacterMovedMessage& message);
+    virtual void visit(const BombPlacedMessage& message);
+    virtual void visit(const CellChangedMessage& message);
+
     virtual void visit(const PrepareToStartGame& message);
     virtual void visit(const StartGameMessage& message);
     virtual void visit(const ClientIdMessage& message);

@@ -31,7 +31,7 @@ void ServerGame::stopPlayer(size_t player)
     //    }
 }
 
-void ServerGame::placeBomb(size_t player)
+std::shared_ptr<Bomb> ServerGame::placeBomb(size_t player)
 {
     std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
     if (bomb) {
@@ -42,15 +42,8 @@ void ServerGame::placeBomb(size_t player)
             addExplosionEvent(bomb);
         }
     }
-    //    std::shared_ptr<Bomb> bomb = bombermans_[player]->createBomb();
-    //    if (bomb) {
-    //        auto index = map_->coordinatesToIndex(bombermans_[player]->movementData().coordinates);
-    //        if (map_->isProperIndex(index)) {
-    //            bomb->cellIndex = index;
-    //            map_->placeBomb(bomb);
-    //            addExplosionEvent(bomb);
-    //        }
-    //    }
+
+    return bomb;
 }
 
 bool ServerGame::isCorrectPlayerIndex(size_t index) const
@@ -91,6 +84,9 @@ void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
 {
     player->setId(bombermans_.size());
     bombermans_.push_back(player);
+    if (player->id() == 0) {
+        playerBomberman_ = player;
+    }
 }
 
 void ServerGame::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
@@ -107,7 +103,7 @@ void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         explosion.collideWith(*affectedObject, collider_);
     }
 
-    bomberman(bomb->playerId)->decreaseActiveBombs();
+    playerBomberman_->decreaseActiveBombs();
 }
 
 void ServerGame::setMap(const std::shared_ptr<Map>& map)

@@ -20,6 +20,15 @@ void IMessageVisitor::visit(const MapInitializationMessage &message)
 void IMessageVisitor::visit(const MapInitializedMessage &message)
 {}
 
+void IMessageVisitor::visit(const CharacterMovedMessage &message)
+{}
+
+void IMessageVisitor::visit(const BombPlacedMessage &message)
+{}
+
+void IMessageVisitor::visit(const CellChangedMessage &message)
+{}
+
 void IMessageVisitor::visit(const PrepareToStartGame &message)
 {}
 

@@ -142,6 +142,12 @@ void Map::setCellType(size_t index, CellStructure structure)
     emit cellChanged(index);
 }
 
+void Map::setCell(const Cell& cell)
+{
+    cells_[cell.index()] = cell;
+    emit cellChanged(cell.index());
+}
+
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     if (isProperIndex(bomb->cellIndex)) {
@@ -184,10 +190,12 @@ void Map::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
 {
     bombermans_.emplace(bomberman.get(), bomberman);
     movingObjects_.push_back(bomberman);
+    idToMovingObjects_.emplace(bomberman->id(), bomberman);
 }
 
 void Map::removeBomberman(const Bomberman& bomberman)
 {
+    // TODO: Also remove from idToMovingObjects_.
     auto iter = bombermans_.find(&bomberman);
     if (iter != bombermans_.cend()) {
         removeMovingObject(iter->second);
@@ -199,6 +207,15 @@ void Map::addBot(const std::shared_ptr<Bot>& bot)
 {
     bots_.push_back(bot);
     movingObjects_.push_back(bot);
+    idToMovingObjects_.emplace(bot->id(), bot);
+}
+
+void Map::moveCharacter(uint8_t id, const MoveData& moveData) const
+{
+    auto iter = idToMovingObjects_.find(id);
+    if (iter != idToMovingObjects_.cend()) {
+        iter->second->setMovementData(moveData);
+    }
 }
 
 // void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
@@ -210,6 +227,7 @@ void Map::removeMovingObject(const std::shared_ptr<MovingObject>& object)
 {
     // TODO: Also remove from bombermans_ and bots_.
     movingObjects_.erase(std::remove(movingObjects_.begin(), movingObjects_.end(), object));
+    // TODO: Also remove from idToMovingObjects_.
 }
 
 const std::shared_ptr<MovingObject>& Map::sharedPtrForObject(const MovingObject& object) const

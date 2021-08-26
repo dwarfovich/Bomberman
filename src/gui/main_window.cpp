@@ -199,6 +199,10 @@ void MainWindow::startSinglePlayerGame()
     }
 
     game_ = createSinglePlayerGame(mapData.map);
+    if (!game_) {
+        QMessageBox::critical(this, "Error!", "Cann't craete game");
+        exit(1);
+    }
 
     GameData data;
     data.mapData = &mapData;

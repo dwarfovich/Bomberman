@@ -30,7 +30,7 @@ public:
     virtual void                              addPlayer(const std::shared_ptr<Bomberman>& player) = 0;
     virtual void                              movePlayer(size_t player, Direction)                = 0;
     virtual void                              stopPlayer(size_t player)                           = 0;
-    virtual void                              placeBomb(size_t player)                            = 0;
+    virtual std::shared_ptr<Bomb>             placeBomb(size_t player)                            = 0;
     virtual const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const                   = 0;
 
     virtual void    setMap(const std::shared_ptr<Map>& map);

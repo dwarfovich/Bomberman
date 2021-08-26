@@ -1,7 +1,10 @@
 #ifndef CELLITEM_HPP
 #define CELLITEM_HPP
 
+#include "sprite_graphics_object.hpp"
+
 #include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QBrush>
 
 namespace bm {
@@ -9,7 +12,7 @@ class Cell;
 
 namespace gui {
 
-class CellItem : public QGraphicsItem
+class CellItem : public SpriteGraphicsObject
 {
 public:
     explicit CellItem(const Cell* cell = nullptr, QGraphicsItem* parent = nullptr);

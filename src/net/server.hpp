@@ -66,7 +66,8 @@ public:
 
     // IMessageVisitor interface
 public:
-    void visit(const MapInitializedMessage& message) override;
+    void          visit(const MapInitializedMessage& message) override;
+    ServerWorker* currentMessageClient() const;
 };
 
 } // namespace bm

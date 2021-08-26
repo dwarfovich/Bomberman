@@ -5,6 +5,7 @@ namespace bm {
 
 QDataStream& operator<<(QDataStream& stream, const Cell& cell)
 {
+    stream << cell.index_;
     stream << cell.structure_;
     stream << cell.hasBomb_;
     if (cell.modifier_) {
@@ -18,6 +19,7 @@ QDataStream& operator<<(QDataStream& stream, const Cell& cell)
 
 QDataStream& operator>>(QDataStream& stream, Cell& cell)
 {
+    stream >> cell.index_;
     stream >> cell.structure_;
     stream >> cell.hasBomb_;
     ModifierType modifierType;

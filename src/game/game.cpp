@@ -73,7 +73,7 @@ void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, siz
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier();
-    if (modifier && object == player1_) {
+    if (modifier && object == playerBomberman_) {
         auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
         if (modifier->durationType() == ModifierDurationType::Temporary) {
@@ -98,8 +98,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         explosion.collideWith(*affectedObject, collider_);
     }
 
-    // const auto& bomberman = bomb->owner;
-    bomberman(bomb->playerId)->decreaseActiveBombs();
+    playerBomberman_->decreaseActiveBombs();
 }
 
 void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)

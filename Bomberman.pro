@@ -46,9 +46,11 @@ SOURCES += \
     src/game/moving_object.cpp \
     src/game/network_game.cpp \
     src/game/server_game.cpp \
+    src/gui/animated_sprite_graphics_object.cpp \
     src/gui/bot_graphics_item.cpp \
     src/gui/cell_item.cpp \
     src/gui/character_graphics_item.cpp \
+    src/gui/character_sprite_object.cpp \
     src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
     src/gui/game_scene.cpp \
@@ -57,7 +59,11 @@ SOURCES += \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
     src/gui/player_key_controls.cpp \
+    src/gui/sprite_factory.cpp \
+    src/gui/sprite_graphics_object.cpp \
     src/main.cpp \
+    src/net/bomb_placed_message.cpp \
+    src/net/cell_changed_message.cpp \
     src/net/character_moved_message.cpp \
     src/net/client.cpp \
     src/net/client_id_message.cpp \
@@ -123,9 +129,11 @@ HEADERS += \
     src/game/object_type.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
+    src/gui/animated_sprite_graphics_object.hpp \
     src/gui/bot_graphics_item.hpp \
     src/gui/cell_item.hpp \
     src/gui/character_graphics_item.hpp \
+    src/gui/character_sprite_object.hpp \
     src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
     src/gui/game_scene.hpp \
@@ -134,6 +142,10 @@ HEADERS += \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
     src/gui/player_key_controls.hpp \
+    src/gui/sprite_factory.hpp \
+    src/gui/sprite_graphics_object.hpp \
+    src/net/bomb_placed_message.hpp \
+    src/net/cell_changed_message.hpp \
     src/net/character_moved_message.hpp \
     src/net/client.hpp \
     src/net/client_id_message.hpp \

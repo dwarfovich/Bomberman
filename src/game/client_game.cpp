@@ -1,5 +1,8 @@
 #include "client_game.hpp"
 #include "net/client.hpp"
+#include "net/character_moved_message.hpp"
+#include "net/bomb_placed_message.hpp"
+#include "net/cell_changed_message.hpp"
 
 namespace bm {
 
@@ -19,16 +22,21 @@ void ClientGame::addPlayer(const std::shared_ptr<Bomberman> &player)
 
 void ClientGame::movePlayer(size_t player, Direction direction)
 {
+    // TODO: Check if bombermans and playerBomberman_ have proper ids.
     playerBomberman_->setSpeed(defaultBombermanSpeed);
     playerBomberman_->setDirection(direction);
+    CharacterMovedMessage message(*playerBomberman_);
+    client_->sendMessage(message);
 }
 
 void ClientGame::stopPlayer(size_t player)
 {
     playerBomberman_->setSpeed(0);
+    CharacterMovedMessage message(*playerBomberman_);
+    client_->sendMessage(message);
 }
 
-void ClientGame::placeBomb(size_t player)
+std::shared_ptr<Bomb> ClientGame::placeBomb(size_t player)
 {
     std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
     if (bomb) {
@@ -38,7 +46,12 @@ void ClientGame::placeBomb(size_t player)
             map_->placeBomb(bomb);
             addExplosionEvent(bomb);
         }
+
+        BombPlacedMessage message { *bomb };
+        client_->sendMessage(message);
     }
+
+    return bomb;
 }
 
 void ClientGame::onReadyToStart()
@@ -85,6 +98,25 @@ void ClientGame::setMap(const std::shared_ptr<Map> &map)
 uint8_t ClientGame::playerId() const
 {
     return client_->playerId();
+}
+
+void ClientGame::visit(const CharacterMovedMessage &message)
+{
+    const auto &moveData = message.moveData();
+    map_->moveCharacter(moveData.first, moveData.second);
+}
+
+void ClientGame::visit(const BombPlacedMessage &message)
+{
+    const auto &bomb = message.bomb();
+    map_->placeBomb(bomb);
+    addExplosionEvent(bomb);
+}
+
+void ClientGame::visit(const CellChangedMessage &message)
+{
+    const auto &cell = message.cell();
+    map_->setCell(cell);
 }
 
 } // namespace bm

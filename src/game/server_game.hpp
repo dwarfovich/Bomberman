@@ -14,12 +14,12 @@ class ServerGame : public Game
 public:
     explicit ServerGame(QObject* parent = nullptr);
 
-    void start() override;
-    void movePlayer(size_t player, Direction direction) override;
-    void stopPlayer(size_t player) override;
-    void placeBomb(size_t player) override;
-    void addPlayer(const std::shared_ptr<Bomberman>& player) override;
-    void setMap(const std::shared_ptr<Map>& map) override;
+    void                  start() override;
+    void                  movePlayer(size_t player, Direction direction) override;
+    void                  stopPlayer(size_t player) override;
+    std::shared_ptr<Bomb> placeBomb(size_t player) override;
+    void                  addPlayer(const std::shared_ptr<Bomberman>& player) override;
+    void                  setMap(const std::shared_ptr<Map>& map) override;
 
     bool                              isCorrectPlayerIndex(size_t index) const;
     const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const override;
