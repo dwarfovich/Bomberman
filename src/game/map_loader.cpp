@@ -25,12 +25,13 @@ CellStructure jsonValueToCellStructure(int value)
 void parseRespawnLocations(const QJsonObject& json, MapData& mapData)
 {
     const auto& array = json["player_respawns"].toArray();
-    for (size_t i = 0; i < array.size(); ++i) {
-        auto index     = array[i].toInt();
-        auto bomberman = std::make_shared<Bomberman>();
-        bomberman->setCoordinates(mapData.map->indexToCellCenterCoordinates(index));
-        mapData.bombermans.push_back(bomberman);
-    }
+
+    //    for (size_t i = 0; i < array.size(); ++i) {
+    //        auto index     = array[i].toInt();
+    //        auto bomberman = std::make_shared<Bomberman>();
+    //        bomberman->setCoordinates(mapData.map->indexToCellCenterCoordinates(index));
+    //        mapData.bombermans.push_back(bomberman);
+    //    }
 
     const auto& botArray = json["bot_respawns"].toArray();
     for (size_t i = 0; i < botArray.size(); ++i) {
@@ -78,7 +79,7 @@ std::unique_ptr<Map> createTestMap()
 
 MapData loadFromFile(const QString& filePath)
 {
-    qDebug() << filePath;
+    // qDebug() << filePath;
     QFile file { filePath };
     if (!file.open(QIODevice::ReadOnly)) {
         return {};
@@ -114,6 +115,12 @@ MapData loadFromFile(const QString& filePath)
         mapData.map = std::move(map);
 
         parseRespawnLocations(jsonObject, mapData);
+        const auto&        array = jsonObject["player_respawns"].toArray();
+        Map::RespawnPlaces bombermansRespawns;
+        for (const auto& respawnJson : array) {
+            bombermansRespawns.push_back(respawnJson.toInt());
+        }
+        mapData.map->setRespawnPlaces(RespawnType::Bomberman, bombermansRespawns);
 
         return mapData;
     } catch (const std::exception& e) {

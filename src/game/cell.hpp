@@ -14,17 +14,20 @@ class Cell : public GameObject
 public:
     ACCEPT_COLLISION;
 
+    friend QDataStream& operator<<(QDataStream& stream, const Cell& cell);
+    friend QDataStream& operator>>(QDataStream& stream, Cell& cell);
+
     CellStructure structure() const;
-    void setStructure(CellStructure structure);
+    void          setStructure(CellStructure structure);
 
     bool hasBomb() const;
     void setHasBomb(bool hasBomb);
 
-    const std::shared_ptr<IModifier> &modifier() const;
-    void setModifier(const std::shared_ptr<IModifier> &modifier);
+    const std::shared_ptr<IModifier>& modifier() const;
+    void                              setModifier(const std::shared_ptr<IModifier>& modifier);
 
     size_t index() const;
-    void setIndex(size_t index);
+    void   setIndex(size_t index);
 
 private:
     CellStructure              structure_ = CellStructure::Empty;

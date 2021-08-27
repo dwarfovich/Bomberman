@@ -9,7 +9,7 @@ double       CellItem::size_          = 50;
 const QBrush CellItem::concreteBrush_ = Qt::gray;
 const QBrush CellItem::bricksBrush_   = QColor { 150, 0, 0 };
 
-CellItem::CellItem(const Cell* cell, QGraphicsItem* parent) : QGraphicsItem { parent }, cell_ { cell }
+CellItem::CellItem(const Cell* cell, QGraphicsItem* parent) : SpriteGraphicsObject { parent }, cell_ { cell }
 {}
 
 CellItem::CellItem(CellItem&& other)

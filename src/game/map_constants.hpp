@@ -10,7 +10,7 @@ namespace bm {
 inline constexpr size_t       invalidMapIndex     = -1;
 inline constexpr QPoint       invalidCoordinates  = { -1, -1 };
 inline constexpr CellLocation invalidCellLocation = { invalidMapIndex, invalidMapIndex };
-inline constexpr int          cellSize            = 100;
+inline constexpr int          cellSize            = 50;
 inline constexpr int          cellHalfSize        = cellSize / 2;
 
 } // namespace bm

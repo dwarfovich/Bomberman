@@ -2,9 +2,9 @@
 
 namespace bm {
 
-ModifierType IModifier::type() const
+ModifierDurationType IModifier::durationType() const
 {
-    return ModifierType::Temporary;
+    return ModifierDurationType::Temporary;
 }
 
 Milliseconds IModifier::duration() const

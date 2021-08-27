@@ -4,7 +4,9 @@
 namespace bm {
 
 Bomberman::Bomberman() : Character { MoveData { 0, Direction::Downward, { 0, 0 } } }
-{}
+{
+    setBombPrototype({});
+}
 
 bool Bomberman::acceptsModifiers() const
 {
@@ -32,32 +34,57 @@ std::unique_ptr<Bomb> Bomberman::createBomb()
 {
     if (activeBombs_ < maxActiveBombs_) {
         ++activeBombs_;
-        auto bomb   = std::make_unique<Bomb>(defaultBomb_);
-        bomb->owner = shared_from_this();
+        auto bomb = std::make_unique<Bomb>(bombPrototype_);
+        // bomb->owner = shared_from_this();
         return bomb;
     } else {
         return nullptr;
     }
 }
 
-const Bomb &Bomberman::defaultBomb() const
+const Bomb &Bomberman::bombPrototype() const
 {
-    return defaultBomb_;
+    return bombPrototype_;
+    ;
 }
 
-void Bomberman::setDefaultBomb(const Bomb &newBomb)
+void Bomberman::setBombPrototype(const Bomb &newBomb)
 {
-    defaultBomb_ = newBomb;
+    bombPrototype_           = newBomb;
+    bombPrototype_.playerId  = id();
+    bombPrototype_.cellIndex = 0;
 }
 
-size_t Bomberman::id() const
+// uint8_t Bomberman::playerId() const
+//{
+//    return playerId_;
+//}
+
+// void Bomberman::setPlayerId(uint8_t newId)
+//{
+//    playerId_               = newId;
+//    bombPrototype_.playerId = playerId_;
+//}
+
+ObjectType Bomberman::type() const
 {
-    return id_;
+    return ObjectType::Bomberman;
 }
 
-void Bomberman::setId(size_t newId)
+void Bomberman::toStream(QDataStream &stream) const
 {
-    id_ = newId;
+    // stream << playerId_;
+    stream << activeBombs_;
+    stream << maxActiveBombs_;
+    stream << bombPrototype_;
+}
+
+void Bomberman::fromStream(QDataStream &stream)
+{
+    // stream >> playerId_;
+    stream >> activeBombs_;
+    stream >> maxActiveBombs_;
+    stream >> bombPrototype_;
 }
 
 } // namespace bm

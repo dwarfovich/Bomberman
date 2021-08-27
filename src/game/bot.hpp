@@ -14,17 +14,17 @@ public:
 
     Bot();
 
-    bool notifyIfMeetedWall() const override;
-    void meetsWall() override;
-    bool acceptsModifiers() const override;
+    ObjectType type() const override;
+    void       toStream(QDataStream &stream) const override;
+    void       fromStream(QDataStream &stream) override;
+    bool       notifyIfMeetedWall() const override;
+    void       meetsWall() override;
+    bool       acceptsModifiers() const override;
 
     void setAi(std::unique_ptr<BotAi> ai);
 
 private:
     std::unique_ptr<BotAi> ai_;
-
-    // Character interface
-public:
 };
 } // namespace bm
 

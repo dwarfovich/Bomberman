@@ -16,11 +16,16 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     addServerPlayerToModel();
 
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
+    connect(server_, &Server::readyToStartGame, this, &CreateNetworkGameDialog::onServerReadyToStartGame);
 
     connect(
         ui_->serverPlayerNameEdit, &QLineEdit::textChanged, this, &CreateNetworkGameDialog::onServerPlayerNameChanged);
     connect(ui_->startGameButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::accept);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::reject);
+
+    ui_->startGameButton->setDisabled(true);
+
+    startServer();
 }
 
 CreateNetworkGameDialog::~CreateNetworkGameDialog()
@@ -28,16 +33,21 @@ CreateNetworkGameDialog::~CreateNetworkGameDialog()
     delete ui_;
 }
 
+Server *CreateNetworkGameDialog::server() const
+{
+    return server_;
+}
+
 void CreateNetworkGameDialog::logMessage(const QString &message)
 {
     ui_->logView->appendPlainText(message);
 }
 
-void CreateNetworkGameDialog::restartServer()
+void CreateNetworkGameDialog::startServer()
 {
     QHostAddress address;
     address.setAddress(ui_->serverAddressEdit->text());
-    server_->listen(address, ui_->serverPortSpinBox->value());
+    server_->startListen(address, ui_->serverPortSpinBox->value());
     //    ui->log->appendPlainText("Starting server: listen on " + address.toString() + ", port "
     //                             + QString::number(server->serverPort()));
 }
@@ -48,6 +58,13 @@ void CreateNetworkGameDialog::onServerPlayerNameChanged(const QString &newName)
     if (item) {
         item->setText(newName);
     }
+}
+
+void CreateNetworkGameDialog::onServerReadyToStartGame()
+{
+    emit logMessage("Ready to start game");
+    ui_->startGameButton->setEnabled(true);
+    // accept();
 }
 
 void CreateNetworkGameDialog::addServerPlayerToModel()

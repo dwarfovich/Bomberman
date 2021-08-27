@@ -8,7 +8,8 @@ namespace bm {
 class PermanentBombRadiusIncrease : public PermanentModifier
 {
 public:
-    void activate(Bomberman &bomberman) override;
+    ModifierType type() const override;
+    void         activate(Bomberman &bomberman) override;
 };
 
 } // namespace bm

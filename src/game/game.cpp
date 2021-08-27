@@ -11,25 +11,25 @@
 #include <functional>
 
 namespace bm {
-Game::Game() : collider_ { this }
+Game::Game(QObject* parent) : QObject { parent }, collider_ { this }
 {}
 
 void Game::start()
 {
-    if (!scene_) {
-        return;
-    }
-    moveTimer.start(timeout_);
+    //    if (!scene_) {
+    //        return;
+    //    }
+    // moveTimer.start(timeout_);
 }
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
     // TODO: Disconnect oldies.
     map_ = map;
-//    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-//    connect(&moveTimer, &QTimer::timeout, [this]() {
-//        map_->moveObjects(timeout_);
-//    });
+    //    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
+    //    connect(&moveTimer, &QTimer::timeout, [this]() {
+    //        map_->moveObjects(timeout_);
+    //    });
 }
 void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
 {
@@ -73,10 +73,10 @@ void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, siz
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier();
-    if (modifier && object == player1_) {
+    if (modifier && object == playerBomberman_) {
         auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
         modifier->activate(*bomberman);
-        if (modifier->type() == ModifierType::Temporary) {
+        if (modifier->durationType() == ModifierDurationType::Temporary) {
             auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
             timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
         }
@@ -98,8 +98,12 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         explosion.collideWith(*affectedObject, collider_);
     }
 
-    const auto& bomberman = bomb->owner;
-    bomberman->decreaseActiveBombs();
+    playerBomberman_->decreaseActiveBombs();
+}
+
+void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)
+{
+    playerBomberman_ = newPlayerBomberman;
 }
 
 } // namespace bm

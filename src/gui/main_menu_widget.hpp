@@ -21,6 +21,7 @@ public:
 signals:
     void newSinglePlayerGameRequest();
     void newNetworkGameRequest();
+    void connectToServerRequest();
 
 private:
     Ui::MainMenuWidget *ui;

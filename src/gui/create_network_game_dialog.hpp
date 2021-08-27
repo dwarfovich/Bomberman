@@ -19,12 +19,15 @@ public:
     explicit CreateNetworkGameDialog(QWidget *parent = nullptr);
     ~CreateNetworkGameDialog();
 
+    Server *server() const;
+
 public slots:
     void logMessage(const QString &message);
-    void restartServer();
+    void startServer();
 
 private slots:
     void onServerPlayerNameChanged(const QString &newName);
+    void onServerReadyToStartGame();
 
 private: // methods
     void addServerPlayerToModel();

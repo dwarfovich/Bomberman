@@ -2,9 +2,9 @@
 
 namespace bm {
 
-ModifierType PermanentModifier::type() const
+ModifierDurationType PermanentModifier::durationType() const
 {
-    return ModifierType::Permanent;
+    return ModifierDurationType::Permanent;
 }
 
 Milliseconds PermanentModifier::duration() const

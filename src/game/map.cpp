@@ -1,6 +1,10 @@
 #include "map.hpp"
 #include "map_constants.hpp"
+#include "character_factory.hpp"
+#include "bot_factory.hpp"
+#include "bomberman.hpp"
 
+#include <QDateTime>
 #include <QRect>
 #include <QDebug>
 #define DEB qDebug()
@@ -24,6 +28,82 @@ QPoint advanceCoordinates(const QPoint& coordinates, double timeDelta, int speed
 }
 
 } // namespace
+
+QDataStream& operator<<(QDataStream& stream, const Map& map)
+{
+    stream << map.randomSeed_;
+
+    stream << map.widthInCells_ << map.heightInCells_;
+    for (const auto& cell : map.cells_) {
+        stream << cell;
+    }
+
+    auto s = map.movingObjects_;
+    stream << map.movingObjects_.size();
+    for (const auto& object : map.movingObjects_) {
+        stream << *object;
+    }
+
+    //    stream << map.bombs_.size();
+    //    for (const auto& bomb : map.bombs_) {
+    //        stream << *bomb;
+    //    }
+
+    //    stream << map.explosions_.size();
+    //    for (const auto& explosion : map.explosions_) {
+    //        stream << explosion;
+    //    }
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Map& map)
+{
+    stream >> map.randomSeed_;
+
+    stream >> map.widthInCells_;
+    stream >> map.heightInCells_;
+    size_t cellsCount = map.widthInCells_ * map.heightInCells_;
+    // TODO: Handle exception.
+    map.cells_.resize(cellsCount);
+    for (auto& cell : map.cells_) {
+        stream >> cell;
+    }
+
+    size_t charactersCount = 0;
+    stream >> charactersCount;
+    for (size_t i = 0; i < charactersCount; ++i) {
+        ObjectType type;
+        stream >> type;
+        if (type == ObjectType::Bomberman) {
+            auto bomberman = std::make_shared<Bomberman>();
+            stream >> *bomberman;
+            map.addBomberman(bomberman);
+        } else if (type == ObjectType::Bot) {
+            std::shared_ptr<Bot> bot = createBot(BotType::Regular, map);
+            stream >> *bot;
+            map.addBot(bot);
+        }
+    }
+
+    //    size_t bombsCount = 0;
+    //    stream >> bombsCount;
+    //    for (size_t i = 0; i < bombsCount; ++i) {
+    //        auto bomb = std::make_shared<Bomb>();
+    //        stream >> *bomb;
+    //        map.placeBomb(bomb);
+    //    }
+
+    //    // TODO: Refactor dummy read of explosions.
+    //    size_t explosionsCount = 0;
+    //    stream >> explosionsCount;
+    //    for (size_t i = 0; i < explosionsCount; ++i) {
+    //        Explosion e { {}, { 0, 0 }, { 0, 0 } };
+    //        stream >> e;
+    //    }
+
+    return stream;
+}
 
 Map::Map(size_t width, size_t height)
 {
@@ -62,6 +142,12 @@ void Map::setCellType(size_t index, CellStructure structure)
     emit cellChanged(index);
 }
 
+void Map::setCell(const Cell& cell)
+{
+    cells_[cell.index()] = cell;
+    emit cellChanged(cell.index());
+}
+
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     if (isProperIndex(bomb->cellIndex)) {
@@ -83,7 +169,7 @@ bool Map::removeBomb(size_t index)
         return false;
     }
     bombs_.erase(iter);
-    cells_[index].setHasBomb( false);
+    cells_[index].setHasBomb(false);
     emit cellChanged(index);
 
     return true;
@@ -100,14 +186,16 @@ bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
     }
 }
 
-void Map::addBomberman(const std::shared_ptr<Bomberman> &bomberman)
+void Map::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
 {
     bombermans_.emplace(bomberman.get(), bomberman);
     movingObjects_.push_back(bomberman);
+    idToMovingObjects_.emplace(bomberman->id(), bomberman);
 }
 
-void Map::removeBomberman(const Bomberman &bomberman)
+void Map::removeBomberman(const Bomberman& bomberman)
 {
+    // TODO: Also remove from idToMovingObjects_.
     auto iter = bombermans_.find(&bomberman);
     if (iter != bombermans_.cend()) {
         removeMovingObject(iter->second);
@@ -115,20 +203,37 @@ void Map::removeBomberman(const Bomberman &bomberman)
     }
 }
 
-void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
+void Map::addBot(const std::shared_ptr<Bot>& bot)
 {
-    movingObjects_.push_back(object);
+    bots_.push_back(bot);
+    movingObjects_.push_back(bot);
+    idToMovingObjects_.emplace(bot->id(), bot);
 }
 
-void Map::removeMovingObject(const std::shared_ptr<MovingObject> &object)
+void Map::moveCharacter(uint8_t id, const MoveData& moveData) const
 {
+    auto iter = idToMovingObjects_.find(id);
+    if (iter != idToMovingObjects_.cend()) {
+        iter->second->setMovementData(moveData);
+    }
+}
+
+// void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
+//{
+//    movingObjects_.push_back(object);
+//}
+
+void Map::removeMovingObject(const std::shared_ptr<MovingObject>& object)
+{
+    // TODO: Also remove from bombermans_ and bots_.
     movingObjects_.erase(std::remove(movingObjects_.begin(), movingObjects_.end(), object));
+    // TODO: Also remove from idToMovingObjects_.
 }
 
-const std::shared_ptr<MovingObject> &Map::sharedPtrForObject(const MovingObject &object) const
+const std::shared_ptr<MovingObject>& Map::sharedPtrForObject(const MovingObject& object) const
 {
     const MovingObject* objectPtr = &object;
-    auto iter = std::find_if(movingObjects_.cbegin(), movingObjects_.cend(), [objectPtr](const auto& pointer){
+    auto iter = std::find_if(movingObjects_.cbegin(), movingObjects_.cend(), [objectPtr](const auto& pointer) {
         return (pointer.get() == objectPtr);
     });
 
@@ -140,10 +245,10 @@ const std::shared_ptr<MovingObject> &Map::sharedPtrForObject(const MovingObject 
     }
 }
 
-void Map::removeMovingObject(const MovingObject &object)
+void Map::removeMovingObject(const MovingObject& object)
 {
     const MovingObject* objectPtr = &object;
-    movingObjects_.erase(std::remove_if(movingObjects_.begin(), movingObjects_.end(), [objectPtr](const auto& iter){
+    movingObjects_.erase(std::remove_if(movingObjects_.begin(), movingObjects_.end(), [objectPtr](const auto& iter) {
         return iter.get() == objectPtr;
     }));
 }
@@ -230,6 +335,17 @@ size_t Map::height() const
 const std::vector<Cell>& Map::cells() const
 {
     return (cells_);
+}
+
+const Map::RespawnPlaces& Map::playerRespawns() const
+{
+    auto iter = respawnPlaces_.find(RespawnType::Bomberman);
+    if (iter != respawnPlaces_.cend()) {
+        return iter->second;
+    } else {
+        static const RespawnPlaces empty;
+        return empty;
+    }
 }
 
 QPoint Map::indexToCellCenterCoordinates(size_t index) const
@@ -522,6 +638,16 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     }
 }
 
+uint32_t Map::randomSeed() const
+{
+    return randomSeed_;
+}
+
+const std::vector<std::shared_ptr<Bot>>& Map::bots() const
+{
+    return bots_;
+}
+
 void Map::moveObjects(double timeDelta)
 {
     timeDelta /= 42.;
@@ -533,8 +659,8 @@ void Map::moveObjects(double timeDelta)
         auto  moveData    = object->movementData();
         auto& coordinates = moveData.coordinates;
         auto  oldIndex    = coordinatesToIndex(coordinates);
-        auto      inCell = coordinatesInCell(coordinates);
-        int ds     = 5;
+        auto  inCell      = coordinatesInCell(coordinates);
+        int   ds          = 5;
 
         const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
         const int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);

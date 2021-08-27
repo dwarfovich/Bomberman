@@ -1,13 +1,28 @@
 #include "cell_location.hpp"
 #include "map_constants.hpp"
 
+#include <QDataStream>
+
 namespace bm {
 
-constexpr CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
-{}
+QDataStream& operator<<(QDataStream& stream, const CellLocation& location)
+{
+    stream << location.x_;
+    stream << location.y_;
 
-// constexpr CellLocation::CellLocation(size_t aX, size_t aY) : x_ { aX }, y_ { aY }
-//{}
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, CellLocation& location)
+{
+    stream >> location.x_;
+    stream >> location.y_;
+
+    return stream;
+}
+
+CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
+{}
 
 bool CellLocation::isValid() const
 {
