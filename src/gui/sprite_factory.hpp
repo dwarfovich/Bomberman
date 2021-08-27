@@ -15,6 +15,8 @@ namespace gui {
 class SpriteObjectFactory
 {
 public:
+    SpriteObjectFactory();
+
     std::unique_ptr<SpriteGraphicsObject> createCellObject(const Cell* cell);
     std::unique_ptr<SpriteGraphicsObject> createBombermanObject(const std::shared_ptr<Bomberman>& character);
 

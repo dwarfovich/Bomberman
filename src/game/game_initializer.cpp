@@ -28,6 +28,7 @@ bool initializeGame(const GameData& gameData)
     bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
     map->addBomberman(bomberman);
     gameData.game->addPlayer(bomberman);
+    gameData.game->setPlayerBomberman(bomberman);
 
     // const auto& player = gameData.mapData->bombermans[0];
     // gameData.game->addPlayer(player);

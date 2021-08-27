@@ -47,11 +47,17 @@ int SpriteGraphicsObject::framesCount() const
     return 1;
 }
 
+int SpriteGraphicsObject::currentSpriteRow() const
+{
+    return 0;
+}
+
 void SpriteGraphicsObject::setPixmap(const QPixmap &pixmap)
 {
     pixmap_         = pixmap;
-    pixmapFragment_ = QPainter::PixmapFragment::create({ cellHalfSizeF, cellHalfSizeF },
-                                                       { currentFrame_ * cellSizeF, 0., cellSizeF, cellSizeF });
+    pixmapFragment_ = QPainter::PixmapFragment::create(
+        { cellHalfSizeF, cellHalfSizeF },
+        { currentFrame_ * cellSizeF, currentSpriteRow() * cellSizeF, cellSizeF, cellSizeF });
 }
 
 } // namespace gui

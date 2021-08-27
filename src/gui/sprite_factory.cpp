@@ -2,9 +2,15 @@
 #include "cell_item.hpp"
 #include "animated_sprite_graphics_object.hpp"
 #include "game/character.hpp"
+#include "game/bomberman.hpp"
 
 namespace bm {
 namespace gui {
+
+SpriteObjectFactory::SpriteObjectFactory()
+{
+    bomberman_ = QPixmap { QStringLiteral(":/gfx/bomberman.png") };
+}
 
 std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createCellObject(const Cell *cell)
 {
@@ -18,6 +24,7 @@ std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createBombermanObject
 {
     auto item = std::make_unique<AnimatedSpriteGraphicsObject>();
     item->setPixmap(bomberman_);
+    item->setCharacter(character);
 
     return item;
 }

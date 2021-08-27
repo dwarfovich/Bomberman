@@ -7,6 +7,9 @@
 
 #include <QPropertyAnimation>
 
+#include <QDebug>
+#define DEB qDebug()
+
 namespace bm {
 namespace gui {
 
@@ -22,6 +25,7 @@ void GameScene::setMap(const std::shared_ptr<Map>& map)
         cellItem->setX(location.x() * cellSize);
         cellItem->setY(location.y() * cellSize);
         cellItems_.push_back(cellItem.get());
+
         QGraphicsScene::addItem(cellItem.release());
     }
 }
@@ -90,12 +94,18 @@ void GameScene::removeAllObjects()
     clear();
 }
 
-void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& character)
+void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& charac)
 {
-    auto iter = movingObjects_.find(character);
-    if (iter != movingObjects_.cend()) {
+    auto character = std::dynamic_pointer_cast<Character>(charac);
+    auto iter      = characterMap_.find(character);
+    if (iter != characterMap_.cend()) {
         iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
+        iter->second->updateSpriteMapRow();
     }
+    //    auto iter = movingObjects_.find(character);
+    //    if (iter != movingObjects_.cend()) {
+    //        iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
+    //    }
 }
 
 void GameScene::cellChanged(size_t index)
@@ -105,17 +115,18 @@ void GameScene::cellChanged(size_t index)
     }
 }
 
+// TODO: Check transformations in case of different cellSizes in bm:: and bm::gui::.
 QPoint GameScene::mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const
 {
     auto   xCells      = coordinates.x() / cellSize;
     auto   dx          = coordinates.x() - xCells * cellSize;
     auto   dxPercents  = (dx * 100.) / cellSize;
-    QPoint sceneCoords = { xCells * cellSize_ + int(cellSize_ * dxPercents / 100.), 0 };
+    QPoint sceneCoords = { xCells * cellSize_ - cellHalfSize + int(cellSize_ * dxPercents / 100.), 0 };
 
     auto yCells     = coordinates.y() / cellSize;
     auto dy         = coordinates.y() - yCells * cellSize;
     auto dyPercents = (dy * 100.) / cellSize;
-    sceneCoords.setY(yCells * cellSize_ + int(cellSize_ * dyPercents / 100.));
+    sceneCoords.setY(yCells * cellSize_ - cellHalfSize + int(cellSize_ * dyPercents / 100.));
 
     return sceneCoords;
 }

@@ -11,7 +11,7 @@ inline const qreal  cellSizeF     = 50.;
 inline const qreal  cellHalfSizeF = cellSizeF / 2.;
 inline const int    cellSize      = cellSizeF;
 inline const int    cellHalfSize  = cellSize / 2;
-inline const QRectF spriteBoundingRect { 0., 0., cellSizeF, cellSizeF };
+inline const QRectF spriteBoundingRect { 0, 0, cellSizeF, cellSizeF };
 
 class SpriteGraphicsObject : public QGraphicsObject
 {
@@ -30,6 +30,7 @@ public:
     virtual int  currentFrame() const;
     virtual void setCurrentFrame(int frame);
     virtual int  framesCount() const;
+    virtual int  currentSpriteRow() const;
 
     void setPixmap(const QPixmap &pixmap);
 
