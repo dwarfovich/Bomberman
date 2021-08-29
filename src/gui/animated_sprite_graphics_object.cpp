@@ -17,8 +17,27 @@ void AnimatedSpriteGraphicsObject::setCurrentFrame(int frame)
     pixmapFragment_ = QPainter::PixmapFragment::create(
         { cellHalfSizeF, cellHalfSizeF },
         { currentFrame_ * cellSizeF, currentSpriteRow_ * cellSizeF, cellSizeF, cellSizeF });
+
     emit currentFrameChanged();
     update();
+}
+
+void AnimatedSpriteGraphicsObject::advanceFrame()
+{
+    if (currentFrame_ == framesCount() - 1) {
+        currentFrame_ = 0;
+    } else {
+        ++currentFrame_;
+    }
+    pixmapFragment_ = QPainter::PixmapFragment::create(
+        { cellHalfSizeF, cellHalfSizeF },
+        { currentFrame_ * cellSizeF, currentSpriteRow_ * cellSizeF, cellSizeF, cellSizeF });
+    update();
+}
+
+void AnimatedSpriteGraphicsObject::setFramesCount(int newFramesCount)
+{
+    framesCount_ = newFramesCount;
 }
 
 void AnimatedSpriteGraphicsObject::setCharacter(const std::shared_ptr<Character>& newCharacter)
@@ -34,10 +53,33 @@ void AnimatedSpriteGraphicsObject::updateSpriteMapRow()
         case Direction::Downward: currentSpriteRow_ = 2; break;
         case Direction::Left: currentSpriteRow_ = 3; break;
     }
+
     pixmapFragment_ = QPainter::PixmapFragment::create(
         { cellHalfSizeF, cellHalfSizeF },
         { currentFrame_ * cellSizeF, currentSpriteRow_ * cellSizeF, cellSizeF, cellSizeF });
+
+    if (animationInProgress && character_->speed() == 0) {
+        animationInProgress = false;
+        setCurrentFrame(0);
+        emit stopAnimation(this);
+    } else if (!animationInProgress && character_->speed() != 0) {
+        animationInProgress = true;
+        emit startAnimation(this);
+    }
+
     update();
+}
+
+void AnimatedSpriteGraphicsObject::advance(int phase)
+{
+    if (phase == 1) {
+        advanceFrame();
+    }
+}
+
+int AnimatedSpriteGraphicsObject::framesCount() const
+{
+    return framesCount_;
 }
 
 } // namespace gui

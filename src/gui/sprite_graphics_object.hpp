@@ -36,6 +36,8 @@ public:
 
 signals:
     void currentFrameChanged();
+    void startAnimation(bm::gui::SpriteGraphicsObject *sprite);
+    void stopAnimation(bm::gui::SpriteGraphicsObject *sprite);
 
 protected:
     QPixmap                  pixmap_;

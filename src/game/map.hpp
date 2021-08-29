@@ -49,6 +49,7 @@ public:
 
     const Cell&              cell(size_t index) const;
     CellLocation             coordinatesToLocation(const QPoint& coordinates) const;
+    QPoint                   indexToCoordinates(size_t index) const;
     QPoint                   locationToCellCenterCoordinates(const CellLocation& location) const;
     size_t                   coordinatesToIndex(const QPoint& point) const;
     size_t                   locationToIndex(const CellLocation& location) const;
@@ -81,7 +82,7 @@ public:
 signals:
     void cellChanged(size_t index);
     void objectMoved(const std::shared_ptr<MovingObject>& object);
-    void objectAdded(const std::shared_ptr<MovingObject>& object);
+    // void objectAdded(const std::shared_ptr<MovingObject>& object);
     void objectIndexChanged(const std::shared_ptr<MovingObject>& bomberman, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
     void objectsCollided(bm::GameObject& lhs, bm::GameObject& rhs);

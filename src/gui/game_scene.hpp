@@ -6,12 +6,15 @@
 #include "character_graphics_item.hpp"
 
 #include <QGraphicsScene>
+#include <QTimer>
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace bm {
 class Bomberman;
+class Explosion;
 class Character;
 class Map;
 
@@ -26,6 +29,7 @@ public:
 
     void setMap(const std::shared_ptr<Map>& map);
     void addBomberman(const std::shared_ptr<Bomberman>& bomberman);
+    void addBot(const std::shared_ptr<Bot>& bot);
 
     void addCellItem(std::unique_ptr<SpriteGraphicsObject> item);
     void addCharacterItem(std::unique_ptr<SpriteGraphicsObject> item);
@@ -36,17 +40,32 @@ public:
     void removeAllObjects();
 
 public slots:
+    void onCharacterStartedMove(const std::shared_ptr<Character>& character);
+    void onCharacterStopped(const std::shared_ptr<Character>& character);
     void onCharacterMoved(const std::shared_ptr<MovingObject>& character);
+    void onBombPlaced(const std::shared_ptr<Bomb>& bomb);
+    void onBombExploded(const std::shared_ptr<Bomb>& bomb);
     void cellChanged(size_t index);
+
+private slots:
+    void updateAnimations();
+    void addAnimation(bm::gui::SpriteGraphicsObject* sprite);
+    void removeAnimation(bm::gui::SpriteGraphicsObject* sprite);
 
 private:
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
 private:
+    std::shared_ptr<Map>               map_;
     std::vector<SpriteGraphicsObject*> cellItems_;
     using CharacterMap = std::unordered_map<std::shared_ptr<Character>, SpriteGraphicsObject*>;
-    CharacterMap        characterMap_;
-    SpriteObjectFactory spriteFactory_;
+    CharacterMap                                           characterMap_;
+    std::unordered_map<GameObject*, SpriteGraphicsObject*> objects_;
+
+    SpriteObjectFactory                       spriteFactory_;
+    QTimer                                    animationTimer_;
+    std::unordered_set<SpriteGraphicsObject*> animations_;
+    const std::chrono::milliseconds           animationPeriod_ { 100 };
 
     using MovingItems = std::unordered_map<std::shared_ptr<MovingObject>, std::unique_ptr<CharacterGraphicsItem>>;
     MovingItems movingObjects_;

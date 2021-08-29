@@ -263,6 +263,12 @@ CellLocation Map::coordinatesToLocation(const QPoint& coordinates) const
     return { static_cast<size_t>(coordinates.x() / cellSize), static_cast<size_t>(coordinates.y() / cellSize) };
 }
 
+QPoint Map::indexToCoordinates(size_t index) const
+{
+    const auto& location = indexToLocation(index);
+    return { static_cast<int>(location.x() * cellSize), static_cast<int>(location.y() * cellSize) };
+}
+
 QPoint Map::locationToCellCenterCoordinates(const CellLocation& location) const
 {
     auto index = locationToIndex(location);

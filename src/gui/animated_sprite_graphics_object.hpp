@@ -16,15 +16,27 @@ public:
 
     bool isAnimated() const override;
     void setCurrentFrame(int frame) override;
+    void advanceFrame();
 
 protected:
-    int                        currentSpriteRow_ = 0;
-    std::shared_ptr<Character> character_        = nullptr;
+    int                        framesCount_        = 10;
+    int                        currentSpriteRow_   = 0;
+    std::shared_ptr<Character> character_          = nullptr;
+    bool                       animationInProgress = false;
 
     // SpriteGraphicsObject interface
 public:
     void updateSpriteMapRow() override;
     void setCharacter(const std::shared_ptr<Character>& newCharacter);
+
+    // QGraphicsItem interface
+public:
+    void advance(int phase) override;
+
+    // SpriteGraphicsObject interface
+public:
+    int  framesCount() const override;
+    void setFramesCount(int newFramesCount);
 };
 
 } // namespace gui

@@ -6,7 +6,7 @@ namespace bm {
 
 namespace {
 
-Explosion calculateExplosion(const Map &map, const Bomb &bomb)
+std::unique_ptr<Explosion> calculateExplosion(const Map &map, const Bomb &bomb)
 {
     const auto centerCell = map.indexToLocation(bomb.cellIndex);
 
@@ -46,19 +46,27 @@ Explosion calculateExplosion(const Map &map, const Bomb &bomb)
         }
     }
 
-    return { centerCell, xRange, yRange };
+    return std::make_unique<Explosion>(centerCell, xRange, yRange);
 }
 
 } // namespace
 
 BombExplosionResult::BombExplosionResult()
-    : explosion { invalidCellLocation, { invalidMapIndex, invalidMapIndex }, { invalidMapIndex, invalidMapIndex } }
+    : explosion { std::make_shared<Explosion>(invalidCellLocation,
+                                              std::pair<size_t, size_t> { invalidMapIndex, invalidMapIndex },
+                                              std::pair<size_t, size_t> { invalidMapIndex, invalidMapIndex }) }
     , affectedObjects {}
 {}
 
-BombExplosionResult::BombExplosionResult(const Explosion &aExplosion, const std::vector<GameObject *> &aAffectedObjects)
+BombExplosionResult::BombExplosionResult(const std::shared_ptr<Explosion> &aExplosion,
+                                         const std::vector<GameObject *> & aAffectedObjects)
     : explosion { aExplosion }, affectedObjects { aAffectedObjects }
 {}
+
+// BombExplosionResult::BombExplosionResult(const Explosion &aExplosion, const std::vector<GameObject *>
+// &aAffectedObjects)
+//    : explosion { aExplosion }, affectedObjects { aAffectedObjects }
+//{}
 
 BombExplosionResult explodeBomb(Map &map, Bomb &bomb)
 {
@@ -69,13 +77,13 @@ BombExplosionResult explodeBomb(Map &map, Bomb &bomb)
     const auto &              bombLocation = map.indexToLocation(bomb.cellIndex);
     auto                      explosion    = calculateExplosion(map, bomb);
     std::vector<GameObject *> affectedObjects;
-    for (size_t x = explosion.xMin(); x <= explosion.xMax(); ++x) {
+    for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
         map.addGameObjectsForCell({ x, bombLocation.y() }, affectedObjects);
     }
-    for (size_t y = explosion.yMin(); y < explosion.center().y(); ++y) {
+    for (size_t y = explosion->yMin(); y < explosion->center().y(); ++y) {
         map.addGameObjectsForCell({ bombLocation.x(), y }, affectedObjects);
     }
-    for (size_t y = explosion.center().y() + 1; y <= explosion.yMax(); ++y) {
+    for (size_t y = explosion->center().y() + 1; y <= explosion->yMax(); ++y) {
         map.addGameObjectsForCell({ bombLocation.x(), y }, affectedObjects);
     }
 

@@ -26,6 +26,8 @@ void Game::setMap(const std::shared_ptr<Map>& map)
 {
     // TODO: Disconnect oldies.
     map_ = map;
+    connect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+    connect(map_.get(), &Map::objectMoved, this, &Game::objectMoved);
     //    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
     //    connect(&moveTimer, &QTimer::timeout, [this]() {
     //        map_->moveObjects(timeout_);
@@ -95,7 +97,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
     auto  explosionData = bm::explodeBomb(*map_, *bomb);
     auto& explosion     = explosionData.explosion;
     for (auto* affectedObject : explosionData.affectedObjects) {
-        explosion.collideWith(*affectedObject, collider_);
+        explosion->collideWith(*affectedObject, collider_);
     }
 
     playerBomberman_->decreaseActiveBombs();

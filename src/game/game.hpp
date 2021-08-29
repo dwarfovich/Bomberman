@@ -47,6 +47,18 @@ public:
 
 signals:
     void gameOver(const bm::GameResult& result);
+    void cellChanged(size_t index);
+    void objectMoved(const std::shared_ptr<MovingObject>& object);
+    void characterStartedMoving(const std::shared_ptr<Character>& character);
+    void characterStopped(const std::shared_ptr<Character>& character);
+    void bombPlaced(const std::shared_ptr<Bomb>& bomb);
+    void bombExploded(const std::shared_ptr<Bomb>& bomb);
+    void explosionHappened(const std::shared_ptr<Explosion>& explosion);
+
+    // void objectAdded(const std::shared_ptr<MovingObject>& object);
+    //    void objectIndexChanged(const std::shared_ptr<MovingObject>& bomberman, size_t index);
+    //    void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
+    //    void objectsCollided(bm::GameObject& lhs, bm::GameObject& rhs);
 
 private slots:
     void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);

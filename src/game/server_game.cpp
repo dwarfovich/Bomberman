@@ -21,11 +21,13 @@ void ServerGame::movePlayer(size_t player, Direction direction)
     //    }
     playerBomberman_->setSpeed(defaultBombermanSpeed);
     playerBomberman_->setDirection(direction);
+    emit characterStartedMoving(playerBomberman_);
 }
 
 void ServerGame::stopPlayer(size_t player)
 {
     playerBomberman_->setSpeed(0);
+    emit characterStopped(playerBomberman_);
     //    if (isCorrectPlayerIndex(player)) {
     //        bombermans_[player]->setSpeed(0);
     //    }
@@ -40,6 +42,7 @@ std::shared_ptr<Bomb> ServerGame::placeBomb(size_t player)
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
             addExplosionEvent(bomb);
+            emit bombPlaced(bomb);
         }
     }
 
@@ -97,13 +100,15 @@ void ServerGame::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 
 void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
-    auto  explosionData = bm::explodeBomb(*map_, *bomb);
-    auto& explosion     = explosionData.explosion;
+    auto explosionData = bm::explodeBomb(*map_, *bomb);
+    auto explosion     = explosionData.explosion;
     for (auto* affectedObject : explosionData.affectedObjects) {
-        explosion.collideWith(*affectedObject, collider_);
+        explosion->collideWith(*affectedObject, collider_);
     }
 
     playerBomberman_->decreaseActiveBombs();
+    emit bombExploded(bomb);
+    emit explosionHappened(explosion);
 }
 
 void ServerGame::setMap(const std::shared_ptr<Map>& map)

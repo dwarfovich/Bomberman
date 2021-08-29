@@ -16,8 +16,8 @@ bool initializeGame(const GameData& gameData)
     scene->setMap(gameData.mapData->map);
     // scene->clear();
 
-    QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-    QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+    // QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
+    // QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
 
     const auto& respawns = gameData.mapData->map->playerRespawns();
 
@@ -39,11 +39,20 @@ bool initializeGame(const GameData& gameData)
     scene->addBomberman(bomberman);
 
     for (const auto& bot : gameData.mapData->bots) {
+        //        gameData.mapData->map->addBot(bot);
+        //        auto botItem = std::make_unique<gui::BotGraphicsItem>();
+        //        botItem->setCharacter(bot);
+        //        scene->addMovingObject(bot, std::move(botItem));
         gameData.mapData->map->addBot(bot);
-        auto botItem = std::make_unique<gui::BotGraphicsItem>();
-        botItem->setCharacter(bot);
-        scene->addMovingObject(bot, std::move(botItem));
+        scene->addBot(bot);
     }
+
+    QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+    QObject::connect(gameData.game, &Game::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+    QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
+    QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
+    QObject::connect(gameData.game, &Game::bombPlaced, scene, &gui::GameScene::onBombPlaced);
+    QObject::connect(gameData.game, &Game::bombExploded, scene, &gui::GameScene::onBombExploded);
 
     gameData.game->setMap(gameData.mapData->map);
     // gameData.view->setMap(gameData.mapData->map);
