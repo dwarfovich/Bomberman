@@ -1,7 +1,9 @@
 #include "game.hpp"
 #include "time.hpp"
 #include "bomb_explosion_event.hpp"
+#include "bomb_explosion_finished_event.hpp"
 #include "modifier_deactivation_event.hpp"
+
 #include "map_constants.hpp"
 #include "bomb_explosion.hpp"
 
@@ -96,11 +98,22 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     auto  explosionData = bm::explodeBomb(*map_, *bomb);
     auto& explosion     = explosionData.explosion;
+    emit  explosionHappened(explosion);
+    auto  callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
+    qDebug() << "Adding event from explodeBomb";
+    timerQueue.addEvent(createDelay(bomb->explosionPeriod),
+                        std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
     for (auto* affectedObject : explosionData.affectedObjects) {
         explosion->collideWith(*affectedObject, collider_);
     }
 
     playerBomberman_->decreaseActiveBombs();
+}
+
+void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
+{
+    emit explosionFinished(explosion);
+    map_->removeExplosion(explosion);
 }
 
 void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)

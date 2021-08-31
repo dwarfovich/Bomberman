@@ -42,6 +42,8 @@ public:
     void removeBomberman(const Bomberman& bomberman);
     void addBot(const std::shared_ptr<Bot>& bot);
     void moveCharacter(uint8_t id, const MoveData& moveData) const;
+    void addExplosion(const std::shared_ptr<Explosion>& explosion);
+    void removeExplosion(const std::shared_ptr<Explosion>& explosion);
     // void                                 addMovingObject(const std::shared_ptr<MovingObject>& object);
     void                                 removeMovingObject(const std::shared_ptr<MovingObject>& object);
     void                                 removeMovingObject(const MovingObject& object);
@@ -126,7 +128,7 @@ private: // data
     BombermansMap                                              bombermans_;
     std::vector<std::shared_ptr<Bot>>                          bots_;
     std::vector<std::shared_ptr<Bomb>>                         bombs_;
-    std::vector<Explosion>                                     explosions_;
+    std::vector<std::shared_ptr<Explosion>>                    explosions_;
     std::unordered_map<RespawnType, RespawnPlaces>             respawnPlaces_;
 };
 

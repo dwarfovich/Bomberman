@@ -115,12 +115,20 @@ void GameScene::removeAllObjects()
 void GameScene::onCharacterStartedMove(const std::shared_ptr<Character>& character)
 {
     // characterMap_[character]->setCurrentFrame(
+    auto iter = characterMap_.find(character);
+    if (iter != characterMap_.cend()) {
+        animations_.insert(iter->second);
+    }
     //    updateAnimations();
 }
 
 void GameScene::onCharacterStopped(const std::shared_ptr<Character>& character)
 {
     characterMap_[character]->setCurrentFrame(0);
+    auto iter = characterMap_.find(character);
+    if (iter != characterMap_.cend()) {
+        animations_.erase(iter->second);
+    }
     // updateAnimations();
 }
 
@@ -157,6 +165,46 @@ void GameScene::onBombExploded(const std::shared_ptr<Bomb>& bomb)
     objects_.erase(bombItem);
 }
 
+void GameScene::onExplosionHappened(const std::shared_ptr<Explosion>& explosion)
+{
+    auto explosionObject = spriteFactory_.createExplosionObject(explosion.get(), *map_.get());
+    explosionObject->setPos(map_->locationToCellCenterCoordinates(explosion->center()));
+    explosionObject->setX(explosionObject->x() - cellHalfSize);
+    explosionObject->setY(explosionObject->y() - cellHalfSize);
+    objects_.emplace(explosion.get(), explosionObject.get());
+    animations_.insert(explosionObject.get());
+    for (auto* child : explosionObject->childItems()) {
+        addItem(child);
+        animations_.insert(static_cast<SpriteGraphicsObject*>(child));
+        explosionParts_[explosionObject.get()].push_back(child);
+    }
+    explosionObject->setCurrentFrame(0);
+    addItem(explosionObject.release());
+
+    //    auto t = spriteFactory_.createBotObject(characterMap_.cbegin()->first);
+}
+
+void GameScene::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
+{
+    auto explosionIter = objects_.find(explosion.get());
+    if (explosionIter != objects_.cend()) {
+        auto* centerObject = explosionIter->second;
+        auto  partsIter    = explosionParts_.find(centerObject);
+        if (partsIter != explosionParts_.cend()) {
+            for (auto* part : partsIter->second) {
+                animations_.erase(static_cast<SpriteGraphicsObject*>(part));
+                removeItem(part);
+            }
+            explosionParts_.erase(partsIter);
+        }
+
+        animations_.erase(centerObject);
+        objects_.erase(explosionIter);
+        removeItem(centerObject);
+        delete centerObject;
+    }
+}
+
 void GameScene::cellChanged(size_t index)
 {
     if (index < cellItems_.size()) {
@@ -168,9 +216,6 @@ void GameScene::updateAnimations()
 {
     for (auto* sprite : animations_) {
         sprite->advance(1);
-        if (sprite->objectName() == "Bomb") {
-            int a = 4;
-        }
     }
 }
 

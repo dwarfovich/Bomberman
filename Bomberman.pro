@@ -16,6 +16,7 @@ SOURCES += \
     src/game/bomb.cpp \
     src/game/bomb_explosion.cpp \
     src/game/bomb_explosion_event.cpp \
+    src/game/bomb_explosion_finished_event.cpp \
     src/game/bomberman.cpp \
     src/game/bot.cpp \
     src/game/bot_ai.cpp \
@@ -90,6 +91,7 @@ HEADERS += \
     src/game/bomb.hpp \
     src/game/bomb_explosion.hpp \
     src/game/bomb_explosion_event.hpp \
+    src/game/bomb_explosion_finished_event.hpp \
     src/game/bomberman.hpp \
     src/game/bot.hpp \
     src/game/bot_ai.hpp \

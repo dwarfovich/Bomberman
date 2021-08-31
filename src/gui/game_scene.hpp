@@ -45,6 +45,9 @@ public slots:
     void onCharacterMoved(const std::shared_ptr<MovingObject>& character);
     void onBombPlaced(const std::shared_ptr<Bomb>& bomb);
     void onBombExploded(const std::shared_ptr<Bomb>& bomb);
+    void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);
+    void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
+
     void cellChanged(size_t index);
 
 private slots:
@@ -61,6 +64,8 @@ private:
     using CharacterMap = std::unordered_map<std::shared_ptr<Character>, SpriteGraphicsObject*>;
     CharacterMap                                           characterMap_;
     std::unordered_map<GameObject*, SpriteGraphicsObject*> objects_;
+    using ExplosionPartsMap = std::unordered_map<SpriteGraphicsObject*, std::vector<QGraphicsItem*>>;
+    ExplosionPartsMap explosionParts_;
 
     SpriteObjectFactory                       spriteFactory_;
     QTimer                                    animationTimer_;

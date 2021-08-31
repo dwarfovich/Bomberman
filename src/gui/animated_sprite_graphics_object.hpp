@@ -28,6 +28,7 @@ protected:
 public:
     void updateSpriteMapRow() override;
     void setCharacter(const std::shared_ptr<Character>& newCharacter);
+    void setSpriteRow(int row);
 
     // QGraphicsItem interface
 public:

@@ -32,7 +32,7 @@ public:
     virtual int  framesCount() const;
     virtual int  currentSpriteRow() const;
 
-    void setPixmap(const QPixmap &pixmap);
+    virtual void setPixmap(const QPixmap &pixmap);
 
 signals:
     void currentFrameChanged();

@@ -53,6 +53,8 @@ bool initializeGame(const GameData& gameData)
     QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
     QObject::connect(gameData.game, &Game::bombPlaced, scene, &gui::GameScene::onBombPlaced);
     QObject::connect(gameData.game, &Game::bombExploded, scene, &gui::GameScene::onBombExploded);
+    QObject::connect(gameData.game, &Game::explosionHappened, scene, &gui::GameScene::onExplosionHappened);
+    QObject::connect(gameData.game, &Game::explosionFinished, scene, &gui::GameScene::onExplosionFinished);
 
     gameData.game->setMap(gameData.mapData->map);
     // gameData.view->setMap(gameData.mapData->map);

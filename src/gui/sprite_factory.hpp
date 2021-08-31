@@ -11,6 +11,7 @@ class Bomberman;
 class Bot;
 struct Bomb;
 class Explosion;
+class Map;
 
 namespace gui {
 
@@ -23,7 +24,10 @@ public:
     std::unique_ptr<SpriteGraphicsObject> createBombermanObject(const std::shared_ptr<Bomberman>& character);
     std::unique_ptr<SpriteGraphicsObject> createBotObject(const std::shared_ptr<Bot>& character);
     std::unique_ptr<SpriteGraphicsObject> createBombObject(const std::shared_ptr<Bomb>& bomb);
-    std::unique_ptr<SpriteGraphicsObject> createExplosionObject(const Explosion* explosion);
+    std::unique_ptr<SpriteGraphicsObject> createExplosionObject(const Explosion* explosion,
+                                                                const Map&       map,
+                                                                const QPoint&    centerCoordinates = {});
+    QPoint                                mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
 private:
     QPixmap cell_;

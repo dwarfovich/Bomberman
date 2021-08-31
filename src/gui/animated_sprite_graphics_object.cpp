@@ -45,6 +45,16 @@ void AnimatedSpriteGraphicsObject::setCharacter(const std::shared_ptr<Character>
     character_ = newCharacter;
 }
 
+void AnimatedSpriteGraphicsObject::setSpriteRow(int row)
+{
+    currentSpriteRow_ = row;
+    pixmapFragment_   = QPainter::PixmapFragment::create(
+        { cellHalfSizeF, cellHalfSizeF },
+        { currentFrame_ * cellSizeF, currentSpriteRow_ * cellSizeF, cellSizeF, cellSizeF });
+
+    update();
+}
+
 void AnimatedSpriteGraphicsObject::updateSpriteMapRow()
 {
     switch (character_->direction()) {

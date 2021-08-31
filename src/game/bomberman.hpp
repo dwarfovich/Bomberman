@@ -38,7 +38,7 @@ public:
 private:
     // uint8_t playerId_       = 0;
     size_t activeBombs_    = 0;
-    size_t maxActiveBombs_ = 1;
+    size_t maxActiveBombs_ = 2;
     Bomb   bombPrototype_;
 };
 } // namespace bm
