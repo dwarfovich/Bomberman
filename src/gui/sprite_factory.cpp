@@ -42,6 +42,7 @@ std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createBotObject(const
     auto item = std::make_unique<AnimatedSpriteGraphicsObject>();
     item->setPixmap(bot_);
     item->setCharacter(character);
+    item->setDestroyAnimationSpriteRow(4);
 
     return item;
 }

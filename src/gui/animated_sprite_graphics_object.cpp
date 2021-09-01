@@ -24,6 +24,11 @@ void AnimatedSpriteGraphicsObject::setCurrentFrame(int frame)
 
 void AnimatedSpriteGraphicsObject::advanceFrame()
 {
+    if (destroyAnimationSpriteRow_ == currentSpriteRow_ && currentFrame_ == framesCount() - 1) {
+        destroyAnimationFinishedCallback_(this);
+        return;
+    }
+
     if (currentFrame_ == framesCount() - 1) {
         currentFrame_ = 0;
     } else {
@@ -33,6 +38,16 @@ void AnimatedSpriteGraphicsObject::advanceFrame()
         { cellHalfSizeF, cellHalfSizeF },
         { currentFrame_ * cellSizeF, currentSpriteRow_ * cellSizeF, cellSizeF, cellSizeF });
     update();
+}
+
+int AnimatedSpriteGraphicsObject::destroyAnimationSpriteRow() const
+{
+    return destroyAnimationSpriteRow_;
+}
+
+void AnimatedSpriteGraphicsObject::setDestroyAnimationSpriteRow(int newDestroyAnimationSpriteRow)
+{
+    destroyAnimationSpriteRow_ = newDestroyAnimationSpriteRow;
 }
 
 void AnimatedSpriteGraphicsObject::setFramesCount(int newFramesCount)
@@ -90,6 +105,17 @@ void AnimatedSpriteGraphicsObject::advance(int phase)
 int AnimatedSpriteGraphicsObject::framesCount() const
 {
     return framesCount_;
+}
+
+void AnimatedSpriteGraphicsObject::startDestroyAnimation()
+{
+    if (destroyAnimationSpriteRow_ != -1) {
+        setSpriteRow(destroyAnimationSpriteRow_);
+        setCurrentFrame(0);
+        update();
+    } else {
+        destroyAnimationFinishedCallback_(this);
+    }
 }
 
 } // namespace gui

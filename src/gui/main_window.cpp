@@ -101,8 +101,18 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         // TODO: And refactor it.
         auto* scene = gameData.view->scene();
 
-        QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-        QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+        //        QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
+        //        QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene,
+        //        &gui::GameScene::onCharacterMoved);
+        QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(gameData.game, &Game::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+        QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
+        QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
+        QObject::connect(gameData.game, &Game::bombPlaced, scene, &gui::GameScene::onBombPlaced);
+        QObject::connect(gameData.game, &Game::bombExploded, scene, &gui::GameScene::onBombExploded);
+        QObject::connect(gameData.game, &Game::explosionHappened, scene, &gui::GameScene::onExplosionHappened);
+        QObject::connect(gameData.game, &Game::explosionFinished, scene, &gui::GameScene::onExplosionFinished);
+        QObject::connect(gameData.game, &Game::objectDestroyed, scene, &gui::GameScene::onObjectDestroyed);
 
         for (uint8_t i = 0; i < 255; ++i) {
             auto bomberman = game_->bomberman(i);
@@ -110,7 +120,8 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
             if (bomberman) {
                 auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
                 characterItem->setCharacter(bomberman);
-                scene->addMovingObject(bomberman, std::move(characterItem));
+                // scene->addMovingObject(bomberman, std::move(characterItem));
+                scene->addBomberman(bomberman);
             }
         }
 
@@ -119,12 +130,14 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
 
             auto botItem = std::make_unique<gui::BotGraphicsItem>();
             botItem->setCharacter(bot);
-            scene->addMovingObject(bot, std::move(botItem));
+            // scene->addMovingObject(bot, std::move(botItem));
+            scene->addBot(bot);
         }
 
         // gameData.game->setMap(gameData.mapData->map);
         gameData.view->setMap(gameData.mapData->map);
         gameData.game->setScene(scene);
+        scene->setMap(gameData.mapData->map);
 
         keyControls_.playerId = game_->playerId();
 
@@ -160,10 +173,20 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
         // TODO: And refactor it.
         auto* scene = gameView_->scene();
 
-        QObject::connect(
-            dialog.client()->initializedMap().get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-        QObject::connect(
-            dialog.client()->initializedMap().get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+        //        QObject::connect(
+        //            dialog.client()->initializedMap().get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
+        //        QObject::connect(
+        //            dialog.client()->initializedMap().get(), &Map::objectMoved, scene,
+        //            &gui::GameScene::onCharacterMoved);
+        QObject::connect(game_.get(), &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(game_.get(), &Game::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+        QObject::connect(game_.get(), &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
+        QObject::connect(game_.get(), &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
+        QObject::connect(game_.get(), &Game::bombPlaced, scene, &gui::GameScene::onBombPlaced);
+        QObject::connect(game_.get(), &Game::bombExploded, scene, &gui::GameScene::onBombExploded);
+        QObject::connect(game_.get(), &Game::explosionHappened, scene, &gui::GameScene::onExplosionHappened);
+        QObject::connect(game_.get(), &Game::explosionFinished, scene, &gui::GameScene::onExplosionFinished);
+        QObject::connect(game_.get(), &Game::objectDestroyed, scene, &gui::GameScene::onObjectDestroyed);
 
         // TODO: Refactor - get bombermans count.
         for (uint8_t i = 0; i < 255; ++i) {
@@ -172,7 +195,8 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
             if (bomberman) {
                 auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
                 characterItem->setCharacter(bomberman);
-                scene->addMovingObject(bomberman, std::move(characterItem));
+                // scene->addMovingObject(bomberman, std::move(characterItem));
+                scene->addBomberman(bomberman);
             }
         }
 
@@ -181,9 +205,11 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
         for (const auto& bot : dialog.client()->initializedMap()->bots()) {
             auto botItem = std::make_unique<gui::BotGraphicsItem>();
             botItem->setCharacter(bot);
-            scene->addMovingObject(bot, std::move(botItem));
+            // scene->addMovingObject(bot, std::move(botItem));
+            scene->addBot(bot);
         }
 
+        scene->setMap(dialog.client()->initializedMap());
         gameView_->setMap(dialog.client()->initializedMap());
     } else {
         exit(1);

@@ -52,12 +52,21 @@ int SpriteGraphicsObject::currentSpriteRow() const
     return 0;
 }
 
+void SpriteGraphicsObject::startDestroyAnimation()
+{}
+
 void SpriteGraphicsObject::setPixmap(const QPixmap &pixmap)
 {
     pixmap_         = pixmap;
     pixmapFragment_ = QPainter::PixmapFragment::create(
         { cellHalfSizeF, cellHalfSizeF },
         { currentFrame_ * cellSizeF, currentSpriteRow() * cellSizeF, cellSizeF, cellSizeF });
+}
+
+void SpriteGraphicsObject::setDestroyAnimationFinishedCallback(
+    const std::function<void(SpriteGraphicsObject *)> &newDestroyAnimationFinishedCallback)
+{
+    destroyAnimationFinishedCallback_ = newDestroyAnimationFinishedCallback;
 }
 
 } // namespace gui

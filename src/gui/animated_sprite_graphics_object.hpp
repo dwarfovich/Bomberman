@@ -19,10 +19,11 @@ public:
     void advanceFrame();
 
 protected:
-    int                        framesCount_        = 10;
-    int                        currentSpriteRow_   = 0;
-    std::shared_ptr<Character> character_          = nullptr;
-    bool                       animationInProgress = false;
+    int                        framesCount_               = 10;
+    int                        currentSpriteRow_          = 0;
+    std::shared_ptr<Character> character_                 = nullptr;
+    bool                       animationInProgress        = false;
+    int                        destroyAnimationSpriteRow_ = -1;
 
     // SpriteGraphicsObject interface
 public:
@@ -38,6 +39,12 @@ public:
 public:
     int  framesCount() const override;
     void setFramesCount(int newFramesCount);
+
+    // SpriteGraphicsObject interface
+public:
+    void startDestroyAnimation() override;
+    int  destroyAnimationSpriteRow() const;
+    void setDestroyAnimationSpriteRow(int newDestroyAnimationSpriteRow);
 };
 
 } // namespace gui

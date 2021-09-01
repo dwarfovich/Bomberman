@@ -41,6 +41,7 @@ void GameScene::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
     auto item = spriteFactory_.createBombermanObject(bomberman);
     item->setPos(mapCoordinatesToSceneCoordinates(bomberman->coordinates()));
     characterMap_.emplace(bomberman, item.get());
+    objects_.insert({ bomberman.get(), item.get() });
     connect(item.get(), &SpriteGraphicsObject::startAnimation, this, &GameScene::addAnimation);
     connect(item.get(), &SpriteGraphicsObject::stopAnimation, this, &GameScene::removeAnimation);
     QGraphicsScene::addItem(item.release());
@@ -51,6 +52,7 @@ void GameScene::addBot(const std::shared_ptr<Bot>& bot)
     auto item = spriteFactory_.createBotObject(bot);
     item->setPos(mapCoordinatesToSceneCoordinates(bot->coordinates()));
     characterMap_.emplace(bot, item.get());
+    objects_.insert({ bot.get(), item.get() });
     connect(item.get(), &SpriteGraphicsObject::startAnimation, this, &GameScene::addAnimation);
     connect(item.get(), &SpriteGraphicsObject::stopAnimation, this, &GameScene::removeAnimation);
     QGraphicsScene::addItem(item.release());
@@ -205,6 +207,25 @@ void GameScene::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
     }
 }
 
+void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
+{
+    auto objectIter = objects_.find(object.get());
+    if (objectIter != objects_.cend()) {
+        if (objectIter->second->isAnimated()) {
+            objectIter->second->setDestroyAnimationFinishedCallback(
+                std::bind(&GameScene::destroyAniimationFinished, this, std::placeholders::_1));
+            objectIter->second->startDestroyAnimation();
+        } else {
+            auto explosionIter = explosionParts_.find(objectIter->second);
+            if (explosionIter != explosionParts_.cend()) {
+                explosionParts_.erase(explosionIter);
+            }
+            objects_.erase(objectIter);
+            removeItem(objectIter->second);
+        }
+    }
+}
+
 void GameScene::cellChanged(size_t index)
 {
     if (index < cellItems_.size()) {
@@ -217,6 +238,26 @@ void GameScene::updateAnimations()
     for (auto* sprite : animations_) {
         sprite->advance(1);
     }
+
+    for (auto* sprite : animationsToDelete_) {
+        // TODO: Remove sprite for Characters.
+        auto explosionIter = explosionParts_.find(sprite);
+        if (explosionIter != explosionParts_.cend()) {
+            explosionParts_.erase(explosionIter);
+        }
+        // TODO: refactor searching for GameObject*.
+        for (const auto& [gameObject, objectSprite] : objects_) {
+            if (objectSprite == sprite) {
+                objects_.erase(gameObject);
+                break;
+            }
+        }
+
+        animations_.erase(sprite);
+        removeItem(sprite);
+    }
+
+    animationsToDelete_.clear();
 }
 
 void GameScene::addAnimation(bm::gui::SpriteGraphicsObject* sprite)
@@ -244,6 +285,11 @@ QPoint GameScene::mapCoordinatesToSceneCoordinates(const QPoint& coordinates) co
     sceneCoords.setY(yCells * cellSize_ - cellHalfSize + int(cellSize_ * dyPercents / 100.));
 
     return sceneCoords;
+}
+
+void GameScene::destroyAniimationFinished(SpriteGraphicsObject* sprite)
+{
+    animationsToDelete_.push_back(sprite);
 }
 
 } // namespace gui

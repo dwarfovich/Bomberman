@@ -47,6 +47,7 @@ public slots:
     void onBombExploded(const std::shared_ptr<Bomb>& bomb);
     void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
+    void onObjectDestroyed(std::shared_ptr<GameObject> object);
 
     void cellChanged(size_t index);
 
@@ -57,6 +58,7 @@ private slots:
 
 private:
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
+    void   destroyAniimationFinished(SpriteGraphicsObject* sprite);
 
 private:
     std::shared_ptr<Map>               map_;
@@ -70,6 +72,7 @@ private:
     SpriteObjectFactory                       spriteFactory_;
     QTimer                                    animationTimer_;
     std::unordered_set<SpriteGraphicsObject*> animations_;
+    std::vector<SpriteGraphicsObject*>        animationsToDelete_;
     const std::chrono::milliseconds           animationPeriod_ { 100 };
 
     using MovingItems = std::unordered_map<std::shared_ptr<MovingObject>, std::unique_ptr<CharacterGraphicsItem>>;

@@ -101,19 +101,6 @@ void ServerGame::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 
 void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
-    //    auto  explosionData = bm::explodeBomb(*map_, *bomb);
-    //    auto& explosion     = explosionData.explosion;
-    //    emit  explosionHappened(explosion);
-    //    auto callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
-    //    qDebug() << "Adding event from explodeBomb";
-    //    timerQueue.addEvent(createDelay(bomb->explosionPeriod),
-    //                        std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
-    //    for (auto* affectedObject : explosionData.affectedObjects) {
-    //        explosion->collideWith(*affectedObject, collider_);
-    //    }
-
-    //    playerBomberman_->decreaseActiveBombs();
-
     auto explosionData = bm::explodeBomb(*map_, *bomb);
     auto explosion     = explosionData.explosion;
     for (auto* affectedObject : explosionData.affectedObjects) {
