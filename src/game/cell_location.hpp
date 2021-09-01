@@ -18,6 +18,8 @@ public:
     friend QDataStream& operator<<(QDataStream& stream, const CellLocation& location);
     friend QDataStream& operator>>(QDataStream& stream, CellLocation& location);
 
+    bool operator==(const CellLocation& rhs) const;
+
     bool   isValid() const;
     size_t x() const;
     void   setX(size_t newX);

@@ -4,6 +4,8 @@
 #include <QGraphicsObject>
 #include <QPainter>
 
+#include <functional>
+
 namespace bm {
 namespace gui {
 
@@ -31,16 +33,23 @@ public:
     virtual void setCurrentFrame(int frame);
     virtual int  framesCount() const;
     virtual int  currentSpriteRow() const;
+    virtual void startDestroyAnimation();
 
-    void setPixmap(const QPixmap &pixmap);
+    virtual void setPixmap(const QPixmap &pixmap);
+
+    void setDestroyAnimationFinishedCallback(
+        const std::function<void(SpriteGraphicsObject *)> &newDestroyAnimationFinishedCallback);
 
 signals:
     void currentFrameChanged();
+    void startAnimation(bm::gui::SpriteGraphicsObject *sprite);
+    void stopAnimation(bm::gui::SpriteGraphicsObject *sprite);
 
 protected:
-    QPixmap                  pixmap_;
-    QPainter::PixmapFragment pixmapFragment_;
-    int                      currentFrame_ = 0;
+    QPixmap                                     pixmap_;
+    QPainter::PixmapFragment                    pixmapFragment_;
+    int                                         currentFrame_ = 0;
+    std::function<void(SpriteGraphicsObject *)> destroyAnimationFinishedCallback_;
 };
 
 } // namespace gui

@@ -24,6 +24,11 @@ QDataStream& operator>>(QDataStream& stream, CellLocation& location)
 CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
 {}
 
+bool CellLocation::operator==(const CellLocation& rhs) const
+{
+    return x_ == rhs.x_ && y_ == rhs.y_;
+}
+
 bool CellLocation::isValid() const
 {
     return (x_ != invalidMapIndex && y_ != invalidMapIndex);

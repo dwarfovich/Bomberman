@@ -16,6 +16,7 @@ SOURCES += \
     src/game/bomb.cpp \
     src/game/bomb_explosion.cpp \
     src/game/bomb_explosion_event.cpp \
+    src/game/bomb_explosion_finished_event.cpp \
     src/game/bomberman.cpp \
     src/game/bot.cpp \
     src/game/bot_ai.cpp \
@@ -53,6 +54,7 @@ SOURCES += \
     src/gui/character_sprite_object.cpp \
     src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
+    src/gui/explosion_graphics_object.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_menu_widget.cpp \
@@ -89,6 +91,7 @@ HEADERS += \
     src/game/bomb.hpp \
     src/game/bomb_explosion.hpp \
     src/game/bomb_explosion_event.hpp \
+    src/game/bomb_explosion_finished_event.hpp \
     src/game/bomberman.hpp \
     src/game/bot.hpp \
     src/game/bot_ai.hpp \
@@ -136,6 +139,7 @@ HEADERS += \
     src/gui/character_sprite_object.hpp \
     src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
+    src/gui/explosion_graphics_object.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \

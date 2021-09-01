@@ -218,10 +218,15 @@ void Map::moveCharacter(uint8_t id, const MoveData& moveData) const
     }
 }
 
-// void Map::addMovingObject(const std::shared_ptr<MovingObject>& object)
-//{
-//    movingObjects_.push_back(object);
-//}
+void Map::addExplosion(const std::shared_ptr<Explosion>& explosion)
+{
+    explosions_.push_back(explosion);
+}
+
+void Map::removeExplosion(const std::shared_ptr<Explosion>& explosion)
+{
+    explosions_.erase(std::remove(explosions_.begin(), explosions_.end(), explosion));
+}
 
 void Map::removeMovingObject(const std::shared_ptr<MovingObject>& object)
 {
@@ -261,6 +266,12 @@ const Cell& Map::cell(size_t index) const
 CellLocation Map::coordinatesToLocation(const QPoint& coordinates) const
 {
     return { static_cast<size_t>(coordinates.x() / cellSize), static_cast<size_t>(coordinates.y() / cellSize) };
+}
+
+QPoint Map::indexToCoordinates(size_t index) const
+{
+    const auto& location = indexToLocation(index);
+    return { static_cast<int>(location.x() * cellSize), static_cast<int>(location.y() * cellSize) };
 }
 
 QPoint Map::locationToCellCenterCoordinates(const CellLocation& location) const

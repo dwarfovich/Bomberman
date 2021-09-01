@@ -3,6 +3,7 @@
 
 #include "explosion.hpp"
 
+#include <memory>
 #include <vector>
 
 namespace bm {
@@ -13,10 +14,10 @@ class Map;
 struct BombExplosionResult
 {
     BombExplosionResult();
-    BombExplosionResult(const Explosion& aExplosion, const std::vector<GameObject*>& aAffectedObjects);
+    BombExplosionResult(const std::shared_ptr<Explosion>& aExplosion, const std::vector<GameObject*>& aAffectedObjects);
 
-    Explosion                explosion;
-    std::vector<GameObject*> affectedObjects;
+    std::shared_ptr<Explosion> explosion;
+    std::vector<GameObject*>   affectedObjects;
 };
 
 BombExplosionResult explodeBomb(Map& map, Bomb& bomb);
