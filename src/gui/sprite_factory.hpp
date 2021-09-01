@@ -9,7 +9,7 @@ namespace bm {
 class Cell;
 class Bomberman;
 class Bot;
-struct Bomb;
+class Bomb;
 class Explosion;
 class Map;
 

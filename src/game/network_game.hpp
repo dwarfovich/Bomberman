@@ -16,7 +16,7 @@ class NetworkGame : public ServerGame, public IMessageVisitor
     Q_OBJECT
 
 public:
-    explicit NetworkGame(Server* server, QObject* parent = nullptr);
+    explicit NetworkGame(Server* server);
 
     void start() override;
     void startPreparing();
@@ -37,9 +37,9 @@ private: // data
 
     // Game interface
 public:
-    void                  movePlayer(size_t player, Direction direction) override;
-    void                  stopPlayer(size_t player) override;
-    std::shared_ptr<Bomb> placeBomb(size_t player) override;
+    void                  movePlayer(object_id_t player, Direction direction) override;
+    void                  stopPlayer(object_id_t player) override;
+    std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
 
     // IMessageVisitor interface
 public:

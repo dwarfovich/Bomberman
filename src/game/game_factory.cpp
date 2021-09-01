@@ -24,7 +24,7 @@ bool createBombermansForPlayers(const std::unordered_set<uint8_t>& playersIds, M
         bomberman->setCoordinates(map.indexToCellCenterCoordinates(respawns[currentRespawn]));
         ++currentRespawn;
         map.addBomberman(bomberman);
-        game.addPlayer(bomberman);
+        //        game.addPlayer(bomberman);
     }
 
     return true;

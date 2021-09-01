@@ -1,12 +1,11 @@
 #include "bot.hpp"
 #include "bot_ai.hpp"
-#include "bot_constants.hpp"
 
 namespace bm {
 
 Bot::Bot()
 {
-    setSpeed(botDefaultSpeed);
+    setSpeed(bot_ns::defaultSpeed);
 }
 
 bool Bot::notifyIfMeetedWall() const
@@ -29,9 +28,9 @@ bool Bot::acceptsModifiers() const
     return false;
 }
 
-ObjectType Bot::type() const
+CharacterType Bot::type() const
 {
-    return ObjectType::Bot;
+    return CharacterType::Bot;
 }
 
 void Bot::toStream(QDataStream &stream) const

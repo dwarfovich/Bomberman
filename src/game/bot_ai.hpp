@@ -7,10 +7,6 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
-class QDataStream;
-QT_END_NAMESPACE
-
 namespace bm {
 class Map;
 

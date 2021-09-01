@@ -13,67 +13,69 @@
 #include <functional>
 
 namespace bm {
-Game::Game(QObject* parent) : QObject { parent }, collider_ { this }
-{}
+
+Game::Game() : collider_ { this }
+{
+    connect(&movementTimer_, &QTimer::timeout, [this]() {
+        map_->moveObjects(game_ns::movementUpdatePeriod);
+    });
+}
 
 void Game::start()
 {
-    //    if (!scene_) {
-    //        return;
-    //    }
-    // moveTimer.start(timeout_);
+    movementTimer_.start();
 }
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
-    // TODO: Disconnect oldies.
+    if (map_) {
+        disconnect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+        disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
+    }
     map_ = map;
     connect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
-    connect(map_.get(), &Map::objectMoved, this, &Game::objectMoved);
-    //    connect(map_.get(), &Map::objectIndexChanged, this, &Game::onObjectIndexChanged);
-    //    connect(&moveTimer, &QTimer::timeout, [this]() {
-    //        map_->moveObjects(timeout_);
-    //    });
+    connect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
 }
-void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
+
+Map* Game::map() const
 {
-    player1_ = player;
+    return map_.get();
 }
 
-bool Game::movePlayer1(Direction direction)
-{
-    player1_->setSpeed(defaultBombermanSpeed);
-    player1_->setDirection(direction);
+// void Game::setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player)
+//{
+//    player1_ = player;
+//}
 
-    return true;
-}
+// bool Game::movePlayer1(Direction direction)
+//{
+//    player1_->setSpeed(bomberman_ns::defaultSpeed);
+//    player1_->setDirection(direction);
 
-void Game::stopPlayer1(Direction direction)
-{
-    if (player1_->movementData().direction == direction) {
-        player1_->setSpeed(0);
-    }
-}
+//    return true;
+//}
 
-void Game::placeBomb1()
-{
-    std::shared_ptr<Bomb> bomb = player1_->createBomb();
-    if (bomb) {
-        auto index = map_->coordinatesToIndex(player1_->movementData().coordinates);
-        if (map_->isProperIndex(index)) {
-            bomb->cellIndex = index;
-            map_->placeBomb(bomb);
-            addExplosionEvent(bomb);
-        }
-    }
-}
+// void Game::stopPlayer1(Direction direction)
+//{
+//    if (player1_->movementData().direction == direction) {
+//        player1_->setSpeed(0);
+//    }
+//}
 
-void Game::setScene(gui::GameScene* newScene)
-{
-    scene_ = newScene;
-}
+// void Game::placeBomb1()
+//{
+//    std::shared_ptr<Bomb> bomb = player1_->createBomb();
+//    if (bomb) {
+//        auto index = map_->coordinatesToIndex(player1_->movementData().coordinates);
+//        if (map_->isProperIndex(index)) {
+//            bomb->cellIndex = index;
+//            map_->placeBomb(bomb);
+//            addExplosionEvent(bomb);
+//        }
+//    }
+//}
 
-void Game::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
+void Game::onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index)
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier();
@@ -116,9 +118,9 @@ void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
     map_->removeExplosion(explosion);
 }
 
-void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)
-{
-    playerBomberman_ = newPlayerBomberman;
-}
+// void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)
+//{
+//    playerBomberman_ = newPlayerBomberman;
+//}
 
 } // namespace bm

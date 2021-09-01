@@ -17,17 +17,14 @@ public:
     friend QDataStream& operator<<(QDataStream& stream, const Cell& cell);
     friend QDataStream& operator>>(QDataStream& stream, Cell& cell);
 
-    CellStructure structure() const;
-    void          setStructure(CellStructure structure);
-
-    bool hasBomb() const;
-    void setHasBomb(bool hasBomb);
-
+    CellStructure                     structure() const;
+    void                              setStructure(CellStructure structure);
+    bool                              hasBomb() const;
+    void                              setHasBomb(bool hasBomb);
     const std::shared_ptr<IModifier>& modifier() const;
     void                              setModifier(const std::shared_ptr<IModifier>& modifier);
-
-    size_t index() const;
-    void   setIndex(size_t index);
+    size_t                            index() const;
+    void                              setIndex(size_t index);
 
 private:
     CellStructure              structure_ = CellStructure::Empty;

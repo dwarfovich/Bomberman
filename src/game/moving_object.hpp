@@ -2,7 +2,7 @@
 #define MOVING_OBJECT_HPP
 
 #include "game_object.hpp"
-#include "object_type.hpp"
+#include "character_type.hpp"
 #include "move_data.hpp"
 
 namespace bm {
@@ -15,7 +15,7 @@ public:
 
     MovingObject(const MoveData& data = {});
 
-    virtual ObjectType      type() const                        = 0;
+    virtual CharacterType   type() const                        = 0;
     virtual void            toStream(QDataStream& stream) const = 0;
     virtual void            fromStream(QDataStream& stream)     = 0;
     virtual const MoveData& movementData() const;

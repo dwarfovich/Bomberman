@@ -95,7 +95,6 @@ HEADERS += \
     src/game/bomberman.hpp \
     src/game/bot.hpp \
     src/game/bot_ai.hpp \
-    src/game/bot_constants.hpp \
     src/game/bot_factory.hpp \
     src/game/bot_type.hpp \
     src/game/cell.hpp \
@@ -103,6 +102,7 @@ HEADERS += \
     src/game/cell_structure.hpp \
     src/game/character.hpp \
     src/game/character_factory.hpp \
+    src/game/character_type.hpp \
     src/game/client_game.hpp \
     src/game/collider.hpp \
     src/game/explosion.hpp \
@@ -129,7 +129,6 @@ HEADERS += \
     src/game/move_data.hpp \
     src/game/moving_object.hpp \
     src/game/network_game.hpp \
-    src/game/object_type.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
     src/gui/animated_sprite_graphics_object.hpp \

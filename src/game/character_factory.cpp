@@ -4,11 +4,11 @@
 
 namespace bm {
 
-std::unique_ptr<Character> createCharacter(ObjectType type)
+std::unique_ptr<Character> createCharacter(CharacterType type)
 {
-    if (type == ObjectType::Bomberman) {
+    if (type == CharacterType::Bomberman) {
         return std::make_unique<Bomberman>();
-    } else if (type == ObjectType::Bot) {
+    } else if (type == CharacterType::Bot) {
         return std::make_unique<Bot>();
     } else {
         return nullptr;

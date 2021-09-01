@@ -11,13 +11,13 @@
 namespace bm {
 class Bomberman;
 
-struct Bomb : public GameObject
+class Bomb : public GameObject
 {
+public:
     friend QDataStream& operator<<(QDataStream& stream, const Bomb& bomb);
     friend QDataStream& operator>>(QDataStream& stream, Bomb& bomb);
 
-    // std::shared_ptr<Bomberman> owner     = nullptr;
-    uint8_t      playerId  = 0;
+    object_id_t  ownerId_;
     int          radius    = 1;
     size_t       cellIndex = 0;
     Milliseconds explosionDelay { 1000 };

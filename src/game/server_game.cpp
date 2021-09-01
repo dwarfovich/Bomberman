@@ -6,26 +6,24 @@
 
 namespace bm {
 
-ServerGame::ServerGame(QObject* parent) : Game { parent }, collider_ { this }
-{}
-
 void ServerGame::start()
 {
-    moveTimer.start(updateTimeout_);
+    //    moveTimer.start(updateTimeout_);
+    Game::start();
 }
 
-void ServerGame::movePlayer(size_t player, Direction direction)
+void ServerGame::movePlayer(object_id_t player, Direction direction)
 {
     //    if (isCorrectPlayerIndex(player)) {
     //        bombermans_[player]->setSpeed(defaultBombermanSpeed);
     //        bombermans_[player]->setDirection(direction);
     //    }
-    playerBomberman_->setSpeed(defaultBombermanSpeed);
+    playerBomberman_->setSpeed(bomberman_ns::defaultSpeed);
     playerBomberman_->setDirection(direction);
     emit characterStartedMoving(playerBomberman_);
 }
 
-void ServerGame::stopPlayer(size_t player)
+void ServerGame::stopPlayer(object_id_t player)
 {
     playerBomberman_->setSpeed(0);
     emit characterStopped(playerBomberman_);
@@ -34,7 +32,7 @@ void ServerGame::stopPlayer(size_t player)
     //    }
 }
 
-std::shared_ptr<Bomb> ServerGame::placeBomb(size_t player)
+std::shared_ptr<Bomb> ServerGame::placeBomb(object_id_t player)
 {
     std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
     if (bomb) {
@@ -50,12 +48,12 @@ std::shared_ptr<Bomb> ServerGame::placeBomb(size_t player)
     return bomb;
 }
 
-bool ServerGame::isCorrectPlayerIndex(size_t index) const
-{
-    return (index < bombermans_.size());
-}
+// bool ServerGame::isCorrectPlayerIndex(size_t index) const
+//{
+//    return (index < bombermans_.size());
+//}
 
-const std::shared_ptr<Bomberman>& ServerGame::bomberman(uint8_t playerId) const
+const std::shared_ptr<Bomberman>& ServerGame::bomberman(object_id_t playerId) const
 {
     auto iter = std::find_if(bombermans_.cbegin(), bombermans_.cend(), [playerId](const auto& bomberman) {
         return bomberman->id() == playerId;
@@ -68,13 +66,13 @@ const std::shared_ptr<Bomberman>& ServerGame::bomberman(uint8_t playerId) const
     }
 }
 
-void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
+void ServerGame::onCharacterIndexChanged(const std::shared_ptr<Character>& character, size_t index)
 {
     const auto& cell     = map_->cell(index);
     const auto& modifier = cell.modifier();
-    if (modifier && std::find(bombermans_.cbegin(), bombermans_.cend(), object) != bombermans_.cend()) {
+    if (modifier && std::find(bombermans_.cbegin(), bombermans_.cend(), character) != bombermans_.cend()) {
         // TODO: Get rid of dynamic_cast
-        auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
+        auto bomberman = std::dynamic_pointer_cast<Bomberman>(character);
         modifier->activate(*bomberman);
         if (modifier->durationType() == ModifierDurationType::Temporary) {
             auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
@@ -84,14 +82,14 @@ void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& objec
     }
 }
 
-void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
-{
-    player->setId(bombermans_.size());
-    bombermans_.push_back(player);
-    if (player->id() == 0) {
-        playerBomberman_ = player;
-    }
-}
+// void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
+//{
+//    player->setId(bombermans_.size());
+//    bombermans_.push_back(player);
+//    if (player->id() == 0) {
+//        playerBomberman_ = player;
+//    }
+//}
 
 void ServerGame::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
 {
@@ -122,10 +120,10 @@ void ServerGame::setMap(const std::shared_ptr<Map>& map)
     connect(&moveTimer, &QTimer::timeout, [this]() {
         map_->moveObjects(updateTimeout_);
     });
-    connect(map_.get(), &Map::objectIndexChanged, this, &ServerGame::onObjectIndexChanged);
+    connect(map_.get(), &Map::characterIndexChanged, this, &ServerGame::onCharacterIndexChanged);
 }
 
-uint8_t ServerGame::playerId() const
+object_id_t ServerGame::playerId() const
 {
     return 0;
 }

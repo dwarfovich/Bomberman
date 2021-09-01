@@ -7,6 +7,10 @@
 namespace bm {
 class BotAi;
 
+namespace bot_ns {
+inline constexpr size_t defaultSpeed = 10;
+}
+
 class Bot : public Character
 {
 public:
@@ -14,12 +18,12 @@ public:
 
     Bot();
 
-    ObjectType type() const override;
-    void       toStream(QDataStream &stream) const override;
-    void       fromStream(QDataStream &stream) override;
-    bool       notifyIfMeetedWall() const override;
-    void       meetsWall() override;
-    bool       acceptsModifiers() const override;
+    CharacterType type() const override;
+    void          toStream(QDataStream &stream) const override;
+    void          fromStream(QDataStream &stream) override;
+    bool          notifyIfMeetedWall() const override;
+    void          meetsWall() override;
+    bool          acceptsModifiers() const override;
 
     void setAi(std::unique_ptr<BotAi> ai);
 

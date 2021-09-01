@@ -78,41 +78,41 @@ void GameScene::addCellItem(std::unique_ptr<SpriteGraphicsObject> item)
 void GameScene::addCharacterItem(std::unique_ptr<SpriteGraphicsObject> item)
 {}
 
-bool GameScene::setCellItem(CellItem* item, size_t index)
-{
-    try {
-        if (index >= cellItems_.size()) {
-            cellItems_.resize(index + 1);
-        }
-        cellItems_[index] = item;
-        QGraphicsScene::addItem(cellItems_[index]);
+// bool GameScene::setCellItem(CellItem* item, size_t index)
+//{
+//    try {
+//        if (index >= cellItems_.size()) {
+//            cellItems_.resize(index + 1);
+//        }
+//        cellItems_[index] = item;
+//        QGraphicsScene::addItem(cellItems_[index]);
 
-        return true;
-    } catch (...) {
-        return false;
-    }
-}
+//        return true;
+//    } catch (...) {
+//        return false;
+//    }
+//}
 
-void GameScene::addMovingObject(const std::shared_ptr<MovingObject>&   character,
-                                std::unique_ptr<CharacterGraphicsItem> item)
-{
-    QGraphicsScene::addItem(item.get());
-    movingObjects_.insert({ character, std::move(item) });
-    onCharacterMoved(character);
-}
+// void GameScene::addMovingObject(const std::shared_ptr<MovingObject>&   character,
+//                                std::unique_ptr<CharacterGraphicsItem> item)
+//{
+//    QGraphicsScene::addItem(item.get());
+//    movingObjects_.insert({ character, std::move(item) });
+//    onCharacterMoved(character);
+//}
 
-void GameScene::destroyItemForObject(const std::shared_ptr<MovingObject>& object)
-{
-    movingObjects_.erase(object);
-}
+// void GameScene::destroyItemForObject(const std::shared_ptr<MovingObject>& object)
+//{
+//    movingObjects_.erase(object);
+//}
 
-void GameScene::removeAllObjects()
-{
-    movingObjects_.clear();
-    // TODO: free CellItems' memory.
-    cellItems_.clear();
-    clear();
-}
+// void GameScene::removeAllObjects()
+//{
+//    movingObjects_.clear();
+//    // TODO: free CellItems' memory.
+//    cellItems_.clear();
+//    clear();
+//}
 
 void GameScene::onCharacterStartedMove(const std::shared_ptr<Character>& character)
 {
@@ -134,7 +134,7 @@ void GameScene::onCharacterStopped(const std::shared_ptr<Character>& character)
     // updateAnimations();
 }
 
-void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& charac)
+void GameScene::onCharacterMoved(const std::shared_ptr<Character>& charac)
 {
     auto character = std::dynamic_pointer_cast<Character>(charac);
     auto iter      = characterMap_.find(character);
@@ -142,10 +142,6 @@ void GameScene::onCharacterMoved(const std::shared_ptr<MovingObject>& charac)
         iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
         iter->second->updateSpriteMapRow();
     }
-    //    auto iter = movingObjects_.find(character);
-    //    if (iter != movingObjects_.cend()) {
-    //        iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
-    //    }
 }
 
 void GameScene::onBombPlaced(const std::shared_ptr<Bomb>& bomb)

@@ -8,7 +8,7 @@
 
 namespace bm {
 class GameObject;
-struct Bomb;
+class Bomb;
 class Map;
 
 struct BombExplosionResult

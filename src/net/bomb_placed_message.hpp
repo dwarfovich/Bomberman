@@ -6,7 +6,7 @@
 #include <QByteArray>
 
 namespace bm {
-struct Bomb;
+class Bomb;
 
 class BombPlacedMessage : public Message
 {

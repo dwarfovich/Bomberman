@@ -27,8 +27,8 @@ bool initializeGame(const GameData& gameData)
     bomberman->setId(0);
     bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
     map->addBomberman(bomberman);
-    gameData.game->addPlayer(bomberman);
-    gameData.game->setPlayerBomberman(bomberman);
+    //    gameData.game->addPlayer(bomberman);
+    //    gameData.game->setPlayerBomberman(bomberman);
 
     // const auto& player = gameData.mapData->bombermans[0];
     // gameData.game->addPlayer(player);
@@ -48,7 +48,7 @@ bool initializeGame(const GameData& gameData)
     }
 
     QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
-    QObject::connect(gameData.game, &Game::objectMoved, scene, &gui::GameScene::onCharacterMoved);
+    QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
     QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
     QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
     QObject::connect(gameData.game, &Game::bombPlaced, scene, &gui::GameScene::onBombPlaced);
@@ -59,7 +59,6 @@ bool initializeGame(const GameData& gameData)
 
     gameData.game->setMap(gameData.mapData->map);
     // gameData.view->setMap(gameData.mapData->map);
-    gameData.game->setScene(scene);
 
     return true;
 }

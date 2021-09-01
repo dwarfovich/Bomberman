@@ -34,15 +34,14 @@ public:
     void addCellItem(std::unique_ptr<SpriteGraphicsObject> item);
     void addCharacterItem(std::unique_ptr<SpriteGraphicsObject> item);
 
-    bool setCellItem(CellItem* item, size_t index);
-    void addMovingObject(const std::shared_ptr<MovingObject>& object, std::unique_ptr<CharacterGraphicsItem> item);
-    void destroyItemForObject(const std::shared_ptr<MovingObject>& object);
-    void removeAllObjects();
+    //    bool setCellItem(CellItem* item, size_t index);
+    //    void addMovingObject(const std::shared_ptr<MovingObject>& object, std::unique_ptr<CharacterGraphicsItem>
+    //    item); void destroyItemForObject(const std::shared_ptr<MovingObject>& object); void removeAllObjects();
 
 public slots:
     void onCharacterStartedMove(const std::shared_ptr<Character>& character);
     void onCharacterStopped(const std::shared_ptr<Character>& character);
-    void onCharacterMoved(const std::shared_ptr<MovingObject>& character);
+    void onCharacterMoved(const std::shared_ptr<Character>& character);
     void onBombPlaced(const std::shared_ptr<Bomb>& bomb);
     void onBombExploded(const std::shared_ptr<Bomb>& bomb);
     void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);

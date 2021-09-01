@@ -32,22 +32,21 @@ public:
     Map() = default;
     Map(size_t width, size_t height);
 
-    bool reset(size_t width, size_t height);
-    void setCellType(size_t index, CellStructure structure);
-    void setCell(const Cell& cell);
-    bool placeBomb(const std::shared_ptr<Bomb>& bomb);
-    bool removeBomb(size_t index);
-    bool setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
-    void addBomberman(const std::shared_ptr<Bomberman>& bomberman);
-    void removeBomberman(const Bomberman& bomberman);
-    void addBot(const std::shared_ptr<Bot>& bot);
-    void moveCharacter(uint8_t id, const MoveData& moveData) const;
-    void addExplosion(const std::shared_ptr<Explosion>& explosion);
-    void removeExplosion(const std::shared_ptr<Explosion>& explosion);
-    // void                                 addMovingObject(const std::shared_ptr<MovingObject>& object);
-    void                                 removeMovingObject(const std::shared_ptr<MovingObject>& object);
-    void                                 removeMovingObject(const MovingObject& object);
-    const std::shared_ptr<MovingObject>& sharedPtrForObject(const MovingObject& object) const;
+    bool                              reset(size_t width, size_t height);
+    void                              setCellType(size_t index, CellStructure structure);
+    void                              setCell(const Cell& cell);
+    bool                              placeBomb(const std::shared_ptr<Bomb>& bomb);
+    bool                              removeBomb(size_t index);
+    bool                              setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void                              addBomberman(const std::shared_ptr<Bomberman>& bomberman);
+    void                              removeBomberman(const Bomberman& bomberman);
+    void                              addBot(const std::shared_ptr<Bot>& bot);
+    void                              removeBot(const std::shared_ptr<Bot>& bot);
+    void                              moveCharacter(object_id_t id, const MoveData& moveData) const;
+    void                              removeCharacter(object_id_t id);
+    void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
+    void                              removeExplosion(const std::shared_ptr<Explosion>& explosion);
+    const std::shared_ptr<Character>& character(object_id_t id) const;
 
     const Cell&              cell(size_t index) const;
     CellLocation             coordinatesToLocation(const QPoint& coordinates) const;
@@ -59,7 +58,7 @@ public:
     QPoint                   indexToCellCenterCoordinates(size_t index) const;
     bool                     isCellCenter(const QPoint& coordinates) const;
     bool                     cellIsMovable(const CellLocation& location) const;
-    bool                     nextCellIsMovable(const MovingObject& object, Direction direction) const;
+    bool                     nextCellIsMovable(const Character& character, Direction direction) const;
     bool                     nextCellIsMovable(const QPoint& coordinates, Direction direction) const;
     bool                     isProperIndex(size_t index) const;
     size_t                   width() const;
@@ -83,15 +82,13 @@ public:
 
 signals:
     void cellChanged(size_t index);
-    void objectMoved(const std::shared_ptr<MovingObject>& object);
-    // void objectAdded(const std::shared_ptr<MovingObject>& object);
-    void objectIndexChanged(const std::shared_ptr<MovingObject>& bomberman, size_t index);
+    void characterMoved(const std::shared_ptr<Character>& character);
+    void characterIndexChanged(const std::shared_ptr<Character>& character, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
-    void objectsCollided(bm::GameObject& lhs, bm::GameObject& rhs);
 
 private: // methods
-    void checkCollisions();
-    bool objectsIntersect(MovingObject& lhs, MovingObject& rhs);
+    void checkBombermanAndBotCollisions();
+    bool charactersIntersect(const Character& lhs, const Character& rhs) const;
 
     size_t shiftIndex(size_t index, Direction direction) const;
     int    alignToCellCenter(int position) const;
@@ -119,17 +116,17 @@ private: // methods
     int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
-    uint32_t                                                   randomSeed_    = 0;
-    size_t                                                     widthInCells_  = 0;
-    size_t                                                     heightInCells_ = 0;
-    std::vector<Cell>                                          cells_;
-    std::vector<std::shared_ptr<MovingObject>>                 movingObjects_;
-    std::unordered_map<uint8_t, std::shared_ptr<MovingObject>> idToMovingObjects_;
-    BombermansMap                                              bombermans_;
-    std::vector<std::shared_ptr<Bot>>                          bots_;
-    std::vector<std::shared_ptr<Bomb>>                         bombs_;
-    std::vector<std::shared_ptr<Explosion>>                    explosions_;
-    std::unordered_map<RespawnType, RespawnPlaces>             respawnPlaces_;
+    uint32_t          randomSeed_    = 0;
+    size_t            widthInCells_  = 0;
+    size_t            heightInCells_ = 0;
+    std::vector<Cell> cells_;
+    using IdCharactersMap = std::unordered_map<object_id_t, std::shared_ptr<Character>>;
+    IdCharactersMap                                idToCharacterMap_;
+    BombermansMap                                  bombermans_;
+    std::vector<std::shared_ptr<Bot>>              bots_;
+    std::vector<std::shared_ptr<Bomb>>             bombs_;
+    std::vector<std::shared_ptr<Explosion>>        explosions_;
+    std::unordered_map<RespawnType, RespawnPlaces> respawnPlaces_;
 };
 
 } // namespace bm

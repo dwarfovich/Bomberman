@@ -1,7 +1,7 @@
 #include "character_moved_message.hpp"
 #include "i_message_visitor.hpp"
 #include "message_maker.hpp"
-#include "game/moving_object.hpp"
+#include "game/character.hpp"
 
 #include <QDataStream>
 
@@ -9,11 +9,11 @@ namespace bm {
 
 REGISTER_MESSAGE_MAKER(MessageType::CharacterMoved, CharacterMovedMessage);
 
-CharacterMovedMessage::CharacterMovedMessage(const MovingObject &object)
+CharacterMovedMessage::CharacterMovedMessage(const Character &character)
 {
     QDataStream stream { &data_, QDataStream::WriteOnly };
-    stream << object.id();
-    stream << object.movementData();
+    stream << character.id();
+    stream << character.movementData();
 }
 
 MessageType CharacterMovedMessage::type() const

@@ -9,7 +9,7 @@
 
 namespace bm {
 
-NetworkGame::NetworkGame(Server *server, QObject *parent) : ServerGame { parent }, server_ { server }
+NetworkGame::NetworkGame(Server *server) : server_ { server }
 {
     server->setParent(this);
 
@@ -69,7 +69,7 @@ void NetworkGame::startGame()
 }
 
 // TODO: Change type of player to uint8_t or whatever it should be.
-void NetworkGame::movePlayer(size_t player, Direction direction)
+void NetworkGame::movePlayer(object_id_t player, Direction direction)
 {
     ServerGame::movePlayer(player, direction);
     CharacterMovedMessage message(*bomberman(player));
@@ -77,7 +77,7 @@ void NetworkGame::movePlayer(size_t player, Direction direction)
     ServerGame::movePlayer(player, direction);
 }
 
-void NetworkGame::stopPlayer(size_t player)
+void NetworkGame::stopPlayer(object_id_t player)
 {
     ServerGame::stopPlayer(player);
     CharacterMovedMessage message(*bomberman(player));
@@ -85,7 +85,7 @@ void NetworkGame::stopPlayer(size_t player)
     ServerGame::stopPlayer(player);
 }
 
-std::shared_ptr<Bomb> NetworkGame::placeBomb(size_t player)
+std::shared_ptr<Bomb> NetworkGame::placeBomb(object_id_t player)
 {
     const auto &bomb = ServerGame::placeBomb(player);
     if (bomb) {

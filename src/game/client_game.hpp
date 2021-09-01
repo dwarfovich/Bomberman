@@ -14,13 +14,13 @@ class ClientGame : public Game, public IMessageVisitor
     Q_OBJECT
 
 public:
-    explicit ClientGame(Client* client, QObject* parent = nullptr);
+    explicit ClientGame(Client* client);
 
-    void                  start() override;
-    void                  addPlayer(const std::shared_ptr<Bomberman>& player) override;
-    void                  movePlayer(size_t player, Direction direction) override;
-    void                  stopPlayer(size_t player) override;
-    std::shared_ptr<Bomb> placeBomb(size_t player) override;
+    void start() override;
+    //    void                  addPlayer(const std::shared_ptr<Bomberman>& player) override;
+    void                  movePlayer(object_id_t player, Direction direction) override;
+    void                  stopPlayer(object_id_t player) override;
+    std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
 
 private slots:
     void onReadyToStart();
@@ -32,7 +32,7 @@ private:
 
     // Game interface
 public:
-    const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const override;
+    const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const override;
 
     // IMessageVisitor interface
 public:
@@ -44,7 +44,7 @@ public:
 
     // Game interface
 public:
-    uint8_t playerId() const override;
+    object_id_t playerId() const override;
 
     // IMessageVisitor interface
 public:

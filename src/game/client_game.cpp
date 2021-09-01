@@ -6,7 +6,7 @@
 
 namespace bm {
 
-ClientGame::ClientGame(Client *client, QObject *parent) : Game { parent }, client_ { client }
+ClientGame::ClientGame(Client *client) : client_ { client }
 {
     client_->setParent(this);
 
@@ -17,26 +17,26 @@ ClientGame::ClientGame(Client *client, QObject *parent) : Game { parent }, clien
 void ClientGame::start()
 {}
 
-void ClientGame::addPlayer(const std::shared_ptr<Bomberman> &player)
-{}
+// void ClientGame::addPlayer(const std::shared_ptr<Bomberman> &player)
+//{}
 
-void ClientGame::movePlayer(size_t player, Direction direction)
+void ClientGame::movePlayer(object_id_t player, Direction direction)
 {
     // TODO: Check if bombermans and playerBomberman_ have proper ids.
-    playerBomberman_->setSpeed(defaultBombermanSpeed);
+    playerBomberman_->setSpeed(bomberman_ns::defaultSpeed);
     playerBomberman_->setDirection(direction);
     CharacterMovedMessage message(*playerBomberman_);
     client_->sendMessage(message);
 }
 
-void ClientGame::stopPlayer(size_t player)
+void ClientGame::stopPlayer(object_id_t player)
 {
     playerBomberman_->setSpeed(0);
     CharacterMovedMessage message(*playerBomberman_);
     client_->sendMessage(message);
 }
 
-std::shared_ptr<Bomb> ClientGame::placeBomb(size_t player)
+std::shared_ptr<Bomb> ClientGame::placeBomb(object_id_t player)
 {
     std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
     if (bomb) {
@@ -64,7 +64,7 @@ void ClientGame::onMessageReceived(const std::unique_ptr<Message> &message)
     message->accept(*this);
 }
 
-const std::shared_ptr<Bomberman> &ClientGame::bomberman(uint8_t playerId) const
+const std::shared_ptr<Bomberman> &ClientGame::bomberman(object_id_t playerId) const
 {
     const auto &bombermans = map_->bombermans();
     auto        iter       = std::find_if(bombermans.cbegin(), bombermans.cend(), [playerId](const auto &iter) {
@@ -95,7 +95,7 @@ void ClientGame::setMap(const std::shared_ptr<Map> &map)
     playerBomberman_ = bomberman(client_->playerId());
 }
 
-uint8_t ClientGame::playerId() const
+object_id_t ClientGame::playerId() const
 {
     return client_->playerId();
 }

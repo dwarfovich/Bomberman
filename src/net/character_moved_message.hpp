@@ -7,13 +7,13 @@
 #include <QByteArray>
 
 namespace bm {
-class MovingObject;
+class Character;
 
 class CharacterMovedMessage : public Message
 {
 public:
     CharacterMovedMessage() = default;
-    CharacterMovedMessage(const MovingObject &object);
+    CharacterMovedMessage(const Character &character);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
