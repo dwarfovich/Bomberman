@@ -8,7 +8,7 @@ namespace bm {
 class BotAi;
 
 namespace bot_ns {
-inline constexpr size_t defaultSpeed = 10;
+inline constexpr size_t defaultSpeed = 5;
 }
 
 class Bot : public Character

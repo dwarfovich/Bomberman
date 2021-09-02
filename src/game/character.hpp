@@ -21,15 +21,19 @@ public:
 
     virtual const MoveData& movementData() const;
     virtual void            setMovementData(const MoveData& data);
-    virtual void            setSpeed(int speed);
-    virtual int             speed() const;
-    virtual Direction       direction() const;
-    virtual void            setDirection(Direction direction);
-    virtual const QPoint&   coordinates() const;
-    virtual void            setCoordinates(const QPoint& coordinates);
-    virtual bool            notifyIfMeetedWall() const;
-    virtual void            meetsWall();
-    virtual bool            acceptsModifiers() const = 0;
+    // TODO: make speed and possibleSpeed types be the same.
+    virtual void setSpeed(int speed);
+    virtual int  speed() const;
+    virtual void setPossibleSpeed(int speed);
+    virtual int  possibleSpeed() const;
+
+    virtual Direction     direction() const;
+    virtual void          setDirection(Direction direction);
+    virtual const QPoint& coordinates() const;
+    virtual void          setCoordinates(const QPoint& coordinates);
+    virtual bool          notifyIfMeetedWall() const;
+    virtual void          meetsWall();
+    virtual bool          acceptsModifiers() const = 0;
 
 private:
     MoveData moveData_;

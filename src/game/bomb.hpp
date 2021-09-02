@@ -17,7 +17,7 @@ public:
     friend QDataStream& operator<<(QDataStream& stream, const Bomb& bomb);
     friend QDataStream& operator>>(QDataStream& stream, Bomb& bomb);
 
-    object_id_t  ownerId_;
+    object_id_t  ownerId;
     int          radius    = 1;
     size_t       cellIndex = 0;
     Milliseconds explosionDelay { 1000 };

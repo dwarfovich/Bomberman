@@ -174,6 +174,19 @@ void Map::removeBomberman(const Bomberman& bomberman)
     }
 }
 
+const std::shared_ptr<Bomberman>& Map::bomberman(object_id_t id) const
+{
+    auto iter = std::find_if(bombermans_.cbegin(), bombermans_.cend(), [id](const auto& iter) {
+        return iter.first->id() == id;
+    });
+    if (iter != bombermans_.cend()) {
+        return iter->second;
+    } else {
+        static const std::shared_ptr<Bomberman> empty;
+        return empty;
+    }
+}
+
 void Map::addBot(const std::shared_ptr<Bot>& bot)
 {
     bots_.push_back(bot);
@@ -207,6 +220,7 @@ void Map::removeCharacter(object_id_t id)
         } else {
             bots_.erase(std::remove(bots_.begin(), bots_.end(), characterPtr));
         }
+        idToCharacterMap_.erase(id);
     }
 }
 
@@ -640,6 +654,10 @@ void Map::moveObjects(double timeDelta)
             continue;
         }
 
+        if (character->direction() == Direction::Right) {
+            int t = 5;
+        }
+
         auto  moveData    = character->movementData();
         auto& coordinates = moveData.coordinates;
         auto  oldIndex    = coordinatesToIndex(coordinates);
@@ -757,7 +775,12 @@ void Map::moveObjects(double timeDelta)
         }
     }
 
-    checkBombermanAndBotCollisions();
+    Collisions collisions;
+    checkBombermanAndBotCollisions(collisions);
+    checkExplosionCollisions(collisions);
+    if (!collisions.empty()) {
+        emit objectsCollided(collisions);
+    }
 }
 
 const Map::RespawnPlaces& Map::respawnPlaces(RespawnType type) const
@@ -776,13 +799,38 @@ void Map::setRespawnPlaces(RespawnType type, const RespawnPlaces& places)
     respawnPlaces_[type] = places;
 }
 
-void Map::checkBombermanAndBotCollisions()
+void Map::checkBombermanAndBotCollisions(Map::Collisions& collisions)
 {
     for (auto& [bomberman, bombermanSptr] : bombermans_) {
         for (auto& bot : bots_) {
             if (charactersIntersect(*bomberman, *bot)) {
-                // TODO:
-                // emit objectsCollided(*bomberman, *bot);
+                collisions.emplace_back(bombermanSptr, bot);
+            }
+        }
+    }
+}
+
+void Map::checkExplosionCollisions(Map::Collisions& collisions)
+{
+    for (auto& bot : bots_) {
+        for (const auto& explosion : explosions_) {
+            if (explosionIntersects(*explosion, *bot)) {
+                collisions.emplace_back(explosion, bot);
+            }
+            for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
+                const auto& cellCenter = CellLocation({ x, explosion->center().y() });
+                auto        index      = locationToIndex(cellCenter);
+                // collisions.emplace_back(explosion, cells_[index]);
+            }
+            for (size_t y = explosion->yMin(); y < explosion->center().y(); ++y) {
+                const auto& cellCenter = CellLocation({ explosion->center().x(), y });
+                auto        index      = locationToIndex(cellCenter);
+                // collisions.emplace_back(explosion, cells_[index]);
+            }
+            for (size_t y = explosion->center().y() + 1; y <= explosion->yMax(); ++y) {
+                const auto& cellCenter = CellLocation({ explosion->center().x(), y });
+                auto        index      = locationToIndex(cellCenter);
+                // collisions.emplace_back(explosion, cells_[index]);
             }
         }
     }
@@ -794,6 +842,30 @@ bool Map::charactersIntersect(const Character& lhs, const Character& rhs) const
     QRect right { rhs.coordinates(), QSize { cellSize, cellSize } };
 
     return left.intersects(right);
+}
+
+bool Map::explosionIntersects(const Explosion& explosion, const Character& rhs) const
+{
+    for (size_t x = explosion.xMin(); x <= explosion.xMax(); ++x) {
+        const auto& cellCenter = locationToCellCenterCoordinates({ x, explosion.center().y() });
+        if (circlesIntersect(cellCenter, rhs.coordinates())) {
+            return true;
+        }
+    }
+    for (size_t y = explosion.yMin(); y < explosion.center().y(); ++y) {
+        const auto& cellCenter = locationToCellCenterCoordinates({ explosion.center().x(), y });
+        if (circlesIntersect(cellCenter, rhs.coordinates())) {
+            return true;
+        }
+    }
+    for (size_t y = explosion.center().y() + 1; y <= explosion.yMax(); ++y) {
+        const auto& cellCenter = locationToCellCenterCoordinates({ explosion.center().x(), y });
+        if (circlesIntersect(cellCenter, rhs.coordinates())) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 size_t Map::shiftIndex(size_t index, Direction direction) const

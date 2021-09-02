@@ -22,36 +22,44 @@ void ClientGame::start()
 
 void ClientGame::movePlayer(object_id_t player, Direction direction)
 {
-    // TODO: Check if bombermans and playerBomberman_ have proper ids.
-    playerBomberman_->setSpeed(bomberman_ns::defaultSpeed);
-    playerBomberman_->setDirection(direction);
-    CharacterMovedMessage message(*playerBomberman_);
-    client_->sendMessage(message);
+    auto bomberman = map_->character(player);
+    if (bomberman) {
+        bomberman->setSpeed(bomberman_ns::defaultSpeed);
+        bomberman->setDirection(direction);
+        CharacterMovedMessage message(*bomberman);
+        client_->sendMessage(message);
+    }
 }
 
 void ClientGame::stopPlayer(object_id_t player)
 {
-    playerBomberman_->setSpeed(0);
-    CharacterMovedMessage message(*playerBomberman_);
-    client_->sendMessage(message);
+    auto bomberman = map_->character(player);
+    if (bomberman) {
+        bomberman->setSpeed(0);
+        CharacterMovedMessage message(*bomberman);
+        client_->sendMessage(message);
+    }
 }
 
 std::shared_ptr<Bomb> ClientGame::placeBomb(object_id_t player)
 {
-    std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
-    if (bomb) {
-        auto index = map_->coordinatesToIndex(playerBomberman_->movementData().coordinates);
+    auto bomberman = map_->bomberman(player);
+    if (bomberman && bomberman->canCreateBomb()) {
+        std::shared_ptr<Bomb> bomb  = bomberman->createBomb();
+        auto                  index = map_->coordinatesToIndex(bomberman->coordinates());
         if (map_->isProperIndex(index)) {
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
-            addExplosionEvent(bomb);
+            //            addExplosionEvent(bomb);
         }
 
         BombPlacedMessage message { *bomb };
         client_->sendMessage(message);
+        return bomb;
+    } else {
+        static const std::shared_ptr<Bomb> empty;
+        return empty;
     }
-
-    return bomb;
 }
 
 void ClientGame::onReadyToStart()
@@ -91,8 +99,6 @@ void ClientGame::setMap(const std::shared_ptr<Map> &map)
     connect(&moveTimer_, &QTimer::timeout, [this]() {
         map_->moveObjects(42);
     });
-
-    playerBomberman_ = bomberman(client_->playerId());
 }
 
 object_id_t ClientGame::playerId() const
@@ -110,7 +116,7 @@ void ClientGame::visit(const BombPlacedMessage &message)
 {
     const auto &bomb = message.bomb();
     map_->placeBomb(bomb);
-    addExplosionEvent(bomb);
+    //    addExplosionEvent(bomb);
 }
 
 void ClientGame::visit(const CellChangedMessage &message)

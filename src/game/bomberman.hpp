@@ -27,20 +27,18 @@ public:
     void          fromStream(QDataStream& stream) override;
     bool          acceptsModifiers() const override;
 
-    size_t                possibleSpeed() const;
-    void                  setPossibleSpeed(size_t possibleSpeed);
     const Bomb&           bombPrototype() const;
     void                  setBombPrototype(const Bomb& Bomb);
     uint8_t               activeBombs() const;
     uint8_t               maxActiveBombs() const;
     void                  setMaxActiveBombs(uint8_t maxActiveBombs);
     void                  decreaseActiveBombs();
+    bool                  canCreateBomb() const;
     std::unique_ptr<Bomb> createBomb();
 
 private:
     uint8_t activeBombs_    = 0;
     uint8_t maxActiveBombs_ = 1;
-    size_t  possibleSpeed_  = bomberman_ns::defaultSpeed;
     Bomb    bombPrototype_;
 };
 } // namespace bm

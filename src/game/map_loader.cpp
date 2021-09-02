@@ -82,6 +82,7 @@ MapData loadFromFile(const QString& filePath)
     // qDebug() << filePath;
     QFile file { filePath };
     if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Cann't open map file:" << filePath;
         return {};
     }
 

@@ -13,16 +13,21 @@ Direction BotAi::chooseNextDirection() const
 {
     std::array<Direction, 3> directions {};
 
-    auto   direction = bot_->direction();
-    size_t count     = 0;
-    for (; count < 3; ++count) {
+    auto                 direction          = bot_->direction();
+    static const uint8_t invalidDirection   = -1;
+    uint8_t              nextValidDirection = invalidDirection;
+    for (uint8_t checkedDirections = 0; checkedDirections < 3; ++checkedDirections) {
         direction = bm::nextDirection(direction);
         if (map_.nextCellIsMovable(*bot_, direction)) {
-            directions[count] = direction;
+            directions[++nextValidDirection] = direction;
         }
     }
 
-    return directions[randomGenerator_->bounded(0, static_cast<int>(count))];
+    if (nextValidDirection == invalidDirection) {
+        return direction;
+    } else {
+        return directions[randomGenerator_->bounded(0, static_cast<int>(nextValidDirection + 1))];
+    }
 }
 
 } // namespace bm

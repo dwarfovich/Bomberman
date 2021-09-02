@@ -24,9 +24,9 @@ bool initializeGame(const GameData& gameData)
     const auto& map       = gameData.mapData->map;
     auto        bomberman = std::make_shared<Bomberman>();
     bomberman->setBombPrototype({});
-    bomberman->setId(0);
     bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
     map->addBomberman(bomberman);
+    gameData.game->setPlayerBomberman(bomberman->id());
     //    gameData.game->addPlayer(bomberman);
     //    gameData.game->setPlayerBomberman(bomberman);
 

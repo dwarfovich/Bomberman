@@ -61,6 +61,16 @@ int Character::speed() const
     return moveData_.speed;
 }
 
+void Character::setPossibleSpeed(int speed)
+{
+    moveData_.possibleSpeed = speed;
+}
+
+int Character::possibleSpeed() const
+{
+    return moveData_.possibleSpeed;
+}
+
 Direction Character::direction() const
 {
     return moveData_.direction;

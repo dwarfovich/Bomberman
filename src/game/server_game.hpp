@@ -28,13 +28,6 @@ protected slots:
 protected: // methods
     void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     void explodeBomb(const std::shared_ptr<Bomb>& bomb);
-
-protected: // data
-           //    static const int                        updateTimeout_ = 42;
-           //    std::vector<std::shared_ptr<Bomberman>> bombermans_;
-           //    Collider                                collider_;
-           //    QTimer                                  moveTimer;
-           //    TimerQueue                              timerQueue;
 };
 
 } // namespace bm

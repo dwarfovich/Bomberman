@@ -25,6 +25,8 @@ class Map : public QObject
 public:
     using RespawnPlaces = std::vector<size_t>;
     using BombermansMap = std::unordered_map<const Bomberman*, std::shared_ptr<Bomberman>>;
+    using CollisionPair = std::pair<std::shared_ptr<GameObject>, std::shared_ptr<GameObject>>;
+    using Collisions    = std::vector<CollisionPair>;
 
     friend QDataStream& operator<<(QDataStream& stream, const Map& map);
     friend QDataStream& operator>>(QDataStream& stream, Map& map);
@@ -40,6 +42,7 @@ public:
     bool                              setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
     void                              addBomberman(const std::shared_ptr<Bomberman>& bomberman);
     void                              removeBomberman(const Bomberman& bomberman);
+    const std::shared_ptr<Bomberman>& bomberman(object_id_t id) const;
     void                              addBot(const std::shared_ptr<Bot>& bot);
     void                              removeBot(const std::shared_ptr<Bot>& bot);
     void                              moveCharacter(object_id_t id, const MoveData& moveData) const;
@@ -86,9 +89,13 @@ signals:
     void characterIndexChanged(const std::shared_ptr<Character>& character, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
 
+    void objectsCollided(const Map::Collisions& collisions);
+
 private: // methods
-    void checkBombermanAndBotCollisions();
+    void checkBombermanAndBotCollisions(Collisions& collisions);
+    void checkExplosionCollisions(Collisions& collisions);
     bool charactersIntersect(const Character& lhs, const Character& rhs) const;
+    bool explosionIntersects(const Explosion& explosion, const Character& rhs) const;
 
     size_t shiftIndex(size_t index, Direction direction) const;
     int    alignToCellCenter(int position) const;

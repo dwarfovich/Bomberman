@@ -203,12 +203,13 @@ void MainWindow::startSinglePlayerGame()
     const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
     auto       mapData = map_loader::loadFromFile(mapFile);
     if (!mapData.map) {
+        QMessageBox::critical(this, "Error!", "Cann't load map");
         exit(1);
     }
 
     game_ = createSinglePlayerGame(mapData.map);
     if (!game_) {
-        QMessageBox::critical(this, "Error!", "Cann't craete game");
+        QMessageBox::critical(this, "Error!", "Cann't create game");
         exit(1);
     }
 
@@ -218,11 +219,13 @@ void MainWindow::startSinglePlayerGame()
     data.view    = gameView_;
     bool success = initializeGame(data);
     if (success) {
+        keyControls_.playerId = data.game->getPlayerBomberman();
         mainMenuWidget_->hide();
         setCentralWidget(gameView_);
         gameView_->show();
         game_->start();
     } else {
+        QMessageBox::critical(this, "Error!", "Cann't initialize game");
         exit(1);
     }
 }

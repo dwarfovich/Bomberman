@@ -12,9 +12,10 @@ struct MoveData
     friend QDataStream& operator<<(QDataStream& stream, const MoveData& data);
     friend QDataStream& operator>>(QDataStream& stream, MoveData& data);
 
-    int       speed       = 0;
-    Direction direction   = Direction::Downward;
-    QPoint    coordinates = { 0, 0 };
+    int       speed         = 0;
+    int       possibleSpeed = 0;
+    Direction direction     = Direction::Downward;
+    QPoint    coordinates   = { 0, 0 };
 };
 
 } // namespace bm

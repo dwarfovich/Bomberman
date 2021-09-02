@@ -28,7 +28,7 @@ void NetworkGame::startPreparing()
     sendMapInitializationMessage();
     //    const auto &playerBomberman = map_->bombermans().at(0);
     //    setPlayerBomberman(playerBomberman);
-    playerBomberman_ = bomberman(0);
+    // playerBomberman_ = bomberman(0);
 }
 
 void NetworkGame::setMap(const std::shared_ptr<Map> &map)

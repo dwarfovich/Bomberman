@@ -2,6 +2,7 @@
 #define GAMEOBJECT_HPP
 
 #include <cinttypes>
+#include <unordered_set>
 
 #define ACCEPT_COLLISION                                                            \
     void collideWith(GameObject& other, Collider& collider) override                \
@@ -20,16 +21,22 @@ using object_id_t = uint16_t;
 class GameObject
 {
 public:
-    virtual ~GameObject() = default;
+    GameObject();
+    virtual ~GameObject();
 
     virtual void collideWith(GameObject& other, Collider& c);
     virtual void accept(const CollisionDispatcherBase& c);
 
     object_id_t id() const;
-    void        setId(object_id_t newObjectId);
 
-protected:
+protected: // methods
+           // void setId(object_id_t newObjectId);
+protected: // data
     object_id_t id_;
+
+private:
+    static object_id_t                     nextId_;
+    static std::unordered_set<object_id_t> releasedIds_;
 };
 
 } // namespace bm

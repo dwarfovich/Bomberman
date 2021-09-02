@@ -23,7 +23,7 @@ Game::Game() : collider_ { this }
 
 void Game::start()
 {
-    movementTimer_.start();
+    movementTimer_.start(game_ns::movementUpdatePeriod);
 }
 
 void Game::setMap(const std::shared_ptr<Map>& map)
@@ -31,10 +31,12 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     if (map_) {
         disconnect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
         disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
+        disconnect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
     }
     map_ = map;
     connect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
     connect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
+    connect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
 }
 
 Map* Game::map() const
@@ -75,47 +77,67 @@ Map* Game::map() const
 //    }
 //}
 
-void Game::onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index)
-{
-    const auto& cell     = map_->cell(index);
-    const auto& modifier = cell.modifier();
-    if (modifier && object == playerBomberman_) {
-        auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
-        modifier->activate(*bomberman);
-        if (modifier->durationType() == ModifierDurationType::Temporary) {
-            auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
-            timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
-        }
-        map_->setModifier(cell.index(), nullptr);
-    }
-}
+// void Game::onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index)
+//{
+//    const auto& cell     = map_->cell(index);
+//    const auto& modifier = cell.modifier();
+//    if (modifier && object == playerBomberman_) {
+//        auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
+//        modifier->activate(*bomberman);
+//        if (modifier->durationType() == ModifierDurationType::Temporary) {
+//            auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
+//            timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
+//        }
+//        map_->setModifier(cell.index(), nullptr);
+//    }
+//}
 
-void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
-{
-    auto callback = std::bind(&Game::explodeBomb, this, std::placeholders::_1);
-    timerQueue.addEvent(createDelay(bomb->explosionDelay), std::make_unique<BombExplosionEvent>(bomb, callback));
-}
+// void Game::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
+//{
+//    auto callback = std::bind(&Game::explodeBomb, this, std::placeholders::_1);
+//    timerQueue.addEvent(createDelay(bomb->explosionDelay), std::make_unique<BombExplosionEvent>(bomb, callback));
+//}
 
-void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
-{
-    auto  explosionData = bm::explodeBomb(*map_, *bomb);
-    auto& explosion     = explosionData.explosion;
-    emit  explosionHappened(explosion);
-    auto  callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
-    qDebug() << "Adding event from explodeBomb";
-    timerQueue.addEvent(createDelay(bomb->explosionPeriod),
-                        std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
-    for (auto* affectedObject : explosionData.affectedObjects) {
-        explosion->collideWith(*affectedObject, collider_);
-    }
+// void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
+//{
+//    auto  explosionData = bm::explodeBomb(*map_, *bomb);
+//    auto& explosion     = explosionData.explosion;
+//    emit  explosionHappened(explosion);
+//    auto  callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
+//    qDebug() << "Adding event from explodeBomb";
+//    timerQueue.addEvent(createDelay(bomb->explosionPeriod),
+//                        std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
+//    for (auto* affectedObject : explosionData.affectedObjects) {
+//        explosion->collideWith(*affectedObject, collider_);
+//    }
 
-    playerBomberman_->decreaseActiveBombs();
-}
+//    playerBomberman_->decreaseActiveBombs();
+//}
 
 void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 {
     emit explosionFinished(explosion);
     map_->removeExplosion(explosion);
+}
+
+object_id_t Game::getPlayerBomberman() const
+{
+    return playerBomberman_;
+}
+
+void Game::setPlayerBomberman(object_id_t playerBomberman)
+{
+    playerBomberman_ = playerBomberman;
+}
+
+void Game::onObjectsCollided(const Map::Collisions& collisions)
+{
+    for (const auto& [lhs, rhs] : collisions) {
+        auto l = lhs;
+        auto r = rhs;
+        lhs->collideWith(*rhs, collider_);
+    }
+    //    collisions->collideWith(*rhs, collider_);
 }
 
 // void Game::setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman)
