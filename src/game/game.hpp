@@ -29,15 +29,15 @@ public:
     Game();
     virtual ~Game() = default;
 
-    virtual void start() = 0;
-
-    virtual void                              setMap(const std::shared_ptr<Map>& map);
-    virtual Map*                              map() const;
     virtual void                              movePlayer(object_id_t player, Direction) = 0;
     virtual void                              stopPlayer(object_id_t player)            = 0;
     virtual std::shared_ptr<Bomb>             placeBomb(object_id_t player)             = 0;
     virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const     = 0;
     virtual object_id_t                       playerId() const                          = 0;
+
+    virtual void start();
+    virtual void setMap(const std::shared_ptr<Map>& map);
+    virtual Map* map() const;
 
     object_id_t getPlayerBomberman() const;
     void        setPlayerBomberman(object_id_t playerBomberman);
@@ -56,20 +56,19 @@ signals:
 
 private slots:
     void onObjectsCollided(const Map::Collisions& collisions);
-    //    void onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index);
+    void onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index);
 
 protected: // methods
-           //    void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
-    //    void explodeBomb(const std::shared_ptr<Bomb>& bomb);
-    void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
+    virtual void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
+    virtual void explodeBomb(const std::shared_ptr<Bomb>& bomb);
+    virtual void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
 
 protected: // data
     std::shared_ptr<Map> map_;
     object_id_t          playerBomberman_ = 0;
-    // std::shared_ptr<Bomberman> playerBomberman_ = nullptr;
-    Collider   collider_;
-    TimerQueue timerQueue;
-    QTimer     movementTimer_;
+    Collider             collider_;
+    TimerQueue           timerEventsQueue;
+    QTimer               movementTimer_;
 };
 
 } // namespace bm

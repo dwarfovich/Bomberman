@@ -21,7 +21,7 @@ QDataStream& operator>>(QDataStream& stream, CellLocation& location)
     return stream;
 }
 
-constexpr CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
+CellLocation::CellLocation() : x_ { invalidMapIndex }, y_ { invalidMapIndex }
 {}
 
 bool CellLocation::operator==(const CellLocation& rhs) const

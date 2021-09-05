@@ -44,17 +44,13 @@ SOURCES += \
     src/game/modifiers/permanent_bomb_radius_increase.cpp \
     src/game/modifiers/permanent_modifier.cpp \
     src/game/move_data.cpp \
-    src/game/moving_object.cpp \
     src/game/network_game.cpp \
     src/game/server_game.cpp \
-    src/gui/animated_sprite_graphics_object.cpp \
-    src/gui/bot_graphics_item.cpp \
-    src/gui/cell_item.cpp \
-    src/gui/character_graphics_item.cpp \
-    src/gui/character_sprite_object.cpp \
+    src/gui/cell_sprite_item.cpp \
+    src/gui/character_sprite_item.cpp \
     src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
-    src/gui/explosion_graphics_object.cpp \
+    src/gui/explosion_sprite_item.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_menu_widget.cpp \
@@ -62,7 +58,8 @@ SOURCES += \
     src/gui/map_widget.cpp \
     src/gui/player_key_controls.cpp \
     src/gui/sprite_factory.cpp \
-    src/gui/sprite_graphics_object.cpp \
+    src/gui/sprite_item.cpp \
+    src/gui/sprite_item_callbacks.cpp \
     src/main.cpp \
     src/net/bomb_placed_message.cpp \
     src/net/cell_changed_message.cpp \
@@ -127,18 +124,14 @@ HEADERS += \
     src/game/modifiers/permanent_bomb_radius_increase.hpp \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
-    src/game/moving_object.hpp \
     src/game/network_game.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
-    src/gui/animated_sprite_graphics_object.hpp \
-    src/gui/bot_graphics_item.hpp \
-    src/gui/cell_item.hpp \
-    src/gui/character_graphics_item.hpp \
-    src/gui/character_sprite_object.hpp \
+    src/gui/cell_sprite_item.hpp \
+    src/gui/character_sprite_item.hpp \
     src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
-    src/gui/explosion_graphics_object.hpp \
+    src/gui/explosion_sprite_item.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \
@@ -146,7 +139,8 @@ HEADERS += \
     src/gui/map_widget.hpp \
     src/gui/player_key_controls.hpp \
     src/gui/sprite_factory.hpp \
-    src/gui/sprite_graphics_object.hpp \
+    src/gui/sprite_item.hpp \
+    src/gui/sprite_item_callbacks.hpp \
     src/net/bomb_placed_message.hpp \
     src/net/cell_changed_message.hpp \
     src/net/character_moved_message.hpp \

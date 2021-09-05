@@ -7,7 +7,6 @@
 #include "gui/main_menu_widget.hpp"
 #include "gui/create_network_game_dialog.hpp"
 #include "gui/client_game_dialog.hpp"
-#include "bot_graphics_item.hpp"
 #include "net/client.hpp"
 
 #include <QKeyEvent>

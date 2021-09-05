@@ -35,7 +35,7 @@ QDataStream& operator<<(QDataStream& stream, const Map& map)
 
     stream << map.widthInCells_ << map.heightInCells_;
     for (const auto& cell : map.cells_) {
-        stream << cell;
+        stream << *cell;
     }
 
     stream << map.idToCharacterMap_.size();
@@ -56,7 +56,8 @@ QDataStream& operator>>(QDataStream& stream, Map& map)
     // TODO: Handle exception.
     map.cells_.resize(cellsCount);
     for (auto& cell : map.cells_) {
-        stream >> cell;
+        cell = std::make_shared<Cell>();
+        stream >> *cell;
     }
 
     size_t charactersCount = 0;
@@ -93,6 +94,9 @@ bool Map::reset(size_t width, size_t height)
 
     try {
         cells_.resize(width * height);
+        for (auto& cell : cells_) {
+            cell = std::make_shared<Cell>();
+        }
     } catch (const std::exception&) {
         return false;
     }
@@ -100,16 +104,16 @@ bool Map::reset(size_t width, size_t height)
     widthInCells_  = width;
     heightInCells_ = height;
     for (size_t i = 0; i < cells_.size(); ++i) {
-        cells_[i].setIndex(i);
+        cells_[i]->setIndex(i);
     }
 
-    return (true);
+    return true;
 }
 
 void Map::setCellType(size_t index, CellStructure structure)
 {
     if (isProperIndex(index)) {
-        cells_[index].setStructure(structure);
+        cells_[index]->setStructure(structure);
     }
 
     emit cellChanged(index);
@@ -117,14 +121,14 @@ void Map::setCellType(size_t index, CellStructure structure)
 
 void Map::setCell(const Cell& cell)
 {
-    cells_[cell.index()] = cell;
+    *cells_[cell.index()] = cell;
     emit cellChanged(cell.index());
 }
 
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     if (isProperIndex(bomb->cellIndex)) {
-        cells_[bomb->cellIndex].setHasBomb(true);
+        cells_[bomb->cellIndex]->setHasBomb(true);
         bombs_.push_back(bomb);
         emit cellChanged(bomb->cellIndex);
         return true;
@@ -142,7 +146,7 @@ bool Map::removeBomb(size_t index)
         return false;
     }
     bombs_.erase(iter);
-    cells_[index].setHasBomb(false);
+    cells_[index]->setHasBomb(false);
     emit cellChanged(index);
 
     return true;
@@ -151,7 +155,7 @@ bool Map::removeBomb(size_t index)
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
 {
     if (isProperIndex(index)) {
-        cells_[index].setModifier(modifier);
+        cells_[index]->setModifier(modifier);
         emit cellChanged(index);
         return true;
     } else {
@@ -247,7 +251,7 @@ const std::shared_ptr<Character>& Map::character(object_id_t id) const
 
 const Cell& Map::cell(size_t index) const
 {
-    return cells_[index];
+    return *cells_[index];
 }
 
 CellLocation Map::coordinatesToLocation(const QPoint& coordinates) const
@@ -297,7 +301,7 @@ bool Map::cellIsMovable(const CellLocation& location) const
     if (index == invalidMapIndex) {
         return false;
     } else {
-        return cells_[index].structure() == CellStructure::Empty;
+        return cells_[index]->structure() == CellStructure::Empty;
     }
 }
 
@@ -312,7 +316,7 @@ bool Map::nextCellIsMovable(const QPoint& coordinates, Direction direction) cons
     const auto targetIndex  = shiftIndex(currentIndex, direction);
 
     return (targetIndex != invalidMapIndex && targetIndex < cells_.size()
-            && cells_[targetIndex].structure() == CellStructure::Empty);
+            && cells_[targetIndex]->structure() == CellStructure::Empty);
 }
 
 bool Map::isProperIndex(size_t index) const
@@ -322,17 +326,17 @@ bool Map::isProperIndex(size_t index) const
 
 size_t Map::width() const
 {
-    return (widthInCells_);
+    return widthInCells_;
 }
 
 size_t Map::height() const
 {
-    return (heightInCells_);
+    return heightInCells_;
 }
 
-const std::vector<Cell>& Map::cells() const
+const std::vector<std::shared_ptr<Cell>>& Map::cells() const
 {
-    return (cells_);
+    return cells_;
 }
 
 const Map::RespawnPlaces& Map::playerRespawns() const
@@ -362,7 +366,7 @@ void Map::alignToCenter(double timeDelta, Character& character)
     const auto& moveData       = character.movementData();
     const auto& location       = character.movementData().coordinates;
     auto        newCoordinates = advanceCoordinates(location, timeDelta, moveData.speed, moveData.direction);
-    auto        inCell         = coordinatesInCell(newCoordinates);
+    auto        inCell         = topLeftCoordinates(newCoordinates);
     if (moveData.direction == Direction::Upward) {
         if (inCell.x() > cellHalfSize + 5) {
             newCoordinates.setX(newCoordinates.x() - 5);
@@ -425,6 +429,11 @@ bool Map::circlesIntersect(const QPoint& center1, const QPoint& center2) const
                   + (center1.y() - center2.y()) * (center1.y() - center2.y());
 
     return dSquare < cellSize * cellSize;
+}
+
+bool Map::rectsIntersect(const QPoint& center1, const QPoint& center2) const
+{
+    return (abs(center1.x() - center2.x()) <= cellSize && abs(center1.y() - center2.y()) <= cellSize);
 }
 
 int Map::moveCoordinateY(int y, int speed, int timeDelta) const
@@ -628,7 +637,7 @@ int advanceCoordinate(int coordinate, int speed, double timeDelta)
 
 int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
 {
-    const auto& inCell = coordinatesInCell(coordinates);
+    const auto& inCell = topLeftCoordinates(coordinates);
     if (direction == Direction::Upward || direction == Direction::Downward) {
         return inCell.x();
     } else {
@@ -654,14 +663,10 @@ void Map::moveObjects(double timeDelta)
             continue;
         }
 
-        if (character->direction() == Direction::Right) {
-            int t = 5;
-        }
-
         auto  moveData    = character->movementData();
         auto& coordinates = moveData.coordinates;
         auto  oldIndex    = coordinatesToIndex(coordinates);
-        auto  inCell      = coordinatesInCell(coordinates);
+        auto  inCell      = topLeftCoordinates(coordinates);
         int   ds          = 5;
 
         const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
@@ -801,7 +806,7 @@ void Map::setRespawnPlaces(RespawnType type, const RespawnPlaces& places)
 
 void Map::checkBombermanAndBotCollisions(Map::Collisions& collisions)
 {
-    for (auto& [bomberman, bombermanSptr] : bombermans_) {
+    for (const auto& [bomberman, bombermanSptr] : bombermans_) {
         for (auto& bot : bots_) {
             if (charactersIntersect(*bomberman, *bot)) {
                 collisions.emplace_back(bombermanSptr, bot);
@@ -812,60 +817,42 @@ void Map::checkBombermanAndBotCollisions(Map::Collisions& collisions)
 
 void Map::checkExplosionCollisions(Map::Collisions& collisions)
 {
-    for (auto& bot : bots_) {
-        for (const auto& explosion : explosions_) {
-            if (explosionIntersects(*explosion, *bot)) {
-                collisions.emplace_back(explosion, bot);
-            }
-            for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
-                const auto& cellCenter = CellLocation({ x, explosion->center().y() });
-                auto        index      = locationToIndex(cellCenter);
-                // collisions.emplace_back(explosion, cells_[index]);
-            }
-            for (size_t y = explosion->yMin(); y < explosion->center().y(); ++y) {
-                const auto& cellCenter = CellLocation({ explosion->center().x(), y });
-                auto        index      = locationToIndex(cellCenter);
-                // collisions.emplace_back(explosion, cells_[index]);
-            }
-            for (size_t y = explosion->center().y() + 1; y <= explosion->yMax(); ++y) {
-                const auto& cellCenter = CellLocation({ explosion->center().x(), y });
-                auto        index      = locationToIndex(cellCenter);
-                // collisions.emplace_back(explosion, cells_[index]);
-            }
+    CellLocation location;
+    for (const auto& explosion : explosions_) {
+        location.setY(explosion->center().y());
+        for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
+            location.setX(x);
+            addExplosionCollisionsAtLocation(location, explosion, collisions);
+        }
+        location.setX(explosion->center().x());
+        for (size_t y = explosion->yMin(); y < explosion->center().y(); ++y) {
+            location.setY(y);
+            addExplosionCollisionsAtLocation(location, explosion, collisions);
+        }
+        for (size_t y = explosion->center().y() + 1; y <= explosion->yMax(); ++y) {
+            location.setY(y);
+            addExplosionCollisionsAtLocation(location, explosion, collisions);
         }
     }
 }
 
 bool Map::charactersIntersect(const Character& lhs, const Character& rhs) const
 {
-    QRect left { lhs.coordinates(), QSize { cellSize, cellSize } };
-    QRect right { rhs.coordinates(), QSize { cellSize, cellSize } };
-
-    return left.intersects(right);
+    return rectsIntersect(lhs.coordinates(), rhs.coordinates());
 }
 
-bool Map::explosionIntersects(const Explosion& explosion, const Character& rhs) const
+void Map::addExplosionCollisionsAtLocation(const CellLocation&               location,
+                                           const std::shared_ptr<Explosion>& explosion,
+                                           Collisions&                       collisions)
 {
-    for (size_t x = explosion.xMin(); x <= explosion.xMax(); ++x) {
-        const auto& cellCenter = locationToCellCenterCoordinates({ x, explosion.center().y() });
-        if (circlesIntersect(cellCenter, rhs.coordinates())) {
-            return true;
+    size_t index = locationToIndex(location);
+    collisions.emplace_back(explosion, cells_[index]);
+    const auto& cellCenterCoordinates = locationToCellCenterCoordinates(location);
+    for (const auto& [id, character] : idToCharacterMap_) {
+        if (rectsIntersect(cellCenterCoordinates, character->coordinates())) {
+            collisions.emplace_back(explosion, character);
         }
     }
-    for (size_t y = explosion.yMin(); y < explosion.center().y(); ++y) {
-        const auto& cellCenter = locationToCellCenterCoordinates({ explosion.center().x(), y });
-        if (circlesIntersect(cellCenter, rhs.coordinates())) {
-            return true;
-        }
-    }
-    for (size_t y = explosion.center().y() + 1; y <= explosion.yMax(); ++y) {
-        const auto& cellCenter = locationToCellCenterCoordinates({ explosion.center().x(), y });
-        if (circlesIntersect(cellCenter, rhs.coordinates())) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 size_t Map::shiftIndex(size_t index, Direction direction) const
@@ -881,15 +868,9 @@ int Map::alignToCellCenter(int position) const
     return (position / cellSize) * cellSize + cellHalfSize;
 }
 
-void Map::addGameObjectsForCell(const CellLocation& location, std::vector<GameObject*>& objects)
-{
-    auto index = locationToIndex(location);
-    addGameObjectsForCell(index, objects);
-}
-
 void Map::addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects)
 {
-    objects.push_back(&cells_[index]);
+    objects.push_back(cells_[index].get());
     for (const auto& [id, character] : idToCharacterMap_) {
         if (coordinatesToIndex(character->coordinates()) == index) {
             objects.push_back(character.get());
@@ -897,7 +878,7 @@ void Map::addGameObjectsForCell(size_t index, std::vector<GameObject*>& objects)
     }
 }
 
-QPoint Map::coordinatesInCell(const QPoint& coordinates) const
+QPoint Map::topLeftCoordinates(const QPoint& coordinates) const
 {
     return { coordinates.x() - (coordinates.x() / cellSize) * cellSize,
              coordinates.y() - (coordinates.y() / cellSize) * cellSize };

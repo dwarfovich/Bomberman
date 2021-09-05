@@ -1,9 +1,8 @@
 #ifndef GAMESCENE_HPP
 #define GAMESCENE_HPP
 
+#include "sprite_item_callbacks.hpp"
 #include "sprite_factory.hpp"
-#include "cell_item.hpp"
-#include "character_graphics_item.hpp"
 
 #include <QGraphicsScene>
 #include <QTimer>
@@ -13,30 +12,24 @@
 #include <unordered_set>
 
 namespace bm {
+class GameObject;
 class Bomberman;
 class Explosion;
 class Character;
 class Map;
 
 namespace gui {
-class CellItem;
-class SpriteGraphicsObject;
 
 class GameScene : public QGraphicsScene
 {
+    friend class SpriteItemCallbacks;
+
 public:
     explicit GameScene(QObject* parent = nullptr);
 
     void setMap(const std::shared_ptr<Map>& map);
     void addBomberman(const std::shared_ptr<Bomberman>& bomberman);
     void addBot(const std::shared_ptr<Bot>& bot);
-
-    void addCellItem(std::unique_ptr<SpriteGraphicsObject> item);
-    void addCharacterItem(std::unique_ptr<SpriteGraphicsObject> item);
-
-    //    bool setCellItem(CellItem* item, size_t index);
-    //    void addMovingObject(const std::shared_ptr<MovingObject>& object, std::unique_ptr<CharacterGraphicsItem>
-    //    item); void destroyItemForObject(const std::shared_ptr<MovingObject>& object); void removeAllObjects();
 
 public slots:
     void onCharacterStartedMove(const std::shared_ptr<Character>& character);
@@ -47,40 +40,27 @@ public slots:
     void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
     void onObjectDestroyed(std::shared_ptr<GameObject> object);
-
     void cellChanged(size_t index);
 
 private slots:
     void updateAnimations();
-    void addAnimation(bm::gui::SpriteGraphicsObject* sprite);
-    void removeAnimation(bm::gui::SpriteGraphicsObject* sprite);
 
 private:
+    void   addAnimation(SpriteItem* sprite);
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
-    void   destroyAniimationFinished(SpriteGraphicsObject* sprite);
+    void   destroyAnimationFinished(SpriteItem* item);
 
 private:
-    std::shared_ptr<Map>               map_;
-    std::vector<SpriteGraphicsObject*> cellItems_;
-    using CharacterMap = std::unordered_map<std::shared_ptr<Character>, SpriteGraphicsObject*>;
-    CharacterMap                                           characterMap_;
-    std::unordered_map<GameObject*, SpriteGraphicsObject*> objects_;
-    using ExplosionPartsMap = std::unordered_map<SpriteGraphicsObject*, std::vector<QGraphicsItem*>>;
-    ExplosionPartsMap explosionParts_;
-
-    SpriteObjectFactory                       spriteFactory_;
-    QTimer                                    animationTimer_;
-    std::unordered_set<SpriteGraphicsObject*> animations_;
-    std::vector<SpriteGraphicsObject*>        animationsToDelete_;
-    const std::chrono::milliseconds           animationPeriod_ { 100 };
-
-    using MovingItems = std::unordered_map<std::shared_ptr<MovingObject>, std::unique_ptr<CharacterGraphicsItem>>;
-    MovingItems movingObjects_;
-    //    std::vector<CellItem*> cellItems_;
-
-    const int cellSize_;
-    //    size_t widthInCells_ = 0;
-    //    size_t heightInCells_ = 0;
+    SpriteItemCallbacks                                          callbacks_;
+    SpriteObjectFactory                                          spriteFactory_;
+    std::shared_ptr<Map>                                         map_;
+    std::vector<CellSpriteItem*>                                 cellItems_;
+    std::unordered_map<std::shared_ptr<GameObject>, SpriteItem*> gameObjects_;
+    std::unordered_set<SpriteItem*>                              spriteItems_;
+    std::unordered_set<SpriteItem*>                              animations_;
+    std::vector<SpriteItem*>                                     animationsToDelete_;
+    QTimer                                                       animationTimer_;
+    const std::chrono::milliseconds                              animationPeriod_ { 100 };
 };
 
 } // namespace gui

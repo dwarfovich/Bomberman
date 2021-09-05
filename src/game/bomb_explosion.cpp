@@ -55,18 +55,10 @@ BombExplosionResult::BombExplosionResult()
     : explosion { std::make_shared<Explosion>(invalidCellLocation,
                                               std::pair<size_t, size_t> { invalidMapIndex, invalidMapIndex },
                                               std::pair<size_t, size_t> { invalidMapIndex, invalidMapIndex }) }
-    , affectedObjects {}
 {}
 
-BombExplosionResult::BombExplosionResult(const std::shared_ptr<Explosion> &aExplosion,
-                                         const std::vector<GameObject *> & aAffectedObjects)
-    : explosion { aExplosion }, affectedObjects { aAffectedObjects }
+BombExplosionResult::BombExplosionResult(const std::shared_ptr<Explosion> &aExplosion) : explosion { aExplosion }
 {}
-
-// BombExplosionResult::BombExplosionResult(const Explosion &aExplosion, const std::vector<GameObject *>
-// &aAffectedObjects)
-//    : explosion { aExplosion }, affectedObjects { aAffectedObjects }
-//{}
 
 BombExplosionResult explodeBomb(Map &map, Bomb &bomb)
 {
@@ -74,22 +66,11 @@ BombExplosionResult explodeBomb(Map &map, Bomb &bomb)
         return {};
     }
 
-    const auto &               bombLocation = map.indexToLocation(bomb.cellIndex);
-    std::shared_ptr<Explosion> explosion    = calculateExplosion(map, bomb);
-    std::vector<GameObject *>  affectedObjects;
-    for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
-        map.addGameObjectsForCell({ x, bombLocation.y() }, affectedObjects);
-    }
-    for (size_t y = explosion->yMin(); y < explosion->center().y(); ++y) {
-        map.addGameObjectsForCell({ bombLocation.x(), y }, affectedObjects);
-    }
-    for (size_t y = explosion->center().y() + 1; y <= explosion->yMax(); ++y) {
-        map.addGameObjectsForCell({ bombLocation.x(), y }, affectedObjects);
-    }
+    std::shared_ptr<Explosion> explosion = calculateExplosion(map, bomb);
 
     map.addExplosion(explosion);
 
-    return { std::move(explosion), std::move(affectedObjects) };
+    return { std::move(explosion) };
 }
 
 } // namespace bm

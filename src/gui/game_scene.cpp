@@ -1,9 +1,9 @@
 #include "game_scene.hpp"
-#include "sprite_graphics_object.hpp"
-//#include "game/character.hpp"
+#include "cell_sprite_item.hpp"
+#include "explosion_sprite_item.hpp"
+#include "sprite_item.hpp"
 #include "game/map.hpp"
 #include "game/map_constants.hpp"
-#include "game/moving_object.hpp"
 #include "game/bomb.hpp"
 
 #include <QPropertyAnimation>
@@ -14,7 +14,7 @@
 namespace bm {
 namespace gui {
 
-GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }, cellSize_ { 50 }
+GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }, callbacks_ { this }, spriteFactory_ { &callbacks_ }
 {
     connect(&animationTimer_, &QTimer::timeout, this, &GameScene::updateAnimations);
     animationTimer_.start(animationPeriod_);
@@ -26,207 +26,130 @@ void GameScene::setMap(const std::shared_ptr<Map>& map)
 
     const auto& cells = map->cells();
     for (const auto& cell : cells) {
-        auto        cellItem = spriteFactory_.createCellObject(&cell);
-        const auto& location = map->indexToLocation(cell.index());
-        cellItem->setX(location.x() * cellSize);
-        cellItem->setY(location.y() * cellSize);
-        cellItems_.push_back(cellItem.get());
+        auto cellItem = spriteFactory_.createSprite(cell.get());
+        if (cellItem) {
+            const auto& location = map->indexToLocation(cell->index());
+            cellItem->setX(location.x() * cellSize);
+            cellItem->setY(location.y() * cellSize);
+            cellItems_.push_back(cellItem.get());
 
-        QGraphicsScene::addItem(cellItem.release());
+            QGraphicsScene::addItem(cellItem.release());
+        }
     }
 }
 
 void GameScene::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
 {
-    auto item = spriteFactory_.createBombermanObject(bomberman);
+    auto item = spriteFactory_.createSprite(bomberman);
     item->setPos(mapCoordinatesToSceneCoordinates(bomberman->coordinates()));
-    characterMap_.emplace(bomberman, item.get());
-    objects_.insert({ bomberman.get(), item.get() });
-    connect(item.get(), &SpriteGraphicsObject::startAnimation, this, &GameScene::addAnimation);
-    connect(item.get(), &SpriteGraphicsObject::stopAnimation, this, &GameScene::removeAnimation);
+    spriteItems_.insert(item.get());
+    gameObjects_.emplace(bomberman, item.get());
     QGraphicsScene::addItem(item.release());
 }
 
 void GameScene::addBot(const std::shared_ptr<Bot>& bot)
 {
-    auto item = spriteFactory_.createBotObject(bot);
+    auto item = spriteFactory_.createSprite(bot);
     item->setPos(mapCoordinatesToSceneCoordinates(bot->coordinates()));
-    characterMap_.emplace(bot, item.get());
-    objects_.insert({ bot.get(), item.get() });
-    connect(item.get(), &SpriteGraphicsObject::startAnimation, this, &GameScene::addAnimation);
-    connect(item.get(), &SpriteGraphicsObject::stopAnimation, this, &GameScene::removeAnimation);
+    spriteItems_.insert(item.get());
+    gameObjects_.emplace(bot, item.get());
+    addAnimation(item.get());
     QGraphicsScene::addItem(item.release());
 }
-
-void GameScene::addCellItem(std::unique_ptr<SpriteGraphicsObject> item)
-{
-    //    if (item->isAnimatedDestroy()){
-    //        auto* itemRawPtr = item.get();
-    //        auto propertyAnimation = new QPropertyAnimation { itemRawPtr, "SpriteFrame" };
-    //        propertyAnimation->setDuration(1000);
-    //        propertyAnimation->setStartValue(0);
-    //        propertyAnimation->setEndValue(itemRawPtr->framesCount());
-    //        connect(propertyAnimation, &QPropertyAnimation::destroyed, this, [this, itemRawPtr]() {
-    //            removeItem(itemRawPtr);
-    //        });
-    //        propertyAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    //    }
-
-    QGraphicsScene::addItem(item.release());
-}
-
-void GameScene::addCharacterItem(std::unique_ptr<SpriteGraphicsObject> item)
-{}
-
-// bool GameScene::setCellItem(CellItem* item, size_t index)
-//{
-//    try {
-//        if (index >= cellItems_.size()) {
-//            cellItems_.resize(index + 1);
-//        }
-//        cellItems_[index] = item;
-//        QGraphicsScene::addItem(cellItems_[index]);
-
-//        return true;
-//    } catch (...) {
-//        return false;
-//    }
-//}
-
-// void GameScene::addMovingObject(const std::shared_ptr<MovingObject>&   character,
-//                                std::unique_ptr<CharacterGraphicsItem> item)
-//{
-//    QGraphicsScene::addItem(item.get());
-//    movingObjects_.insert({ character, std::move(item) });
-//    onCharacterMoved(character);
-//}
-
-// void GameScene::destroyItemForObject(const std::shared_ptr<MovingObject>& object)
-//{
-//    movingObjects_.erase(object);
-//}
-
-// void GameScene::removeAllObjects()
-//{
-//    movingObjects_.clear();
-//    // TODO: free CellItems' memory.
-//    cellItems_.clear();
-//    clear();
-//}
 
 void GameScene::onCharacterStartedMove(const std::shared_ptr<Character>& character)
 {
-    // characterMap_[character]->setCurrentFrame(
-    auto iter = characterMap_.find(character);
-    if (iter != characterMap_.cend()) {
-        animations_.insert(iter->second);
+    auto itemIter = gameObjects_.find(character);
+    if (itemIter != gameObjects_.cend()) {
+        addAnimation(itemIter->second);
+        itemIter->second->updateSprite();
     }
-    //    updateAnimations();
 }
 
 void GameScene::onCharacterStopped(const std::shared_ptr<Character>& character)
 {
-    characterMap_[character]->setCurrentFrame(0);
-    auto iter = characterMap_.find(character);
-    if (iter != characterMap_.cend()) {
-        animations_.erase(iter->second);
+    auto itemIter = gameObjects_.find(character);
+    if (itemIter != gameObjects_.cend()) {
+        animations_.erase(itemIter->second);
+        itemIter->second->setCurrentFrame(0);
+        itemIter->second->updateSprite();
     }
-    // updateAnimations();
 }
 
-void GameScene::onCharacterMoved(const std::shared_ptr<Character>& charac)
+void GameScene::onCharacterMoved(const std::shared_ptr<Character>& character)
 {
-    auto character = std::dynamic_pointer_cast<Character>(charac);
-    auto iter      = characterMap_.find(character);
-    if (iter != characterMap_.cend()) {
+    auto iter = gameObjects_.find(character);
+    if (iter != gameObjects_.cend()) {
         iter->second->setPos(mapCoordinatesToSceneCoordinates(character->movementData().coordinates));
-        iter->second->updateSpriteMapRow();
     }
 }
 
 void GameScene::onBombPlaced(const std::shared_ptr<Bomb>& bomb)
 {
-    auto        item           = spriteFactory_.createBombObject(bomb);
+    auto        item           = spriteFactory_.createSprite(bomb);
     const auto& mapCoordinates = map_->indexToCellCenterCoordinates(bomb->cellIndex);
     item->setPos(mapCoordinatesToSceneCoordinates(mapCoordinates));
     addAnimation(item.get());
-    objects_.insert({ bomb.get(), item.get() });
+    gameObjects_.insert({ bomb, item.get() });
     QGraphicsScene::addItem(item.release());
 }
 
 void GameScene::onBombExploded(const std::shared_ptr<Bomb>& bomb)
 {
-    auto bombItem = objects_.find(bomb.get());
-    animations_.erase(bombItem->second);
-
-    QGraphicsScene::removeItem(bombItem->second);
-    objects_.erase(bombItem);
+    auto bombIter = gameObjects_.find(bomb);
+    if (bombIter != gameObjects_.cend()) {
+        animations_.erase(bombIter->second);
+        QGraphicsScene::removeItem(bombIter->second);
+        gameObjects_.erase(bombIter);
+    }
 }
 
 void GameScene::onExplosionHappened(const std::shared_ptr<Explosion>& explosion)
 {
-    auto explosionObject = spriteFactory_.createExplosionObject(explosion.get(), *map_.get());
-    explosionObject->setPos(map_->locationToCellCenterCoordinates(explosion->center()));
-    explosionObject->setX(explosionObject->x() - cellHalfSize);
-    explosionObject->setY(explosionObject->y() - cellHalfSize);
-    objects_.emplace(explosion.get(), explosionObject.get());
-    animations_.insert(explosionObject.get());
-    for (auto* child : explosionObject->childItems()) {
-        addItem(child);
-        animations_.insert(static_cast<SpriteGraphicsObject*>(child));
-        explosionParts_[explosionObject.get()].push_back(child);
-    }
-    explosionObject->setCurrentFrame(0);
-    addItem(explosionObject.release());
-
-    //    auto t = spriteFactory_.createBotObject(characterMap_.cbegin()->first);
+    auto item = spriteFactory_.createSprite(explosion.get(), *map_.get());
+    item->setPos(map_->locationToCellCenterCoordinates(explosion->center()));
+    item->setX(item->x() - sprite_ns::cellHalfSize);
+    item->setY(item->y() - sprite_ns::cellHalfSize);
+    gameObjects_.emplace(explosion, item.get());
+    animations_.insert(item.get());
+    QGraphicsScene::addItem(item.release());
 }
 
 void GameScene::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 {
-    auto explosionIter = objects_.find(explosion.get());
-    if (explosionIter != objects_.cend()) {
-        auto* centerObject = explosionIter->second;
-        auto  partsIter    = explosionParts_.find(centerObject);
-        if (partsIter != explosionParts_.cend()) {
-            for (auto* part : partsIter->second) {
-                animations_.erase(static_cast<SpriteGraphicsObject*>(part));
-                removeItem(part);
-            }
-            explosionParts_.erase(partsIter);
-        }
-
-        animations_.erase(centerObject);
-        objects_.erase(explosionIter);
-        removeItem(centerObject);
-        delete centerObject;
+    auto explosionIter = gameObjects_.find(explosion);
+    if (explosionIter != gameObjects_.cend()) {
+        animations_.erase(explosionIter->second);
+        removeItem(explosionIter->second);
+        gameObjects_.erase(explosionIter);
     }
 }
 
 void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
 {
-    auto objectIter = objects_.find(object.get());
-    if (objectIter != objects_.cend()) {
-        if (objectIter->second->isAnimated()) {
-            objectIter->second->setDestroyAnimationFinishedCallback(
-                std::bind(&GameScene::destroyAniimationFinished, this, std::placeholders::_1));
-            objectIter->second->startDestroyAnimation();
-        } else {
-            auto explosionIter = explosionParts_.find(objectIter->second);
-            if (explosionIter != explosionParts_.cend()) {
-                explosionParts_.erase(explosionIter);
-            }
-            objects_.erase(objectIter);
-            removeItem(objectIter->second);
-        }
+    auto itemIter = gameObjects_.find(object);
+    if (itemIter == gameObjects_.cend()) {
+        return;
     }
+
+    auto* sprite = itemIter->second;
+    gameObjects_.erase(itemIter);
+    if (sprite->hasDestroyAnimation()) {
+        animations_.insert(sprite);
+        sprite->startDestroyAnimation();
+    } else {
+        animations_.erase(sprite);
+        removeItem(sprite);
+    }
+
+    spriteItems_.erase(sprite);
 }
 
 void GameScene::cellChanged(size_t index)
 {
-    if (index < cellItems_.size()) {
-        cellItems_[index]->update();
-    }
+    //    if (index < cellItems_.size()) {
+    //        cellItems_[index]->update();
+    //    }
 }
 
 void GameScene::updateAnimations()
@@ -236,35 +159,18 @@ void GameScene::updateAnimations()
     }
 
     for (auto* sprite : animationsToDelete_) {
-        // TODO: Remove sprite for Characters.
-        auto explosionIter = explosionParts_.find(sprite);
-        if (explosionIter != explosionParts_.cend()) {
-            explosionParts_.erase(explosionIter);
-        }
-        // TODO: refactor searching for GameObject*.
-        for (const auto& [gameObject, objectSprite] : objects_) {
-            if (objectSprite == sprite) {
-                objects_.erase(gameObject);
-                break;
-            }
-        }
-
         animations_.erase(sprite);
         removeItem(sprite);
     }
-
     animationsToDelete_.clear();
 }
 
-void GameScene::addAnimation(bm::gui::SpriteGraphicsObject* sprite)
+void GameScene::addAnimation(SpriteItem* sprite)
 {
     animations_.insert(sprite);
-}
-
-void GameScene::removeAnimation(bm::gui::SpriteGraphicsObject* sprite)
-{
-    sprite->setCurrentFrame(0);
-    animations_.erase(sprite);
+    if (!animationTimer_.isActive()) {
+        animationTimer_.start(animationPeriod_);
+    }
 }
 
 // TODO: Check transformations in case of different cellSizes in bm:: and bm::gui::.
@@ -273,19 +179,22 @@ QPoint GameScene::mapCoordinatesToSceneCoordinates(const QPoint& coordinates) co
     auto   xCells      = coordinates.x() / cellSize;
     auto   dx          = coordinates.x() - xCells * cellSize;
     auto   dxPercents  = (dx * 100.) / cellSize;
-    QPoint sceneCoords = { xCells * cellSize_ - cellHalfSize + int(cellSize_ * dxPercents / 100.), 0 };
+    QPoint sceneCoords = { xCells * sprite_ns::cellSize - cellHalfSize + int(sprite_ns::cellSize * dxPercents / 100.),
+                           0 };
 
     auto yCells     = coordinates.y() / cellSize;
     auto dy         = coordinates.y() - yCells * cellSize;
     auto dyPercents = (dy * 100.) / cellSize;
-    sceneCoords.setY(yCells * cellSize_ - cellHalfSize + int(cellSize_ * dyPercents / 100.));
+    sceneCoords.setY(yCells * sprite_ns::cellSize - cellHalfSize + int(sprite_ns::cellSize * dyPercents / 100.));
 
     return sceneCoords;
 }
 
-void GameScene::destroyAniimationFinished(SpriteGraphicsObject* sprite)
+void GameScene::destroyAnimationFinished(SpriteItem* item)
 {
-    animationsToDelete_.push_back(sprite);
+    Q_ASSERT(item);
+
+    animationsToDelete_.push_back(item);
 }
 
 } // namespace gui

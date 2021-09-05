@@ -3,8 +3,6 @@
 #include "game.hpp"
 #include "gui/game_scene.hpp"
 #include "gui/game_view.hpp"
-#include "gui/character_graphics_item.hpp"
-#include "gui/bot_graphics_item.hpp"
 
 #include <QObject>
 

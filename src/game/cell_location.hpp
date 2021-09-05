@@ -12,7 +12,8 @@ namespace bm {
 class CellLocation
 {
 public:
-    constexpr CellLocation();
+    // TODO: check why empty ctor cannot be constexpr.
+    CellLocation();
     constexpr CellLocation(size_t aX, size_t aY) : x_ { aX }, y_ { aY } {};
 
     friend QDataStream& operator<<(QDataStream& stream, const CellLocation& location);

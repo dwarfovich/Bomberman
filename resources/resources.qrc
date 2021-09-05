@@ -4,5 +4,7 @@
         <file>gfx/bot.png</file>
         <file>gfx/bomb.png</file>
         <file>gfx/explosion.png</file>
+        <file>gfx/cell.png</file>
+        <file>gfx/explosion - Copy.png</file>
     </qresource>
 </RCC>

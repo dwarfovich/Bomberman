@@ -14,10 +14,9 @@ class Map;
 struct BombExplosionResult
 {
     BombExplosionResult();
-    BombExplosionResult(const std::shared_ptr<Explosion>& aExplosion, const std::vector<GameObject*>& aAffectedObjects);
+    BombExplosionResult(const std::shared_ptr<Explosion>& aExplosion);
 
     std::shared_ptr<Explosion> explosion;
-    std::vector<GameObject*>   affectedObjects;
 };
 
 BombExplosionResult explodeBomb(Map& map, Bomb& bomb);
