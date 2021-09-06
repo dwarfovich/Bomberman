@@ -3,12 +3,14 @@
 #include "cell_sprite_item.hpp"
 #include "character_sprite_item.hpp"
 #include "explosion_sprite_item.hpp"
+#include "modifier_sprite_item.hpp"
 #include "game/character.hpp"
 #include "game/bomberman.hpp"
 #include "game/bot.hpp"
 #include "game/explosion.hpp"
 #include "game/map.hpp"
 #include "game/cell_location.hpp"
+#include "game/modifiers/modifier_type.hpp"
 
 namespace bm {
 namespace gui {
@@ -20,11 +22,13 @@ SpriteObjectFactory::SpriteObjectFactory(const SpriteItemCallbacks *const callba
     bot_       = QPixmap { QStringLiteral(":/gfx/bot.png") };
     bomb_      = QPixmap { QStringLiteral(":/gfx/bomb.png") };
     explosion_ = QPixmap { QStringLiteral(":/gfx/explosion - Copy.png") };
+    modifiers_ = QPixmap { QStringLiteral(":/gfx/modifiers.png") };
 }
 
 std::unique_ptr<CellSpriteItem> SpriteObjectFactory::createSprite(const Cell *cell)
 {
     auto item = std::make_unique<CellSpriteItem>(callbacks_, cell_);
+    item->setFramesCount(5);
     if (cell->structure() == CellStructure::Empty) {
         item->setStructureFrame(CellSpriteItem::CellStructureFrame::Empty);
     } else if (cell->structure() == CellStructure::Bricks) {
@@ -67,6 +71,7 @@ std::unique_ptr<ExplosionSpriteItem> SpriteObjectFactory::createSprite(const Exp
                                                                        const QPoint &   centerCoordinates)
 {
     auto item = std::make_unique<ExplosionSpriteItem>(callbacks_, explosion_);
+
     item->setPixmap(explosion_);
     item->setFramesCount(4);
     item->setPos(centerCoordinates);
@@ -112,6 +117,15 @@ std::unique_ptr<ExplosionSpriteItem> SpriteObjectFactory::createSprite(const Exp
                     + sprite_ns::cellSize * (static_cast<int>(y) - static_cast<int>(explosion->center().y())));
         item->addExplosionPart(std::move(child));
     }
+
+    return item;
+}
+
+std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(size_t index, const std::shared_ptr<IModifier> &modifier)
+{
+    auto item = std::make_unique<ModifierSpriteItem>(callbacks_, modifiers_);
+    item->setFramesCount(5);
+    item->setCurrentSpriteRow(static_cast<int>(modifier->type()) - 1);
 
     return item;
 }

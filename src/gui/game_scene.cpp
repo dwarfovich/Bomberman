@@ -145,11 +145,37 @@ void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
     spriteItems_.erase(sprite);
 }
 
-void GameScene::cellChanged(size_t index)
+void GameScene::onCellChanged(size_t index, CellStructure previousStructure)
 {
-    //    if (index < cellItems_.size()) {
-    //        cellItems_[index]->update();
-    //    }
+    if (index < cellItems_.size()) {
+        if (previousStructure == CellStructure::Bricks) {
+            cellItems_[index]->setAnimationType(CellSpriteItem::AnimationType::BricksDestroying);
+        } else if (previousStructure == CellStructure::Concrete) {
+            cellItems_[index]->setAnimationType(CellSpriteItem::AnimationType::ConcreteToBricksDestroying);
+        }
+        animations_.insert(cellItems_[index]);
+    }
+}
+
+void GameScene::onModifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier)
+{
+    auto item = spriteFactory_.createSprite(index, modifier);
+    item->setPos(map_->indexToCoordinates(index));
+    spriteItems_.insert(item.get());
+    gameObjects_.emplace(modifier, item.get());
+    animations_.insert(item.get());
+    QGraphicsScene::addItem(item.release());
+}
+
+void GameScene::onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier)
+{
+    auto iter = gameObjects_.find(modifier);
+    if (iter != gameObjects_.cend()) {
+        animations_.erase(iter->second);
+        spriteItems_.erase(iter->second);
+        removeItem(iter->second);
+        gameObjects_.erase(iter);
+    }
 }
 
 void GameScene::updateAnimations()
@@ -158,11 +184,7 @@ void GameScene::updateAnimations()
         sprite->advance(1);
     }
 
-    for (auto* sprite : animationsToDelete_) {
-        animations_.erase(sprite);
-        removeItem(sprite);
-    }
-    animationsToDelete_.clear();
+    deleteFinishedAnimations();
 }
 
 void GameScene::addAnimation(SpriteItem* sprite)
@@ -194,7 +216,25 @@ void GameScene::destroyAnimationFinished(SpriteItem* item)
 {
     Q_ASSERT(item);
 
-    animationsToDelete_.push_back(item);
+    animationsToDelete_.push_back({ item, true });
+}
+
+void GameScene::animationFinished(SpriteItem* item)
+{
+    Q_ASSERT(item);
+
+    animationsToDelete_.push_back({ item, false });
+}
+
+void GameScene::deleteFinishedAnimations()
+{
+    for (const auto& [sprite, shouldRemoveItem] : animationsToDelete_) {
+        animations_.erase(sprite);
+        if (shouldRemoveItem) {
+            removeItem(sprite);
+        }
+    }
+    animationsToDelete_.clear();
 }
 
 } // namespace gui

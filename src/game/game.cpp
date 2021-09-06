@@ -28,16 +28,19 @@ void Game::start()
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
     if (map_) {
-        disconnect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+        disconnect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
         disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
         disconnect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
         disconnect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
+        disconnect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
     }
     map_ = map;
-    connect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+    connect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
     connect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
     connect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
     connect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
+    connect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
+    connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
 }
 
 Map* Game::map() const

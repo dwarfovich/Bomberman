@@ -103,7 +103,7 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
         //        QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
         //        QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene,
         //        &gui::GameScene::onCharacterMoved);
-        QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
         QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
         QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
         QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
@@ -167,7 +167,7 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
         //        QObject::connect(
         //            dialog.client()->initializedMap().get(), &Map::objectMoved, scene,
         //            &gui::GameScene::onCharacterMoved);
-        QObject::connect(game_.get(), &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+        QObject::connect(game_.get(), &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
         QObject::connect(game_.get(), &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
         QObject::connect(game_.get(), &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
         QObject::connect(game_.get(), &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);

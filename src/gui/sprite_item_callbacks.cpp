@@ -6,6 +6,7 @@ namespace gui {
 
 SpriteItemCallbacks::SpriteItemCallbacks(GameScene *scene)
     : destroyAnimationFinished { std::bind(&GameScene::destroyAnimationFinished, scene, std::placeholders::_1) }
+    , animationFinished { std::bind(&GameScene::animationFinished, scene, std::placeholders::_1) }
 {}
 
 } // namespace gui

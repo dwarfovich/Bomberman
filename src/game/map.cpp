@@ -113,16 +113,17 @@ bool Map::reset(size_t width, size_t height)
 void Map::setCellType(size_t index, CellStructure structure)
 {
     if (isProperIndex(index)) {
+        auto previousStructure = cells_[index]->structure();
         cells_[index]->setStructure(structure);
+        emit cellStructureChanged(index, previousStructure);
     }
-
-    emit cellChanged(index);
 }
 
 void Map::setCell(const Cell& cell)
 {
-    *cells_[cell.index()] = cell;
-    emit cellChanged(cell.index());
+    auto previousStructure = cells_[cell.index()]->structure();
+    *cells_[cell.index()]  = cell;
+    emit cellStructureChanged(cell.index(), previousStructure);
 }
 
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
@@ -130,7 +131,7 @@ bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
     if (isProperIndex(bomb->cellIndex)) {
         cells_[bomb->cellIndex]->setHasBomb(true);
         bombs_.push_back(bomb);
-        emit cellChanged(bomb->cellIndex);
+        // emit cellChanged(bomb->cellIndex);
         return true;
     } else {
         return false;
@@ -147,7 +148,7 @@ bool Map::removeBomb(size_t index)
     }
     bombs_.erase(iter);
     cells_[index]->setHasBomb(false);
-    emit cellChanged(index);
+    // emit cellChanged(index);
 
     return true;
 }
@@ -155,8 +156,13 @@ bool Map::removeBomb(size_t index)
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
 {
     if (isProperIndex(index)) {
+        if (cells_[index]->modifier()) {
+            emit modifierRemoved(index, cells_[index]->modifier());
+        }
         cells_[index]->setModifier(modifier);
-        emit cellChanged(index);
+        if (modifier) {
+            emit modifierAdded(index, modifier);
+        }
         return true;
     } else {
         return false;

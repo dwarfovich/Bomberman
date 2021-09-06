@@ -12,12 +12,14 @@ class Bomberman;
 class Bot;
 class Bomb;
 class Explosion;
+class IModifier;
 class Map;
 
 namespace gui {
 class SpriteItem;
 class CellSpriteItem;
 class ExplosionSpriteItem;
+class ModifierSpriteItem;
 class SpriteItemCallbacks;
 
 class SpriteObjectFactory
@@ -32,6 +34,7 @@ public:
     std::unique_ptr<ExplosionSpriteItem> createSprite(const Explosion* explosion,
                                                       const Map&       map,
                                                       const QPoint&    centerCoordinates = {});
+    std::unique_ptr<SpriteItem>          createSprite(size_t index, const std::shared_ptr<IModifier>& modifier);
 
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
@@ -42,6 +45,7 @@ private:
     QPixmap                          bot_;
     QPixmap                          bomb_;
     QPixmap                          explosion_;
+    QPixmap                          modifiers_;
 };
 
 } // namespace gui

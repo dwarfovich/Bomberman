@@ -45,7 +45,7 @@ bool initializeGame(const GameData& gameData)
         scene->addBot(bot);
     }
 
-    QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
+    QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
     QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
     QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
     QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
@@ -54,6 +54,8 @@ bool initializeGame(const GameData& gameData)
     QObject::connect(gameData.game, &Game::explosionHappened, scene, &gui::GameScene::onExplosionHappened);
     QObject::connect(gameData.game, &Game::explosionFinished, scene, &gui::GameScene::onExplosionFinished);
     QObject::connect(gameData.game, &Game::objectDestroyed, scene, &gui::GameScene::onObjectDestroyed);
+    QObject::connect(gameData.game, &Game::modifierAdded, scene, &gui::GameScene::onModifierAdded);
+    QObject::connect(gameData.game, &Game::modifierRemoved, scene, &gui::GameScene::onModifierRemoved);
 
     gameData.game->setMap(gameData.mapData->map);
     // gameData.view->setMap(gameData.mapData->map);

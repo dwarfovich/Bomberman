@@ -56,6 +56,7 @@ SOURCES += \
     src/gui/main_menu_widget.cpp \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
+    src/gui/modifier_sprite_item.cpp \
     src/gui/player_key_controls.cpp \
     src/gui/sprite_factory.cpp \
     src/gui/sprite_item.cpp \
@@ -137,6 +138,7 @@ HEADERS += \
     src/gui/main_menu_widget.hpp \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
+    src/gui/modifier_sprite_item.hpp \
     src/gui/player_key_controls.hpp \
     src/gui/sprite_factory.hpp \
     src/gui/sprite_item.hpp \

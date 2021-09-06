@@ -83,12 +83,13 @@ public:
     uint32_t randomSeed() const;
 
 signals:
-    void cellChanged(size_t index);
+    void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& character);
     void characterIndexChanged(const std::shared_ptr<Character>& character, size_t index);
     void characterMeetsModifier(const std::shared_ptr<Bomberman>& bomberman, size_t cellIndex);
-
     void objectsCollided(const Map::Collisions& collisions);
+    void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
 
 private: // methods
     void checkBombermanAndBotCollisions(Collisions& collisions);

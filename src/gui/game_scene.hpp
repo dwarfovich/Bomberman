@@ -1,6 +1,7 @@
 #ifndef GAMESCENE_HPP
 #define GAMESCENE_HPP
 
+#include "game/cell.hpp"
 #include "sprite_item_callbacks.hpp"
 #include "sprite_factory.hpp"
 
@@ -16,6 +17,7 @@ class GameObject;
 class Bomberman;
 class Explosion;
 class Character;
+class IModifier;
 class Map;
 
 namespace gui {
@@ -40,7 +42,10 @@ public slots:
     void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
     void onObjectDestroyed(std::shared_ptr<GameObject> object);
-    void cellChanged(size_t index);
+    void onCellChanged(size_t index, bm::CellStructure previousStructure);
+    void onModifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
+    // TODO: try to replace onModifierRemoved slot with onObjectDestroyed.
+    void onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
 
 private slots:
     void updateAnimations();
@@ -49,6 +54,8 @@ private:
     void   addAnimation(SpriteItem* sprite);
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
     void   destroyAnimationFinished(SpriteItem* item);
+    void   animationFinished(SpriteItem* item);
+    void   deleteFinishedAnimations();
 
 private:
     SpriteItemCallbacks                                          callbacks_;
@@ -58,7 +65,7 @@ private:
     std::unordered_map<std::shared_ptr<GameObject>, SpriteItem*> gameObjects_;
     std::unordered_set<SpriteItem*>                              spriteItems_;
     std::unordered_set<SpriteItem*>                              animations_;
-    std::vector<SpriteItem*>                                     animationsToDelete_;
+    std::vector<std::pair<SpriteItem*, bool /*removeItem*/>>     animationsToDelete_;
     QTimer                                                       animationTimer_;
     const std::chrono::milliseconds                              animationPeriod_ { 100 };
 };
