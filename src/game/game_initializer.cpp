@@ -12,11 +12,6 @@ bool initializeGame(const GameData& gameData)
 {
     auto* scene = gameData.view->scene();
     scene->setMap(gameData.mapData->map);
-    // scene->clear();
-
-    // QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-    // QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene, &gui::GameScene::onCharacterMoved);
-
     const auto& respawns = gameData.mapData->map->playerRespawns();
 
     const auto& map       = gameData.mapData->map;
@@ -25,22 +20,9 @@ bool initializeGame(const GameData& gameData)
     bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
     map->addBomberman(bomberman);
     gameData.game->setPlayerBomberman(bomberman->id());
-    //    gameData.game->addPlayer(bomberman);
-    //    gameData.game->setPlayerBomberman(bomberman);
-
-    // const auto& player = gameData.mapData->bombermans[0];
-    // gameData.game->addPlayer(player);
-    // gameData.mapData->map->addBomberman(player);
-    //    auto characterItem = std::make_unique<gui::CharacterGraphicsItem>();
-    //    characterItem->setCharacter(bomberman);
-    //    scene->addMovingObject(bomberman, std::move(characterItem));
     scene->addBomberman(bomberman);
 
     for (const auto& bot : gameData.mapData->bots) {
-        //        gameData.mapData->map->addBot(bot);
-        //        auto botItem = std::make_unique<gui::BotGraphicsItem>();
-        //        botItem->setCharacter(bot);
-        //        scene->addMovingObject(bot, std::move(botItem));
         gameData.mapData->map->addBot(bot);
         scene->addBot(bot);
     }
@@ -58,7 +40,6 @@ bool initializeGame(const GameData& gameData)
     QObject::connect(gameData.game, &Game::modifierRemoved, scene, &gui::GameScene::onModifierRemoved);
 
     gameData.game->setMap(gameData.mapData->map);
-    // gameData.view->setMap(gameData.mapData->map);
 
     return true;
 }

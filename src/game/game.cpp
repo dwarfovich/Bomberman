@@ -75,7 +75,7 @@ void Game::onCharacterIndexChanged(const std::shared_ptr<Character>& character, 
 {
     const auto& cell      = map_->cell(index);
     const auto& modifier  = cell.modifier();
-    const auto  bomberman = map_->bomberman(character->id());
+    const auto& bomberman = map_->bomberman(character->id());
     if (modifier && bomberman) {
         modifier->activate(*bomberman);
         if (modifier->durationType() == ModifierDurationType::Temporary) {
@@ -96,10 +96,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     auto explosionData = bm::explodeBomb(*map_, *bomb);
     auto explosion     = explosionData.explosion;
-    //    for (auto* affectedObject : explosionData.affectedObjects) {
-    //        explosion->collideWith(*affectedObject, collider_);
-    //    }
-    auto callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
+    auto callback      = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
     timerEventsQueue.addEvent(createDelay(bomb->explosionPeriod),
                               std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
 

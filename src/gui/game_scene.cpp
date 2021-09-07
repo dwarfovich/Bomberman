@@ -161,8 +161,11 @@ void GameScene::onModifierAdded(size_t index, const std::shared_ptr<IModifier>& 
 {
     auto item = spriteFactory_.createSprite(index, modifier);
     item->setPos(map_->indexToCoordinates(index));
+    auto inserted = gameObjects_.emplace(modifier, item.get());
+    if (!inserted.second) {
+        int r = 0;
+    }
     spriteItems_.insert(item.get());
-    gameObjects_.emplace(modifier, item.get());
     animations_.insert(item.get());
     QGraphicsScene::addItem(item.release());
 }

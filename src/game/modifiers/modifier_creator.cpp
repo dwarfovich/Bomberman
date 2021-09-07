@@ -9,9 +9,9 @@ ModifierCreator::ModifierCreator() : randomEngine_ { randomDevice_() }
     std::uniform_int_distribution<int> uniform_dist(0, modifiers_.size());
 }
 
-const std::shared_ptr<IModifier> &ModifierCreator::chooseModifier() const
+std::unique_ptr<IModifier> ModifierCreator::chooseModifier() const
 {
-    return modifiers_[0];
+    return std::make_unique<PermanentBombRadiusIncrease>();
 }
 
 } // namespace bm
