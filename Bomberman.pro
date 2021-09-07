@@ -30,6 +30,7 @@ SOURCES += \
     src/game/explosion.cpp \
     src/game/game.cpp \
     src/game/game_factory.cpp \
+    src/game/game_initialization_data.cpp \
     src/game/game_initializer.cpp \
     src/game/game_object.cpp \
     src/game/game_over_conditions/game_over_condition.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
     src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
+    src/gui/game_creation_dialog.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_menu_widget.cpp \
@@ -76,6 +78,7 @@ SOURCES += \
     src/net/message_factory.cpp \
     src/net/notifying_message.cpp \
     src/net/prepare_to_start_game_message.cpp \
+    src/net/select_map_request_message.cpp \
     src/net/server.cpp \
     src/net/server_worker.cpp \
     src/net/socket.cpp \
@@ -106,6 +109,7 @@ HEADERS += \
     src/game/explosion.hpp \
     src/game/game.hpp \
     src/game/game_factory.hpp \
+    src/game/game_initialization_data.hpp \
     src/game/game_initializer.hpp \
     src/game/game_object.hpp \
     src/game/game_over_conditions/game_over_condition.hpp \
@@ -133,6 +137,7 @@ HEADERS += \
     src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
+    src/gui/game_creation_dialog.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \
@@ -160,6 +165,7 @@ HEADERS += \
     src/net/message_type.hpp \
     src/net/notifying_message.hpp \
     src/net/prepare_to_start_game_message.hpp \
+    src/net/select_map_request_message.hpp \
     src/net/server.hpp \
     src/net/server_worker.hpp \
     src/net/socket.hpp \

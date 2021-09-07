@@ -3,6 +3,7 @@
 
 #include "message.hpp"
 #include "i_message_visitor.hpp"
+#include "game/game_object.hpp"
 
 #include <QObject>
 #include <QAbstractSocket>
@@ -34,6 +35,7 @@ signals:
     void readyForPreparingToGameStart();
     void messageReceived(const std::unique_ptr<Message>& message);
     void readyToStartGame();
+    void selectMapRequest(QString mapFilename);
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -46,16 +48,17 @@ private: // methods
 private: // data
     Socket*              socket_;
     QString              name_;
-    uint8_t              playerId_;
+    object_id_t          playerId_;
     std::shared_ptr<Map> initializedMap_ = nullptr;
     // IMessageVisitor interface
 public:
-    void    visit(const PrepareToStartGame& message) override;
-    uint8_t playerId() const;
+    void        visit(const PrepareToStartGame& message) override;
+    object_id_t playerId() const;
 
     // IMessageVisitor interface
 public:
     void visit(const ClientIdMessage& message) override;
+    void visit(const SelectMapRequestMessage& message) override;
 
     // IMessageVisitor interface
 public:

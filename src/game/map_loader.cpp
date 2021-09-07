@@ -95,14 +95,16 @@ MapData loadFromFile(const QString& filePath)
     }
 
     const auto& jsonObject = document.object();
-    size_t      width      = jsonObject["width"].toInt(0);
-    size_t      height     = jsonObject["height"].toInt(0);
+
+    size_t width  = jsonObject["width"].toInt(0);
+    size_t height = jsonObject["height"].toInt(0);
     if (width == 0 || height == 0) {
         return {};
     }
 
     try {
-        auto        map          = std::make_unique<Map>(width, height);
+        auto map = std::make_unique<Map>(width, height);
+        map->setName(jsonObject["name"].toString());
         const auto& mapJsonArray = jsonObject["map"].toArray();
         if (mapJsonArray.size() != width * height) {
             return {};

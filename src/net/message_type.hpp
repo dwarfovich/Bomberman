@@ -12,6 +12,7 @@ enum class MessageType : uint8_t
     ClientName,
     ClientId,
     ClientReady,
+    SelectMapRequest,
     MapInitialization,
     MapInitialized,
     PrepareToStartGame,

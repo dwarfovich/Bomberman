@@ -82,6 +82,9 @@ public:
 
     uint32_t randomSeed() const;
 
+    const QString& name() const;
+    void           setName(const QString& newName);
+
 signals:
     void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& character);
@@ -126,6 +129,7 @@ private: // methods
     int inCellCoordinate(const QPoint& coordinates, Direction direction);
 
 private: // data
+    QString                            name_;
     uint32_t                           randomSeed_    = 0;
     size_t                             widthInCells_  = 0;
     size_t                             heightInCells_ = 0;
