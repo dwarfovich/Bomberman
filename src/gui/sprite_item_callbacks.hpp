@@ -14,6 +14,7 @@ public:
     SpriteItemCallbacks(GameScene* scene = nullptr);
 
     std::function<void(SpriteItem*)> destroyAnimationFinished;
+    std::function<void(SpriteItem*)> animationFinished;
 };
 
 } // namespace gui

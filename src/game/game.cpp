@@ -28,16 +28,19 @@ void Game::start()
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
     if (map_) {
-        disconnect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+        disconnect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
         disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
         disconnect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
         disconnect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
+        disconnect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
     }
     map_ = map;
-    connect(map_.get(), &Map::cellChanged, this, &Game::cellChanged);
+    connect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
     connect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
     connect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
     connect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
+    connect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
+    connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
 }
 
 Map* Game::map() const
@@ -72,7 +75,7 @@ void Game::onCharacterIndexChanged(const std::shared_ptr<Character>& character, 
 {
     const auto& cell      = map_->cell(index);
     const auto& modifier  = cell.modifier();
-    const auto  bomberman = map_->bomberman(character->id());
+    const auto& bomberman = map_->bomberman(character->id());
     if (modifier && bomberman) {
         modifier->activate(*bomberman);
         if (modifier->durationType() == ModifierDurationType::Temporary) {
@@ -93,10 +96,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
 {
     auto explosionData = bm::explodeBomb(*map_, *bomb);
     auto explosion     = explosionData.explosion;
-    //    for (auto* affectedObject : explosionData.affectedObjects) {
-    //        explosion->collideWith(*affectedObject, collider_);
-    //    }
-    auto callback = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
+    auto callback      = std::bind(&Game::onExplosionFinished, this, std::placeholders::_1);
     timerEventsQueue.addEvent(createDelay(bomb->explosionPeriod),
                               std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
 

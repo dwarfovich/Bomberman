@@ -13,7 +13,7 @@ class ModifierCreator
 public:
     ModifierCreator();
 
-    const std::shared_ptr<IModifier>& chooseModifier() const;
+    std::unique_ptr<IModifier> chooseModifier() const;
 
 private:
     std::vector<std::shared_ptr<IModifier>> modifiers_;

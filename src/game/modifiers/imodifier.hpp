@@ -1,6 +1,7 @@
 #ifndef IMODIFIER_HPP
 #define IMODIFIER_HPP
 
+#include "game/game_object.hpp"
 #include "modifier_type.hpp"
 #include "time.hpp"
 
@@ -13,7 +14,7 @@ enum class ModifierDurationType : uint8_t
     Temporary
 };
 
-class IModifier
+class IModifier : public GameObject
 {
 public:
     virtual ModifierType         type() const = 0;

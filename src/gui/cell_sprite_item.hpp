@@ -25,6 +25,8 @@ public:
 
     CellSpriteItem(const SpriteItemCallbacks* callbacks = {}, const QPixmap& pixmap = {});
 
+    void advance(int phase) override;
+
     void setAnimationType(AnimationType type);
     void setStructureFrame(CellStructureFrame structure);
 };

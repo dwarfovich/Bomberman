@@ -44,7 +44,7 @@ public:
 
 signals:
     void gameOver(const bm::GameResult& result);
-    void cellChanged(size_t index);
+    void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& object);
     void characterStartedMoving(const std::shared_ptr<Character>& character);
     void characterStopped(const std::shared_ptr<Character>& character);
@@ -53,6 +53,8 @@ signals:
     void explosionHappened(const std::shared_ptr<Explosion>& explosion);
     void explosionFinished(const std::shared_ptr<Explosion>& explosion);
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
+    void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
 
 private slots:
     void onObjectsCollided(const Map::Collisions& collisions);

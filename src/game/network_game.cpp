@@ -35,7 +35,7 @@ void NetworkGame::setMap(const std::shared_ptr<Map> &map)
 {
     ServerGame::setMap(map);
     makeConnections();
-    connect(map.get(), &Map::cellChanged, this, &NetworkGame::onMapCellChanged);
+    connect(map.get(), &Map::cellStructureChanged, this, &NetworkGame::onMapCellChanged);
 }
 
 void NetworkGame::onMessageReceived(const std::unique_ptr<Message> &message)
