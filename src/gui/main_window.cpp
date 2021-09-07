@@ -93,16 +93,9 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
     gameData.mapData = &mapData;
     gameData.game    = game_.get();
     gameData.view    = gameView_;
-    // bool success = initializeGame(data);
-    bool success = true;
+    bool success     = true;
     if (success) {
-        // TODO: Move game initialization into it's own function.
-        // TODO: And refactor it.
         auto* scene = gameData.view->scene();
-
-        //        QObject::connect(gameData.mapData->map.get(), &Map::cellChanged, scene, &gui::GameScene::cellChanged);
-        //        QObject::connect(gameData.mapData->map.get(), &Map::objectMoved, scene,
-        //        &gui::GameScene::onCharacterMoved);
         QObject::connect(gameData.game, &Game::cellChanged, scene, &gui::GameScene::cellChanged);
         QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
         QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
@@ -124,7 +117,6 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
             scene->addBot(bot);
         }
 
-        // gameData.game->setMap(gameData.mapData->map);
         gameData.view->setMap(gameData.mapData->map);
         scene->setMap(gameData.mapData->map);
 
@@ -206,27 +198,26 @@ void MainWindow::startSinglePlayerGame()
         exit(1);
     }
 
-    game_ = createSinglePlayerGame(mapData.map);
-    if (!game_) {
-        QMessageBox::critical(this, "Error!", "Cann't create game");
-        exit(1);
+    auto gameData      = createSinglePlayerGame(mapData.map);
+    gameData.scene     = new GameScene(gameView_);
+    gameData.view      = gameView_;
+    const auto& errors = initializeGame(gameData);
+
+    if (!errors.empty()) {
+        QString message = "Cann't initialize game\n";
+        for (const auto& error : errors) {
+            message += error + '\n';
+        }
+        QMessageBox::critical(this, "Error!", message);
+        return;
     }
 
-    GameData data;
-    data.mapData = &mapData;
-    data.game    = game_.get();
-    data.view    = gameView_;
-    bool success = initializeGame(data);
-    if (success) {
-        keyControls_.playerId = data.game->getPlayerBomberman();
-        mainMenuWidget_->hide();
-        setCentralWidget(gameView_);
-        gameView_->show();
-        game_->start();
-    } else {
-        QMessageBox::critical(this, "Error!", "Cann't initialize game");
-        exit(1);
-    }
+    game_                 = std::move(gameData.game);
+    keyControls_.playerId = game_->getPlayerBomberman();
+    mainMenuWidget_->hide();
+    setCentralWidget(gameView_);
+    gameView_->show();
+    game_->start();
 }
 
 void MainWindow::startNetworkGame()

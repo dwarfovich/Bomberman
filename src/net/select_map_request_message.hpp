@@ -1,15 +1,17 @@
-#ifndef BM_CLIENTIDMESSAGE_HPP
-#define BM_CLIENTIDMESSAGE_HPP
+#ifndef BM_SELECTMAPREQUESTMESSAGE_HPP
+#define BM_SELECTMAPREQUESTMESSAGE_HPP
 
 #include "message.hpp"
-#include "game/game_object.hpp"
+
+#include <QByteArray>
+#include <QString>
 
 namespace bm {
 
-class ClientIdMessage : public Message
+class SelectMapRequestMessage : public Message
 {
 public:
-    explicit ClientIdMessage(object_id_t playerId = 0xFF);
+    SelectMapRequestMessage(QString mapFileName = {});
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
@@ -17,12 +19,12 @@ public:
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
 
-    object_id_t playerId() const;
+    QString toString() const;
 
 private:
-    object_id_t playerId_;
+    QByteArray data_;
 };
 
 } // namespace bm
 
-#endif // BM_CLIENTIDMESSAGE_HPP
+#endif // BM_SELECTMAPREQUESTMESSAGE_HPP

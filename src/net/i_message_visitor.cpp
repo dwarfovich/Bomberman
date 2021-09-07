@@ -14,6 +14,9 @@ void IMessageVisitor::visit(const ClientNameMessage &message)
 void IMessageVisitor::visit(const ClientReadyMessage &message)
 {}
 
+void IMessageVisitor::visit(const SelectMapRequestMessage &message)
+{}
+
 void IMessageVisitor::visit(const MapInitializationMessage &message)
 {}
 

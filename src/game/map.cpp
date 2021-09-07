@@ -645,6 +645,16 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     }
 }
 
+const QString& Map::name() const
+{
+    return name_;
+}
+
+void Map::setName(const QString& newName)
+{
+    name_ = newName;
+}
+
 uint32_t Map::randomSeed() const
 {
     return randomSeed_;
