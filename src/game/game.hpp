@@ -15,6 +15,10 @@ namespace gui {
 class GameScene;
 }
 
+namespace game_ns {
+inline constexpr int movementUpdatePeriod = 42;
+}
+
 class Game : public QObject
 {
     Q_OBJECT
@@ -22,33 +26,26 @@ class Game : public QObject
     friend class Collider;
 
 public:
-    explicit Game(QObject* parent = nullptr);
+    Game();
     virtual ~Game() = default;
 
-    virtual void start() = 0;
+    virtual void                              movePlayer(object_id_t player, Direction) = 0;
+    virtual void                              stopPlayer(object_id_t player)            = 0;
+    virtual std::shared_ptr<Bomb>             placeBomb(object_id_t player)             = 0;
+    virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const     = 0;
+    virtual object_id_t                       playerId() const                          = 0;
 
-    virtual void                              addPlayer(const std::shared_ptr<Bomberman>& player) = 0;
-    virtual void                              movePlayer(size_t player, Direction)                = 0;
-    virtual void                              stopPlayer(size_t player)                           = 0;
-    virtual std::shared_ptr<Bomb>             placeBomb(size_t player)                            = 0;
-    virtual const std::shared_ptr<Bomberman>& bomberman(uint8_t playerId) const                   = 0;
+    virtual void start();
+    virtual void setMap(const std::shared_ptr<Map>& map);
+    virtual Map* map() const;
 
-    virtual void    setMap(const std::shared_ptr<Map>& map);
-    virtual Map*    map() const { return map_.get(); }
-    virtual uint8_t playerId() const = 0;
-
-    void setPlayer1Bomberman(const std::shared_ptr<Bomberman>& player);
-    bool movePlayer1(Direction direction);
-    void stopPlayer1(Direction direction);
-    void placeBomb1();
-    void setScene(gui::GameScene* newScene);
-
-    void setPlayerBomberman(const std::shared_ptr<Bomberman>& newPlayerBomberman);
+    object_id_t getPlayerBomberman() const;
+    void        setPlayerBomberman(object_id_t playerBomberman);
 
 signals:
     void gameOver(const bm::GameResult& result);
-    void cellChanged(size_t index);
-    void objectMoved(const std::shared_ptr<MovingObject>& object);
+    void cellStructureChanged(size_t index, CellStructure previousStructure);
+    void characterMoved(const std::shared_ptr<Character>& object);
     void characterStartedMoving(const std::shared_ptr<Character>& character);
     void characterStopped(const std::shared_ptr<Character>& character);
     void bombPlaced(const std::shared_ptr<Bomb>& bomb);
@@ -56,29 +53,24 @@ signals:
     void explosionHappened(const std::shared_ptr<Explosion>& explosion);
     void explosionFinished(const std::shared_ptr<Explosion>& explosion);
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
+    void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
 
 private slots:
-    void onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index);
+    void onObjectsCollided(const Map::Collisions& collisions);
+    void onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index);
 
 protected: // methods
-    void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
-    void explodeBomb(const std::shared_ptr<Bomb>& bomb);
-    void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
-    //    void objectDestroyed(const std::shared_ptr<GameObject>& object);
+    virtual void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
+    virtual void explodeBomb(const std::shared_ptr<Bomb>& bomb);
+    virtual void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
 
 protected: // data
     std::shared_ptr<Map> map_;
-
-private: // data
-    static const int           timeout_ = 42;
-    gui::GameScene*            scene_   = nullptr;
-    std::shared_ptr<Bomberman> player1_ = nullptr;
-    Collider                   collider_;
-    // QTimer                     moveTimer;
-    TimerQueue timerQueue;
-
-protected:
-    std::shared_ptr<Bomberman> playerBomberman_ = nullptr;
+    object_id_t          playerBomberman_ = 0;
+    Collider             collider_;
+    TimerQueue           timerEventsQueue;
+    QTimer               movementTimer_;
 };
 
 } // namespace bm

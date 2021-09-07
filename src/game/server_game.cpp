@@ -6,126 +6,50 @@
 
 namespace bm {
 
-ServerGame::ServerGame(QObject* parent) : Game { parent }, collider_ { this }
-{}
-
-void ServerGame::start()
+void ServerGame::movePlayer(object_id_t player, Direction direction)
 {
-    moveTimer.start(updateTimeout_);
+    auto bomberman = map_->character(player);
+    if (bomberman) {
+        bomberman->setSpeed(bomberman->possibleSpeed());
+        bomberman->setDirection(direction);
+        emit characterStartedMoving(bomberman);
+    }
 }
 
-void ServerGame::movePlayer(size_t player, Direction direction)
+void ServerGame::stopPlayer(object_id_t player)
 {
-    //    if (isCorrectPlayerIndex(player)) {
-    //        bombermans_[player]->setSpeed(defaultBombermanSpeed);
-    //        bombermans_[player]->setDirection(direction);
-    //    }
-    playerBomberman_->setSpeed(defaultBombermanSpeed);
-    playerBomberman_->setDirection(direction);
-    emit characterStartedMoving(playerBomberman_);
+    auto bomberman = map_->character(player);
+    if (bomberman) {
+        bomberman->setSpeed(0);
+        emit characterStopped(bomberman);
+    }
 }
 
-void ServerGame::stopPlayer(size_t player)
+std::shared_ptr<Bomb> ServerGame::placeBomb(object_id_t player)
 {
-    playerBomberman_->setSpeed(0);
-    emit characterStopped(playerBomberman_);
-    //    if (isCorrectPlayerIndex(player)) {
-    //        bombermans_[player]->setSpeed(0);
-    //    }
-}
-
-std::shared_ptr<Bomb> ServerGame::placeBomb(size_t player)
-{
-    std::shared_ptr<Bomb> bomb = playerBomberman_->createBomb();
-    if (bomb) {
-        auto index = map_->coordinatesToIndex(playerBomberman_->movementData().coordinates);
+    auto bomberman = map_->bomberman(player);
+    if (bomberman && bomberman->canCreateBomb()) {
+        std::shared_ptr<Bomb> bomb  = bomberman->createBomb();
+        auto                  index = map_->coordinatesToIndex(bomberman->coordinates());
         if (map_->isProperIndex(index)) {
             bomb->cellIndex = index;
             map_->placeBomb(bomb);
             addExplosionEvent(bomb);
             emit bombPlaced(bomb);
         }
-    }
-
-    return bomb;
-}
-
-bool ServerGame::isCorrectPlayerIndex(size_t index) const
-{
-    return (index < bombermans_.size());
-}
-
-const std::shared_ptr<Bomberman>& ServerGame::bomberman(uint8_t playerId) const
-{
-    auto iter = std::find_if(bombermans_.cbegin(), bombermans_.cend(), [playerId](const auto& bomberman) {
-        return bomberman->id() == playerId;
-    });
-    if (iter == bombermans_.cend()) {
-        static const std::shared_ptr<Bomberman> empty { nullptr };
-        return empty;
+        return bomb;
     } else {
-        return *iter;
+        static const std::shared_ptr<Bomb> empty;
+        return empty;
     }
 }
 
-void ServerGame::onObjectIndexChanged(const std::shared_ptr<MovingObject>& object, size_t index)
+const std::shared_ptr<Bomberman>& ServerGame::bomberman(object_id_t playerId) const
 {
-    const auto& cell     = map_->cell(index);
-    const auto& modifier = cell.modifier();
-    if (modifier && std::find(bombermans_.cbegin(), bombermans_.cend(), object) != bombermans_.cend()) {
-        // TODO: Get rid of dynamic_cast
-        auto bomberman = std::dynamic_pointer_cast<Bomberman>(object);
-        modifier->activate(*bomberman);
-        if (modifier->durationType() == ModifierDurationType::Temporary) {
-            auto event = std::make_unique<ModifierDeactivationEvent>(bomberman, cell.modifier());
-            timerQueue.addEvent(createDelay(modifier->duration()), std::move(event));
-        }
-        map_->setModifier(cell.index(), nullptr);
-    }
+    return map_->bomberman(playerId);
 }
 
-void ServerGame::addPlayer(const std::shared_ptr<Bomberman>& player)
-{
-    player->setId(bombermans_.size());
-    bombermans_.push_back(player);
-    if (player->id() == 0) {
-        playerBomberman_ = player;
-    }
-}
-
-void ServerGame::addExplosionEvent(const std::shared_ptr<Bomb>& bomb)
-{
-    auto callback = std::bind(&ServerGame::explodeBomb, this, std::placeholders::_1);
-    timerQueue.addEvent(createDelay(bomb->explosionDelay), std::make_unique<BombExplosionEvent>(bomb, callback));
-}
-
-void ServerGame::explodeBomb(const std::shared_ptr<Bomb>& bomb)
-{
-    auto explosionData = bm::explodeBomb(*map_, *bomb);
-    auto explosion     = explosionData.explosion;
-    for (auto* affectedObject : explosionData.affectedObjects) {
-        explosion->collideWith(*affectedObject, collider_);
-    }
-    auto callback = std::bind(&ServerGame::onExplosionFinished, this, std::placeholders::_1);
-    timerQueue.addEvent(createDelay(bomb->explosionPeriod),
-                        std::make_unique<BombExplosionFinishedEvent>(explosion, callback));
-
-    playerBomberman_->decreaseActiveBombs();
-    emit bombExploded(bomb);
-    emit explosionHappened(explosion);
-}
-
-void ServerGame::setMap(const std::shared_ptr<Map>& map)
-{
-    Game::setMap(map);
-    // TODO: Disconnect oldies.
-    connect(&moveTimer, &QTimer::timeout, [this]() {
-        map_->moveObjects(updateTimeout_);
-    });
-    connect(map_.get(), &Map::objectIndexChanged, this, &ServerGame::onObjectIndexChanged);
-}
-
-uint8_t ServerGame::playerId() const
+object_id_t ServerGame::playerId() const
 {
     return 0;
 }

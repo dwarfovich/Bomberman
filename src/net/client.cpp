@@ -5,6 +5,7 @@
 #include "message_factory.hpp"
 #include "text_message.hpp"
 #include "client_id_message.hpp"
+#include "select_map_request_message.hpp"
 #include "map_initialization_message.hpp"
 #include "map_initialized_message.hpp"
 #include "game/map.hpp"
@@ -58,7 +59,7 @@ const std::shared_ptr<Map> &Client::initializedMap() const
     return initializedMap_;
 }
 
-uint8_t Client::playerId() const
+object_id_t Client::playerId() const
 {
     return playerId_;
 }
@@ -98,6 +99,11 @@ void Client::visit(const PrepareToStartGame &message)
 void Client::visit(const ClientIdMessage &message)
 {
     playerId_ = message.playerId();
+}
+
+void Client::visit(const SelectMapRequestMessage &message)
+{
+    emit selectMapRequest(message.toString());
 }
 
 void Client::visit(const MapInitializationMessage &message)

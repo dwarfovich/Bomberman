@@ -38,10 +38,10 @@ public:
 signals:
     void messageReceived(const std::unique_ptr<Message>& message);
     void logMessageRequest(const QString& message);
-    void clientConnected();
-
+    void clientConnected(uint8_t clientId, QString name);
+    void clientNameChanged(uint8_t clientId, QString name);
     // TODO: Rename signals.
-    void readyToStartGame();
+    void allClientsWaitingForGameData();
     void reallyReadyToStartGame();
 
 protected:

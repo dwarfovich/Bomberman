@@ -2,6 +2,7 @@
 #define BM_GAMEFACTORY_HPP
 
 #include "game.hpp"
+#include "game_initialization_data.hpp"
 
 #include <memory>
 
@@ -13,11 +14,11 @@ struct MapData;
 
 }
 
-std::unique_ptr<Game> createSinglePlayerGame(const std::shared_ptr<Map>& map);
-std::unique_ptr<Game> createNetworkGame(Server*                     server,
-                                        const std::shared_ptr<Map>& map,
-                                        const map_loader::MapData&  mapData);
-std::unique_ptr<Game> createClientGame(Client* client);
+GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map);
+std::unique_ptr<Game>  createNetworkGame(Server*                     server,
+                                         const std::shared_ptr<Map>& map,
+                                         const map_loader::MapData&  mapData);
+std::unique_ptr<Game>  createClientGame(Client* client);
 
 } // namespace bm
 

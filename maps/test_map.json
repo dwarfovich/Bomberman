@@ -1,4 +1,5 @@
 {
+	"name": "Test map",
 	"width": 10,
 	"height": 10,
 	"map": [1,1,1,1,1,1,1,1,1,1,

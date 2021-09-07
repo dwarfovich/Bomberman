@@ -20,9 +20,6 @@ public:
 
     GameScene* scene() const;
 
-protected:
-    void updateMap();
-
 private:
     GameScene*           scene_;
     std::shared_ptr<Map> map_;

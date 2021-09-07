@@ -1,4 +1,5 @@
 #include "game_factory.hpp"
+#include "game/game_initialization_data.hpp" e
 #include "server_game.hpp"
 #include "network_game.hpp"
 #include "client_game.hpp"
@@ -20,22 +21,26 @@ bool createBombermansForPlayers(const std::unordered_set<uint8_t>& playersIds, M
     for (uint8_t id : playersIds) {
         auto bomberman = std::make_shared<Bomberman>();
         bomberman->setBombPrototype({});
-        bomberman->setId(id);
         bomberman->setCoordinates(map.indexToCellCenterCoordinates(respawns[currentRespawn]));
         ++currentRespawn;
         map.addBomberman(bomberman);
-        game.addPlayer(bomberman);
+        //        game.addPlayer(bomberman);
     }
 
     return true;
 }
 } // namespace
 
-std::unique_ptr<Game> createSinglePlayerGame(const std::shared_ptr<Map>& map)
+GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map)
 {
-    auto game = std::make_unique<ServerGame>();
+    Q_ASSERT(map);
 
-    return game;
+    GameInitializationData data;
+    data.map  = map;
+    data.game = std::make_unique<ServerGame>();
+    data.bombermans.push_back(std::make_shared<Bomberman>());
+
+    return data;
 }
 
 std::unique_ptr<Game> createNetworkGame(Server*                     server,
@@ -52,7 +57,6 @@ std::unique_ptr<Game> createNetworkGame(Server*                     server,
 
     auto bots = mapData.bots;
     for (const auto& bot : mapData.bots) {
-        // mapData.map->addMovingObject(bot);
         mapData.map->addBot(bot);
     }
 

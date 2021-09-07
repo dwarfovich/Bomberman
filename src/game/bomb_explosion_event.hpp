@@ -7,7 +7,7 @@
 #include <functional>
 
 namespace bm {
-struct Bomb;
+class Bomb;
 
 class BombExplosionEvent : public TimerEvent
 {
@@ -18,7 +18,7 @@ public:
     void doWork() const override;
 
 private:
-    std::shared_ptr<Bomb> bomb;
+    std::shared_ptr<Bomb>               bomb;
     std::function<void(const BombPtr&)> callback;
 };
 

@@ -7,6 +7,7 @@ namespace bm {
 QDataStream& operator<<(QDataStream& stream, const MoveData& data)
 {
     stream << data.speed;
+    stream << data.possibleSpeed;
     stream << data.direction;
     stream << data.coordinates;
 
@@ -16,6 +17,7 @@ QDataStream& operator<<(QDataStream& stream, const MoveData& data)
 QDataStream& operator>>(QDataStream& stream, MoveData& data)
 {
     stream >> data.speed;
+    stream >> data.possibleSpeed;
     stream >> data.direction;
     stream >> data.coordinates;
 

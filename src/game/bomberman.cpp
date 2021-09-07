@@ -3,7 +3,7 @@
 
 namespace bm {
 
-Bomberman::Bomberman() : Character { MoveData { 0, Direction::Downward, { 0, 0 } } }
+Bomberman::Bomberman() : Character { MoveData { 0, bomberman_ns::defaultSpeed, Direction::Downward, { 0, 0 } } }
 {
     setBombPrototype({});
 }
@@ -13,12 +13,12 @@ bool Bomberman::acceptsModifiers() const
     return true;
 }
 
-size_t Bomberman::activeBombs() const
+uint8_t Bomberman::activeBombs() const
 {
     return activeBombs_;
 }
 
-size_t Bomberman::maxActiveBombs() const
+uint8_t Bomberman::maxActiveBombs() const
 {
     return maxActiveBombs_;
 }
@@ -30,16 +30,24 @@ void Bomberman::decreaseActiveBombs()
     }
 }
 
+bool Bomberman::canCreateBomb() const
+{
+    return (activeBombs_ < maxActiveBombs_);
+}
+
 std::unique_ptr<Bomb> Bomberman::createBomb()
 {
     if (activeBombs_ < maxActiveBombs_) {
         ++activeBombs_;
-        auto bomb = std::make_unique<Bomb>(bombPrototype_);
-        // bomb->owner = shared_from_this();
-        return bomb;
+        return std::make_unique<Bomb>(bombPrototype_);
     } else {
         return nullptr;
     }
+}
+
+void Bomberman::setMaxActiveBombs(uint8_t maxActiveBombs)
+{
+    maxActiveBombs_ = maxActiveBombs;
 }
 
 const Bomb &Bomberman::bombPrototype() const
@@ -51,29 +59,17 @@ const Bomb &Bomberman::bombPrototype() const
 void Bomberman::setBombPrototype(const Bomb &newBomb)
 {
     bombPrototype_           = newBomb;
-    bombPrototype_.playerId  = id();
+    bombPrototype_.ownerId   = id();
     bombPrototype_.cellIndex = 0;
 }
 
-// uint8_t Bomberman::playerId() const
-//{
-//    return playerId_;
-//}
-
-// void Bomberman::setPlayerId(uint8_t newId)
-//{
-//    playerId_               = newId;
-//    bombPrototype_.playerId = playerId_;
-//}
-
-ObjectType Bomberman::type() const
+CharacterType Bomberman::type() const
 {
-    return ObjectType::Bomberman;
+    return CharacterType::Bomberman;
 }
 
 void Bomberman::toStream(QDataStream &stream) const
 {
-    // stream << playerId_;
     stream << activeBombs_;
     stream << maxActiveBombs_;
     stream << bombPrototype_;
@@ -81,7 +77,6 @@ void Bomberman::toStream(QDataStream &stream) const
 
 void Bomberman::fromStream(QDataStream &stream)
 {
-    // stream >> playerId_;
     stream >> activeBombs_;
     stream >> maxActiveBombs_;
     stream >> bombPrototype_;

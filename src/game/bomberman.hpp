@@ -10,36 +10,36 @@
 
 namespace bm {
 
-inline constexpr size_t defaultBombermanSpeed      = 10;
-inline constexpr size_t defaultBombermanBombRadius = 1;
+namespace bomberman_ns {
+inline constexpr size_t defaultSpeed      = 10;
+inline constexpr size_t defaultBombRadius = 1;
+} // namespace bomberman_ns
 
-// TODO: Remove inheritance from std::enable_shared_from_this.
-class Bomberman : public Character, public std::enable_shared_from_this<Bomberman>
+class Bomberman : public Character
 {
 public:
     ACCEPT_COLLISION;
 
     Bomberman();
 
-    ObjectType type() const override;
-    void       toStream(QDataStream& stream) const override;
-    void       fromStream(QDataStream& stream) override;
+    CharacterType type() const override;
+    void          toStream(QDataStream& stream) const override;
+    void          fromStream(QDataStream& stream) override;
+    bool          acceptsModifiers() const override;
 
-    bool acceptsModifiers() const override;
-
-    size_t                activeBombs() const;
-    size_t                maxActiveBombs() const;
+    const Bomb&           bombPrototype() const;
+    void                  setBombPrototype(const Bomb& Bomb);
+    uint8_t               activeBombs() const;
+    uint8_t               maxActiveBombs() const;
+    void                  setMaxActiveBombs(uint8_t maxActiveBombs);
     void                  decreaseActiveBombs();
+    bool                  canCreateBomb() const;
     std::unique_ptr<Bomb> createBomb();
 
-    const Bomb& bombPrototype() const;
-    void        setBombPrototype(const Bomb& Bomb);
-
 private:
-    // uint8_t playerId_       = 0;
-    size_t activeBombs_    = 0;
-    size_t maxActiveBombs_ = 2;
-    Bomb   bombPrototype_;
+    uint8_t activeBombs_    = 0;
+    uint8_t maxActiveBombs_ = 1;
+    Bomb    bombPrototype_;
 };
 } // namespace bm
 

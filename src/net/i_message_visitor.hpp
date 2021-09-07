@@ -6,6 +6,7 @@ class Message;
 class TextMessage;
 class ClientNameMessage;
 class ClientReadyMessage;
+class SelectMapRequestMessage;
 class MapInitializationMessage;
 class MapInitializedMessage;
 class PrepareToStartGame;
@@ -24,6 +25,8 @@ public:
     virtual void visit(const TextMessage& message);
     virtual void visit(const ClientNameMessage& message);
     virtual void visit(const ClientReadyMessage& message);
+    virtual void visit(const SelectMapRequestMessage& message);
+
     virtual void visit(const MapInitializationMessage& message);
     virtual void visit(const MapInitializedMessage& message);
     virtual void visit(const CharacterMovedMessage& message);

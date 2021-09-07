@@ -1,5 +1,6 @@
 #include "client_game_dialog.hpp"
 #include "ui_client_game_dialog.h"
+#include "game/map_loader.hpp"
 #include "net/client.hpp"
 #include "net/text_message.hpp"
 #include "net/client_ready_message.hpp"
@@ -14,11 +15,11 @@ ClientGameDialog::ClientGameDialog(QWidget *parent)
 {
     ui_->setupUi(this);
 
+    ui_->mapPreview->setScene(&scene_);
+
     connect(client_, &Client::logMessage, this, &ClientGameDialog::onLogMessageRequest);
-    // connect(client_, &Client::readyForPreparingToGameStart, this, &ClientGameDialog::onReadyForPreparingToStartGame);
-    // connect(client_, &Client::readyForPreparingToGameStart, this, &ClientGameDialog::accepted);
     connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::accept);
-    // connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::onReadyToStartGame);
+    connect(client_, &Client::selectMapRequest, this, &ClientGameDialog::onSelectMapRequest);
 
     connect(ui_->connectButton, &QPushButton::clicked, this, &ClientGameDialog::connectToServer);
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &ClientGameDialog::sendMessage);
@@ -68,6 +69,20 @@ void ClientGameDialog::sendMessage()
 void ClientGameDialog::changePlayerName()
 {
     client_->setName(ui_->playerNameEdit->text());
+}
+
+void ClientGameDialog::onSelectMapRequest(QString mapFilename)
+{
+    const auto &mapFilePath = mapFolder_.filePath(mapFilename);
+    auto        mapData     = map_loader::loadFromFile(mapFilePath);
+    if (mapData.map) {
+        selectedMap_ = mapData.map;
+        scene_.setMap(selectedMap_);
+        ui_->mapPreview->fitInView(scene_.sceneRect(), Qt::KeepAspectRatio);
+        ui_->mapNameEdit->setText(selectedMap_->name());
+    } else {
+        onLogMessageRequest("Cann't load map preview for file " + mapFilePath);
+    }
 }
 
 void ClientGameDialog::onReadyForPreparingToStartGame()

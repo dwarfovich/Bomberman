@@ -18,7 +18,9 @@ void Server::visit(const TextMessage &message)
 
 void Server::visit(const ClientNameMessage &message)
 {
+    const auto &name = message.toString();
     currentMessageClient_->setClientName(message.toString());
+    emit clientNameChanged(currentMessageClient_->clientId(), name);
 }
 
 void Server::setServerPort(quint16 port)
@@ -73,7 +75,7 @@ void Server::incomingConnection(qintptr descriptor)
             std::bind(&Server::onMessageReceived, this, worker, std::placeholders::_1));
 
     clients_.push_back(worker);
-    emit clientConnected();
+    emit clientConnected(newId, "New player");
     emit logMessageRequest("New client connected");
 
     ClientIdMessage message { newId };
@@ -136,7 +138,7 @@ void Server::visit(const ClientReadyMessage &message)
 {
     playersReadyToStartGame_.insert(message.playerId());
     if (playersReadyToStartGame_.size() == clients_.size() + 1) {
-        emit readyToStartGame();
+        emit allClientsWaitingForGameData();
     }
 }
 

@@ -2,13 +2,14 @@
 #define BM_CLIENTIDMESSAGE_HPP
 
 #include "message.hpp"
+#include "game/game_object.hpp"
 
 namespace bm {
 
 class ClientIdMessage : public Message
 {
 public:
-    explicit ClientIdMessage(uint8_t playerId = 0xFF);
+    explicit ClientIdMessage(object_id_t playerId = 0xFF);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
@@ -16,10 +17,10 @@ public:
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
 
-    uint8_t playerId() const;
+    object_id_t playerId() const;
 
 private:
-    uint8_t playerId_;
+    object_id_t playerId_;
 };
 
 } // namespace bm

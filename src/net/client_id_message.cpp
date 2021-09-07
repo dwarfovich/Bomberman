@@ -8,7 +8,7 @@ namespace bm {
 
 REGISTER_MESSAGE_MAKER(MessageType::ClientId, ClientIdMessage);
 
-ClientIdMessage::ClientIdMessage(uint8_t playerId) : playerId_ { playerId }
+ClientIdMessage::ClientIdMessage(object_id_t playerId) : playerId_ { playerId }
 {}
 
 MessageType ClientIdMessage::type() const
@@ -36,7 +36,7 @@ void ClientIdMessage::fromStream(QDataStream &stream)
     stream >> playerId_;
 }
 
-uint8_t ClientIdMessage::playerId() const
+object_id_t ClientIdMessage::playerId() const
 {
     return playerId_;
 }

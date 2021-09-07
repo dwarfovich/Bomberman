@@ -29,12 +29,10 @@ void Collider::collide(Cell &explosion, Bot &bot) const
 
 void Collider::collide(Explosion &explosion, Bot &bot) const
 {
-    const auto &botPtr = game_->map()->sharedPtrForObject(bot);
+    const auto &botPtr = game_->map()->character(bot.id());
     if (botPtr) {
-        //        game_->scene_->destroyItemForObject(botPtr);
-        //        game_->botDestoryed(botPtr);
         emit game_->objectDestroyed(botPtr);
-        game_->map()->removeMovingObject(botPtr);
+        game_->map()->removeCharacter(bot.id());
     }
 }
 
