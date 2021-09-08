@@ -1,5 +1,6 @@
 #include "create_network_game_dialog.hpp"
 #include "ui_create_network_game_dialog.h"
+#include "game/game_factory.hpp"
 #include "game/map_loader.hpp"
 #include "net/server.hpp"
 #include "net/text_message.hpp"
@@ -12,9 +13,11 @@ namespace bm {
 namespace gui {
 
 CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
-    : QDialog { parent }, ui_ { new Ui::CreateNetworkGameDialog }, server_ { new Server { this } }
+    : GameCreationDialog { parent }, ui_ { new Ui::CreateNetworkGameDialog }, server_ { new Server { this } }
 {
     ui_->setupUi(this);
+
+    initializationData_.game = createNetworkGame(server_);
 
     ui_->mapPreview->setScene(&scene_);
 
@@ -36,7 +39,7 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     connect(ui_->cancelButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::reject);
     connect(ui_->mapComboBox, &QComboBox::currentIndexChanged, this, &CreateNetworkGameDialog::onNewMapSelected);
 
-    ui_->startGameButton->setDisabled(true);
+    // ui_->startGameButton->setDisabled(true);
 
     prepareMapList();
 
@@ -98,7 +101,7 @@ void CreateNetworkGameDialog::onClientNameChanged(uint8_t clientId, QString name
 void CreateNetworkGameDialog::onClientsWaitingForGameData()
 {
     logMessage("Ready to start game");
-    ui_->startGameButton->setEnabled(true);
+    // ui_->startGameButton->setEnabled(true);
 }
 
 void CreateNetworkGameDialog::onNewMapSelected(int index)
@@ -108,7 +111,8 @@ void CreateNetworkGameDialog::onNewMapSelected(int index)
     const auto &      filePath  = mapFolder.filePath(fileName);
     const auto &      mapData   = map_loader::loadFromFile(filePath);
     if (mapData.map) {
-        selectedMap_ = mapData.map;
+        selectedMap_            = mapData.map;
+        initializationData_.map = selectedMap_;
         scene_.setMap(selectedMap_);
         ui_->mapPreview->fitInView(ui_->mapPreview->rect(), Qt::KeepAspectRatio);
         SelectMapRequestMessage message { fileName };
@@ -129,6 +133,9 @@ void CreateNetworkGameDialog::addServerPlayerToModel()
 {
     auto item = new QStandardItem { ui_->serverPlayerNameEdit->text() };
     playersModel_.appendRow(item);
+    auto bomberman = std::make_shared<Bomberman>();
+    initializationData_.bombermans.push_back(bomberman);
+    initializationData_.playerBomberman = bomberman->id();
 }
 
 void CreateNetworkGameDialog::prepareMapList()
@@ -157,6 +164,11 @@ void CreateNetworkGameDialog::prepareMapList()
         mapsComboBoxModel_.appendRow(modelItem);
     }
     ui_->mapComboBox->setModel(&mapsComboBoxModel_);
+}
+
+const GameInitializationData &CreateNetworkGameDialog::initializationData() const
+{
+    return initializationData_;
 }
 
 } // namespace gui

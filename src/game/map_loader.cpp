@@ -33,7 +33,12 @@ void parseRespawnLocations(const QJsonObject& json, MapData& mapData)
     //        mapData.bombermans.push_back(bomberman);
     //    }
 
-    const auto& botArray = json["bot_respawns"].toArray();
+    const auto&         botArray = json["bot_respawns"].toArray();
+    std::vector<size_t> respawns;
+    for (size_t i = 0; i < botArray.size(); ++i) {
+        respawns.push_back(botArray[i].toInt());
+    }
+    mapData.map->setRespawnPlaces(RespawnType::Bot, respawns);
     for (size_t i = 0; i < botArray.size(); ++i) {
         auto index = botArray[i].toInt();
         auto bot   = createBot(BotType::Regular, *mapData.map);

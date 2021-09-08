@@ -97,7 +97,7 @@ void MainWindow::initializeNetworkGame(const CreateNetworkGameDialog& dialog)
     if (success) {
         auto* scene = gameData.view->scene();
 
-        QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
+        QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellStructureChanged);
         QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
         QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
         QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
@@ -160,7 +160,7 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
         //        QObject::connect(
         //            dialog.client()->initializedMap().get(), &Map::objectMoved, scene,
         //            &gui::GameScene::onCharacterMoved);
-        QObject::connect(game_.get(), &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
+        QObject::connect(game_.get(), &Game::cellStructureChanged, scene, &gui::GameScene::onCellStructureChanged);
         QObject::connect(game_.get(), &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
         QObject::connect(game_.get(), &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
         QObject::connect(game_.get(), &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
@@ -213,7 +213,7 @@ void MainWindow::startSinglePlayerGame()
         return;
     }
 
-    game_                 = std::move(gameData.game);
+    game_                 = gameData.game;
     keyControls_.playerId = game_->getPlayerBomberman();
     mainMenuWidget_->hide();
     setCentralWidget(gameView_);
@@ -226,7 +226,22 @@ void MainWindow::startNetworkGame()
     CreateNetworkGameDialog dialog;
     auto                    answer = dialog.exec();
     if (answer == QDialog::Accepted) {
-        initializeNetworkGame(dialog);
+        auto initializationData  = dialog.initializationData();
+        initializationData.scene = new GameScene(gameView_);
+        initializationData.view  = gameView_;
+        const auto& errors       = initializeGame(initializationData);
+
+        if (!errors.empty()) {
+            QString message = "Cann't initialize game\n";
+            for (const auto& error : errors) {
+                message += error + '\n';
+            }
+            QMessageBox::critical(this, "Error!", message);
+            return;
+        }
+
+        keyControls_.playerId = initializationData.playerBomberman;
+        game_                 = initializationData.game;
         if (game_) {
             mainMenuWidget_->hide();
             setCentralWidget(gameView_);

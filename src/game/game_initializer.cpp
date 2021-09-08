@@ -30,7 +30,7 @@ bool initializeGame(const GameData& gameData)
         scene->addBot(bot);
     }
 
-    QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellChanged);
+    QObject::connect(gameData.game, &Game::cellStructureChanged, scene, &gui::GameScene::onCellStructureChanged);
     QObject::connect(gameData.game, &Game::characterMoved, scene, &gui::GameScene::onCharacterMoved);
     QObject::connect(gameData.game, &Game::characterStartedMoving, scene, &gui::GameScene::onCharacterStartedMove);
     QObject::connect(gameData.game, &Game::characterStopped, scene, &gui::GameScene::onCharacterStopped);
@@ -53,6 +53,7 @@ QStringList initializeGame(const GameInitializationData& data)
     Q_ASSERT(data.map);
     Q_ASSERT(data.scene);
     Q_ASSERT(data.view);
+    Q_ASSERT(data.playerBomberman != invalidId);
 
     QStringList errors;
 
@@ -63,15 +64,14 @@ QStringList initializeGame(const GameInitializationData& data)
         return errors;
     }
 
-    // TODO: May be set player's id here.
-    // data.game->setPlayerBomberman(...)
+    data.game->setPlayerBomberman(data.playerBomberman);
 
     data.game->setMap(data.map);
     data.scene->setMap(data.map);
     data.view->setScene(data.scene);
 
     const auto* game = data.game.get();
-    QObject::connect(game, &Game::cellChanged, data.scene, &gui::GameScene::cellChanged);
+    QObject::connect(game, &Game::cellStructureChanged, data.scene, &gui::GameScene::onCellStructureChanged);
     QObject::connect(game, &Game::characterMoved, data.scene, &gui::GameScene::onCharacterMoved);
     QObject::connect(game, &Game::characterStartedMoving, data.scene, &gui::GameScene::onCharacterStartedMove);
     QObject::connect(game, &Game::characterStopped, data.scene, &gui::GameScene::onCharacterStopped);
@@ -80,6 +80,8 @@ QStringList initializeGame(const GameInitializationData& data)
     QObject::connect(game, &Game::explosionHappened, data.scene, &gui::GameScene::onExplosionHappened);
     QObject::connect(game, &Game::explosionFinished, data.scene, &gui::GameScene::onExplosionFinished);
     QObject::connect(game, &Game::objectDestroyed, data.scene, &gui::GameScene::onObjectDestroyed);
+    QObject::connect(game, &Game::modifierAdded, data.scene, &gui::GameScene::onModifierAdded);
+    QObject::connect(game, &Game::modifierRemoved, data.scene, &gui::GameScene::onModifierRemoved);
 
     return errors;
 }

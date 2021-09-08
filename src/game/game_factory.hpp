@@ -18,6 +18,7 @@ GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map);
 std::unique_ptr<Game>  createNetworkGame(Server*                     server,
                                          const std::shared_ptr<Map>& map,
                                          const map_loader::MapData&  mapData);
+std::unique_ptr<Game>  createNetworkGame(Server* server);
 std::unique_ptr<Game>  createClientGame(Client* client);
 
 } // namespace bm

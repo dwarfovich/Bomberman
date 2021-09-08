@@ -16,7 +16,8 @@ namespace bm {
 class Collider;
 class CollisionDispatcherBase;
 
-using object_id_t = uint16_t;
+using object_id_t                      = uint16_t;
+inline constexpr object_id_t invalidId = -1;
 
 class GameObject
 {

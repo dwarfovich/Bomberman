@@ -42,7 +42,7 @@ public slots:
     void onExplosionHappened(const std::shared_ptr<Explosion>& explosion);
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
     void onObjectDestroyed(std::shared_ptr<GameObject> object);
-    void onCellChanged(size_t index, bm::CellStructure previousStructure);
+    void onCellStructureChanged(size_t index, bm::CellStructure previousStructure);
     void onModifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     // TODO: try to replace onModifierRemoved slot with onObjectDestroyed.
     void onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);

@@ -50,8 +50,8 @@ Map* Game::map() const
 
 void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 {
-    emit explosionFinished(explosion);
     map_->removeExplosion(explosion);
+    emit explosionFinished(explosion);
 }
 
 object_id_t Game::getPlayerBomberman() const

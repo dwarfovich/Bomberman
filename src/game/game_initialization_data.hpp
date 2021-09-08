@@ -21,11 +21,12 @@ class GameView;
 class GameInitializationData
 {
 public:
-    std::unique_ptr<Game>                   game = nullptr;
+    std::shared_ptr<Game>                   game = nullptr;
     std::shared_ptr<Map>                    map;
     std::vector<std::shared_ptr<Bomberman>> bombermans;
-    gui::GameScene*                         scene = nullptr;
-    gui::GameView*                          view  = nullptr;
+    object_id_t                             playerBomberman = invalidId;
+    gui::GameScene*                         scene           = nullptr;
+    gui::GameView*                          view            = nullptr;
     QStringList                             errors;
 };
 

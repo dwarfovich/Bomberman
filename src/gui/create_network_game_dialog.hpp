@@ -2,8 +2,9 @@
 #define BM_GUI_CREATE_NETWORK_GAME_DIALOG_HPP
 
 #include "game_scene.hpp"
+#include "game_creation_dialog.hpp"
+#include "game/game_initialization_data.hpp"
 
-#include <QDialog>
 #include <QDir>
 #include <QStandardItemModel>
 
@@ -16,13 +17,15 @@ namespace Ui {
 class CreateNetworkGameDialog;
 }
 
-class CreateNetworkGameDialog : public QDialog
+class CreateNetworkGameDialog : public GameCreationDialog
 {
     Q_OBJECT
 
 public:
     explicit CreateNetworkGameDialog(QWidget *parent = nullptr);
     ~CreateNetworkGameDialog();
+
+    const GameInitializationData &initializationData() const override;
 
     Server *server() const;
 
@@ -59,6 +62,7 @@ private: // data
     Server *                     server_;
     std::shared_ptr<Map>         selectedMap_;
     GameScene                    scene_;
+    GameInitializationData       initializationData_;
 };
 
 } // namespace gui

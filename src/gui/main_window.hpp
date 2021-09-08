@@ -47,7 +47,7 @@ private: // data
     MainMenuWidget*       mainMenuWidget_ = nullptr;
     PlayerKeyControls     keyControls_;
     GameView*             gameView_ = nullptr;
-    std::unique_ptr<Game> game_;
+    std::shared_ptr<Game> game_;
 };
 
 } // namespace gui

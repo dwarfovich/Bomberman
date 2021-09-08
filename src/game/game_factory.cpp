@@ -36,9 +36,11 @@ GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map)
     Q_ASSERT(map);
 
     GameInitializationData data;
-    data.map  = map;
-    data.game = std::make_unique<ServerGame>();
-    data.bombermans.push_back(std::make_shared<Bomberman>());
+    data.map              = map;
+    data.game             = std::make_unique<ServerGame>();
+    const auto& bomberman = std::make_shared<Bomberman>();
+    data.bombermans.push_back(bomberman);
+    data.playerBomberman = bomberman->id();
 
     return data;
 }
@@ -72,6 +74,13 @@ std::unique_ptr<Game> createClientGame(Client* client)
     auto map2 = client->initializedMap();
     game->setMap(client->initializedMap());
     //    game->startPreparing();
+
+    return game;
+}
+
+std::unique_ptr<Game> createNetworkGame(Server* server)
+{
+    auto game = std::make_unique<NetworkGame>(server);
 
     return game;
 }
