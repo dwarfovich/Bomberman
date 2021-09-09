@@ -38,7 +38,7 @@ public:
     void                              setCellType(size_t index, CellStructure structure);
     void                              setCell(const Cell& cell);
     bool                              placeBomb(const std::shared_ptr<Bomb>& bomb);
-    bool                              removeBomb(size_t index);
+    const std::shared_ptr<Bomb>       removeBomb(size_t index);
     bool                              setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
     void                              addBomberman(const std::shared_ptr<Bomberman>& bomberman);
     void                              removeBomberman(const Bomberman& bomberman);
@@ -48,7 +48,7 @@ public:
     void                              moveCharacter(object_id_t id, const MoveData& moveData) const;
     void                              removeCharacter(object_id_t id);
     void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
-    void                              removeExplosion(const std::shared_ptr<Explosion>& explosion);
+    void                              removeExplosion(object_id_t id);
     const std::shared_ptr<Character>& character(object_id_t id) const;
 
     const Cell&                               cell(size_t index) const;
@@ -93,6 +93,7 @@ signals:
     void objectsCollided(const Map::Collisions& collisions);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void explosionRemoved(const std::shared_ptr<Explosion>& explosion);
 
 private: // methods
     void checkBombermanAndBotCollisions(Collisions& collisions);

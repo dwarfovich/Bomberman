@@ -29,6 +29,12 @@ void IMessageVisitor::visit(const CharacterMovedMessage &message)
 void IMessageVisitor::visit(const BombPlacedMessage &message)
 {}
 
+void IMessageVisitor::visit(const BombExplodedMessage &message)
+{}
+
+void IMessageVisitor::visit(const ExplosionFinishedMessage &message)
+{}
+
 void IMessageVisitor::visit(const CellChangedMessage &message)
 {}
 

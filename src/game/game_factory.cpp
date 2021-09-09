@@ -49,23 +49,25 @@ std::unique_ptr<Game> createNetworkGame(Server*                     server,
                                         const std::shared_ptr<Map>& map,
                                         const map_loader::MapData&  mapData)
 {
-    auto        game       = std::make_unique<NetworkGame>(server);
-    const auto& playersIds = server->playersIds();
+    //    auto        game       = std::make_unique<NetworkGame>(server);
+    //    const auto& playersIds = server->playersIds();
 
-    bool success = createBombermansForPlayers(playersIds, *map, *game);
-    if (!success) {
-        return nullptr;
-    }
+    //    bool success = createBombermansForPlayers(playersIds, *map, *game);
+    //    if (!success) {
+    //        return nullptr;
+    //    }
 
-    auto bots = mapData.bots;
-    for (const auto& bot : mapData.bots) {
-        mapData.map->addBot(bot);
-    }
+    //    auto bots = mapData.bots;
+    //    for (const auto& bot : mapData.bots) {
+    //        mapData.map->addBot(bot);
+    //    }
 
-    game->setMap(map);
-    // game->startPreparing();
+    //    game->setMap(map);
+    //    // game->startPreparing();
 
-    return game;
+    //    return game;
+
+    return nullptr;
 }
 
 std::unique_ptr<Game> createClientGame(Client* client)

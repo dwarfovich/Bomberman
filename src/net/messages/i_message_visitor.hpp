@@ -14,6 +14,8 @@ class StartGameMessage;
 class SetPlayerIdMessage;
 class CharacterMovedMessage;
 class BombPlacedMessage;
+class BombExplodedMessage;
+class ExplosionFinishedMessage;
 class CellChangedMessage;
 
 class IMessageVisitor
@@ -31,6 +33,8 @@ public:
     virtual void visit(const PlayerReadyMessage& message);
     virtual void visit(const CharacterMovedMessage& message);
     virtual void visit(const BombPlacedMessage& message);
+    virtual void visit(const BombExplodedMessage& message);
+    virtual void visit(const ExplosionFinishedMessage& message);
     virtual void visit(const CellChangedMessage& message);
 
     virtual void visit(const PrepareToStartGame& message);

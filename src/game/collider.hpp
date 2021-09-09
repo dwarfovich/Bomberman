@@ -44,7 +44,9 @@ public:
 
     void collide(Bomberman& lhs, GameObject& rhs) const { std::cout << "(Bomberman, GameObject\n"; }
 
-    void collide(Bot& explosion, Bomberman&) const { qDebug() << "Exploding bot\n"; }
+    void collide(Bot& explosion, Bomberman&) const
+    { /*qDebug() << "Exploding bot\n"; */
+    }
     ADD_INVERSE_COLLISION(Bot, Bomberman);
     void collide(Bot& explosion, GameObject&) const { qDebug() << "Exploding bot\n"; }
 

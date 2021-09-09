@@ -22,7 +22,6 @@ Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { thi
         emit logMessage("Disconnected from server");
     });
     connect(socket_, &Socket::messageReceived, this, &Client::onMessageReceived);
-    connect(socket_, &Socket::messageReceived, this, &Client::messageReceived);
     connect(socket_, &Socket::socketError, this, &Client::onSocketError);
 }
 
@@ -78,6 +77,7 @@ void Client::setName(const QString &newName)
 void Client::onMessageReceived(const std::unique_ptr<Message> &message)
 {
     message->accept(*this);
+    emit messageReceived(message);
 }
 
 void Client::onConnectedToServer()

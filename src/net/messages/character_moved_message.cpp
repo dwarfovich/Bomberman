@@ -41,10 +41,10 @@ void CharacterMovedMessage::fromStream(QDataStream &stream)
     stream >> data_;
 }
 
-std::pair<uint8_t, MoveData> CharacterMovedMessage::moveData() const
+std::pair<object_id_t, MoveData> CharacterMovedMessage::moveData() const
 {
-    std::pair<uint8_t, MoveData> moveData;
-    QDataStream                  stream { data_ };
+    std::pair<object_id_t, MoveData> moveData;
+    QDataStream                      stream { data_ };
     stream >> moveData.first >> moveData.second;
 
     return moveData;

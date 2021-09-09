@@ -64,14 +64,6 @@ void Server::incomingConnection(qintptr descriptor)
         return;
     }
 
-    auto newId = generateClientId();
-    if (newId == wrongClientId) {
-        emit logMessageRequest("Connection rejected: out of client's ids");
-        worker->deleteLater();
-        return;
-    }
-    worker->setClientId(newId);
-
     connect(worker, &ServerWorker::clientDisconnected, this, std::bind(&Server::onUserDisconnected, this, worker));
 
     connect(worker,
@@ -80,41 +72,19 @@ void Server::incomingConnection(qintptr descriptor)
             std::bind(&Server::onMessageReceived, this, worker, std::placeholders::_1));
 
     clients_.push_back(worker);
-    emit clientConnected(newId, "New player");
     emit logMessageRequest("New client connected");
-
-    SetPlayerIdMessage message { newId };
-    worker->sendMessage(message);
 }
 
 void Server::onMessageReceived(ServerWorker *client, const std::unique_ptr<Message> &message)
 {
     currentMessageClient_ = client;
     message->accept(*this);
-    // TODO: Check if emitting this signal is neccessary.
     emit messageReceived(message);
 }
 
+// TODO: Implement.
 void Server::onUserDisconnected(ServerWorker *client)
 {}
-
-uint8_t Server::generateClientId() const
-{
-    for (uint8_t i = serverId + 1; i < wrongClientId; ++i) {
-        bool idUsed = false;
-        for (const auto &client : clients_) {
-            if (client->clientId() == i) {
-                idUsed = true;
-                break;
-            }
-        }
-        if (!idUsed) {
-            return i;
-        }
-    }
-
-    return wrongClientId;
-}
 
 ServerWorker *Server::currentMessageClient() const
 {
@@ -123,10 +93,6 @@ ServerWorker *Server::currentMessageClient() const
 
 void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
 {
-    if (message.type() == MessageType::MapInitialization) {
-        emit logMessageRequest("Broadcasting MapInitialization message: " + QString::number(message.dataLength())
-                               + " bytes");
-    }
     for (auto *client : clients_) {
         if (client != excludeClient) {
             client->sendMessage(message);
@@ -134,25 +100,4 @@ void Server::broadcastMessage(const Message &message, ServerWorker *excludeClien
     }
 }
 
-const std::unordered_set<uint8_t> &Server::playersIds() const
-{
-    return playersReadyToStartGame_;
-}
-
-void Server::visit(const ClientJoiningGameMessage &message)
-{
-    //    playersReadyToStartGame_.insert(message.playerId());
-    //    if (playersReadyToStartGame_.size() == clients_.size() + 1) {
-    //        emit allClientsWaitingForGameData();
-    //    }
-}
-
-void Server::visit(const PlayerReadyMessage &message)
-{
-    // TODO: Refactor.
-    playersWithInitializedMap_.insert(playersWithInitializedMap_.size());
-    if (playersWithInitializedMap_.size() == playersReadyToStartGame_.size()) {
-        emit reallyReadyToStartGame();
-    }
-}
 } // namespace bm

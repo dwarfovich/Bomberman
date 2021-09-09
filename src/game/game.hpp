@@ -30,16 +30,16 @@ public:
     Game();
     virtual ~Game() = default;
 
-    virtual void                              movePlayer(object_id_t player, Direction) = 0;
-    virtual void                              stopPlayer(object_id_t player)            = 0;
-    virtual std::shared_ptr<Bomb>             placeBomb(object_id_t player)             = 0;
-    virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const     = 0;
+    virtual void                  movePlayer(object_id_t player, Direction) = 0;
+    virtual void                  stopPlayer(object_id_t player)            = 0;
+    virtual std::shared_ptr<Bomb> placeBomb(object_id_t player)             = 0;
+
     virtual object_id_t                       playerId() const;
+    virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const;
+    virtual void                              start();
 
-    virtual void start();
-
-    virtual void setMap(const std::shared_ptr<Map>& map);
-    virtual Map* map() const;
+    virtual void                        setMap(const std::shared_ptr<Map>& map);
+    virtual const std::shared_ptr<Map>& map() const;
 
     object_id_t getPlayerBomberman() const;
     void        setPlayerBomberman(object_id_t playerBomberman);

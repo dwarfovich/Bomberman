@@ -17,55 +17,26 @@ class ClientGame : public Game, public IMessageVisitor
 public:
     explicit ClientGame(Client* client);
 
-    void start() override;
-    //    void                  addPlayer(const std::shared_ptr<Bomberman>& player) override;
+    void                  setMap(const std::shared_ptr<Map>& map) override;
+    void                  start() override;
     void                  movePlayer(object_id_t player, Direction direction) override;
     void                  stopPlayer(object_id_t player) override;
     std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
 
+    void visit(const SetPlayerIdMessage& message) override;
+    void visit(const MapInitializationMessage& message) override;
+    void visit(const StartGameMessage& message) override;
+    void visit(const CharacterMovedMessage& message) override;
+    void visit(const BombPlacedMessage& message) override;
+    void visit(const CellChangedMessage& message) override;
+    void visit(const BombExplodedMessage& message) override;
+    void visit(const ExplosionFinishedMessage& message) override;
+
 private slots:
-    void onReadyToStart();
     void onMessageReceived(const std::unique_ptr<Message>& message);
 
 private:
     Client* client_;
-    QTimer  moveTimer_;
-
-    // Game interface
-public:
-    const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const StartGameMessage& message) override;
-
-    // Game interface
-public:
-    void setMap(const std::shared_ptr<Map>& map) override;
-
-    // Game interface
-public:
-    object_id_t playerId() const override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const CharacterMovedMessage& message) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const BombPlacedMessage& message) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const CellChangedMessage& message) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const MapInitializationMessage& message) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const SetPlayerIdMessage& message) override;
 };
 
 } // namespace bm

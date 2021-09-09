@@ -121,36 +121,43 @@ void Map::setCellType(size_t index, CellStructure structure)
 
 void Map::setCell(const Cell& cell)
 {
+    auto previousCell      = cells_[cell.index()];
     auto previousStructure = cells_[cell.index()]->structure();
-    *cells_[cell.index()]  = cell;
+    if (previousCell->modifier()) {
+        emit modifierRemoved(cell.index(), previousCell->modifier());
+    }
+    *cells_[cell.index()] = cell;
+    if (cell.modifier()) {
+        emit modifierAdded(cell.index(), cell.modifier());
+    }
     emit cellStructureChanged(cell.index(), previousStructure);
 }
 
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
 {
+    // TODO: Check if cell already has a bomb.
     if (isProperIndex(bomb->cellIndex)) {
         cells_[bomb->cellIndex]->setHasBomb(true);
         bombs_.push_back(bomb);
-        // emit cellChanged(bomb->cellIndex);
         return true;
     } else {
         return false;
     }
 }
 
-bool Map::removeBomb(size_t index)
+const std::shared_ptr<Bomb> Map::removeBomb(size_t index)
 {
     auto iter = std::find_if(bombs_.cbegin(), bombs_.cend(), [index](const auto& bomb) {
         return bomb->cellIndex == index;
     });
-    if (iter == bombs_.cend()) {
-        return false;
+    if (iter != bombs_.cend()) {
+        auto bomb = *iter;
+        bombs_.erase(iter);
+        cells_[index]->setHasBomb(false);
+        return bomb;
+    } else {
+        return nullptr;
     }
-    bombs_.erase(iter);
-    cells_[index]->setHasBomb(false);
-    // emit cellChanged(index);
-
-    return true;
 }
 
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
@@ -216,6 +223,7 @@ void Map::moveCharacter(object_id_t id, const MoveData& moveData) const
 {
     auto iter = idToCharacterMap_.find(id);
     if (iter != idToCharacterMap_.cend()) {
+        qDebug() << "Move: " << id << moveData.speed << moveData.coordinates;
         iter->second->setMovementData(moveData);
     }
 }
@@ -239,9 +247,21 @@ void Map::addExplosion(const std::shared_ptr<Explosion>& explosion)
     explosions_.push_back(explosion);
 }
 
-void Map::removeExplosion(const std::shared_ptr<Explosion>& explosion)
+void Map::removeExplosion(object_id_t id)
 {
-    explosions_.erase(std::remove(explosions_.begin(), explosions_.end(), explosion));
+    // TODO: Check all erase calls for proper form - you should use form with 2 arguments, where second argument is
+    // end() typically.
+    explosions_.erase(std::remove_if(explosions_.begin(),
+                                     explosions_.end(),
+                                     [this, id](std::shared_ptr<Explosion> explosion) {
+                                         if (explosion->id() == id) {
+                                             emit explosionRemoved(explosion);
+                                             return true;
+                                         } else {
+                                             return false;
+                                         }
+                                     }),
+                      explosions_.end());
 }
 
 const std::shared_ptr<Character>& Map::character(object_id_t id) const

@@ -9,6 +9,7 @@ enum class GameStatus : uint8_t
 {
     Waiting,
     Preparing,
+    PreparingFinished,
     Playing,
     GameOver
 };

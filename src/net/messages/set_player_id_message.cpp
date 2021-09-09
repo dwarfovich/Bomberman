@@ -23,7 +23,8 @@ void SetPlayerIdMessage::accept(IMessageVisitor &visitor)
 
 int SetPlayerIdMessage::dataLength() const
 {
-    return sizeof(playerId_);
+    // TODO: Check which size should actually be.
+    return 1;
 }
 
 void SetPlayerIdMessage::dataToStream(QDataStream &stream) const

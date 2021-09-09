@@ -258,12 +258,33 @@ void MainWindow::connectToServer()
     ClientGameDialog dialog;
     auto             answer = dialog.exec();
     if (answer == QDialog::Accepted) {
-        initializeClientGame(dialog);
-        mainMenuWidget_->hide();
-        setCentralWidget(gameView_);
-        gameView_->show();
-        game_->start();
+        auto initializationData = dialog.initializationData();
+
+        initializationData.scene = new GameScene(gameView_);
+        initializationData.view  = gameView_;
+        const auto& errors       = initializeGame(initializationData);
+
+        if (!errors.empty()) {
+            showInitializationGameErrorsMessage(errors);
+            return;
+        }
+
+        keyControls_.playerId = initializationData.playerBomberman;
+        game_                 = initializationData.game;
+        if (game_) {
+            mainMenuWidget_->hide();
+            setCentralWidget(gameView_);
+            gameView_->show();
+            game_->start();
+        }
     }
+    //    if (answer == QDialog::Accepted) {
+    //        initializeClientGame(dialog);
+    //        mainMenuWidget_->hide();
+    //        setCentralWidget(gameView_);
+    //        gameView_->show();
+    //        game_->start();
+    //    }
 }
 
 } // namespace gui

@@ -1,6 +1,8 @@
 #ifndef BM_CHARACTERMOVEDMESSAGE_HPP
 #define BM_CHARACTERMOVEDMESSAGE_HPP
 
+#include "game/game_object.hpp"
+
 #include "message.hpp"
 #include "game/move_data.hpp"
 
@@ -21,7 +23,7 @@ public:
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
 
-    std::pair<uint8_t, MoveData> moveData() const;
+    std::pair<object_id_t, MoveData> moveData() const;
 
 private:
     QByteArray data_;

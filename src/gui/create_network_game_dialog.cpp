@@ -29,7 +29,8 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
     connect(server_, &Server::clientConnected, this, &CreateNetworkGameDialog::onClientConnected);
     connect(server_, &Server::clientNameChanged, this, &CreateNetworkGameDialog::onClientNameChanged);
-    connect(server_, &Server::clientPreparingToStartGame, this, &CreateNetworkGameDialog::onClientsWaitingForGameData);
+    // connect(server_, &Server::clientPreparingToStartGame, this,
+    // &CreateNetworkGameDialog::onClientsWaitingForGameData);
 
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::sendMessage);
     connect(

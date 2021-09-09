@@ -6,6 +6,7 @@ namespace bm {
 
 QDataStream &operator<<(QDataStream &stream, const Explosion &explosion)
 {
+    stream << explosion.id_;
     stream << explosion.center_;
     stream << explosion.xMinMax_;
     stream << explosion.yMinMax_;
@@ -15,6 +16,7 @@ QDataStream &operator<<(QDataStream &stream, const Explosion &explosion)
 
 QDataStream &operator>>(QDataStream &stream, Explosion &explosion)
 {
+    stream >> explosion.id_;
     stream >> explosion.center_;
     stream >> explosion.xMinMax_;
     stream >> explosion.yMinMax_;

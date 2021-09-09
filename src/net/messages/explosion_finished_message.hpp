@@ -1,15 +1,15 @@
-#ifndef BM_MAPINITIALIZEDMESSAGE_HPP
-#define BM_MAPINITIALIZEDMESSAGE_HPP
+#ifndef BM_EXPLOSIONFINISHEDMESSAGE_HPP
+#define BM_EXPLOSIONFINISHEDMESSAGE_HPP
 
 #include "game/game_object.hpp"
 #include "message.hpp"
 
 namespace bm {
 
-class PlayerReadyMessage : public Message
+class ExplosionFinishedMessage : public Message
 {
 public:
-    PlayerReadyMessage(object_id_t playerId = invalidId);
+    ExplosionFinishedMessage(object_id_t id = invalidId);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
@@ -17,12 +17,12 @@ public:
     void        dataToStream(QDataStream &stream) const override;
     void        fromStream(QDataStream &stream) override;
 
-    object_id_t playerId() const;
+    object_id_t explosionId() const;
 
 private:
-    object_id_t playerId_;
+    object_id_t explosionId_;
 };
 
 } // namespace bm
 
-#endif // BM_MAPINITIALIZEDMESSAGE_HPP
+#endif // BM_EXPLOSIONFINISHEDMESSAGE_HPP

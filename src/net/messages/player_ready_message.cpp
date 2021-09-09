@@ -21,19 +21,24 @@ void PlayerReadyMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
-} // namespace bm
-
-int bm::PlayerReadyMessage::dataLength() const
+int PlayerReadyMessage::dataLength() const
 {
     return sizeof(playerId_);
 }
 
-void bm::PlayerReadyMessage::dataToStream(QDataStream &stream) const
+void PlayerReadyMessage::dataToStream(QDataStream &stream) const
 {
     stream << playerId_;
 }
 
-void bm::PlayerReadyMessage::fromStream(QDataStream &stream)
+void PlayerReadyMessage::fromStream(QDataStream &stream)
 {
     stream >> playerId_;
 }
+
+object_id_t PlayerReadyMessage::playerId() const
+{
+    return playerId_;
+}
+
+} // namespace bm

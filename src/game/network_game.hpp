@@ -33,6 +33,8 @@ public:
 
 protected:
     void prepareToStart() override;
+    void explodeBomb(const std::shared_ptr<Bomb>& bomb) override;
+    void onExplosionFinished(const std::shared_ptr<Explosion>& explosion) override;
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -42,6 +44,7 @@ private: // methods
     void makeConnections();
     void sendMapInitializationMessage();
     void startGame();
+    bool allPlayersReady();
 
 private: // data
     Server*                                 server_;

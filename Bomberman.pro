@@ -66,11 +66,13 @@ SOURCES += \
     src/gui/sprite_item_callbacks.cpp \
     src/main.cpp \
     src/net/client.cpp \
+    src/net/messages/bomb_exploded_message.cpp \
     src/net/messages/bomb_placed_message.cpp \
     src/net/messages/cell_changed_message.cpp \
     src/net/messages/character_moved_message.cpp \
     src/net/messages/client_joining_game_message.cpp \
     src/net/messages/client_name_message.cpp \
+    src/net/messages/explosion_finished_message.cpp \
     src/net/messages/i_message_visitor.cpp \
     src/net/messages/map_initialization_message.cpp \
     src/net/messages/message.cpp \
@@ -151,11 +153,13 @@ HEADERS += \
     src/gui/sprite_item.hpp \
     src/gui/sprite_item_callbacks.hpp \
     src/net/client.hpp \
+    src/net/messages/bomb_exploded_message.hpp \
     src/net/messages/bomb_placed_message.hpp \
     src/net/messages/cell_changed_message.hpp \
     src/net/messages/character_moved_message.hpp \
     src/net/messages/client_joining_game_message.hpp \
     src/net/messages/client_name_message.hpp \
+    src/net/messages/explosion_finished_message.hpp \
     src/net/messages/i_message_maker.hpp \
     src/net/messages/i_message_visitor.hpp \
     src/net/messages/map_initialization_message.hpp \

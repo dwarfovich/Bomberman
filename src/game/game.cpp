@@ -25,8 +25,14 @@ object_id_t Game::playerId() const
     return playerId_;
 }
 
+const std::shared_ptr<Bomberman>& Game::bomberman(object_id_t playerId) const
+{
+    return map_->bomberman(playerId);
+}
+
 void Game::start()
 {
+    setGameStatus(GameStatus::Playing);
     movementTimer_.start(game_ns::movementUpdatePeriod);
 }
 
@@ -51,14 +57,14 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
 }
 
-Map* Game::map() const
+const std::shared_ptr<Map>& Game::map() const
 {
-    return map_.get();
+    return map_;
 }
 
 void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 {
-    map_->removeExplosion(explosion);
+    map_->removeExplosion(explosion->id());
     emit explosionFinished(explosion);
 }
 
@@ -124,6 +130,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         bomberman->decreaseActiveBombs();
     }
 
+    // TODO: Remove one of this signals.
     emit bombExploded(bomb);
     emit explosionHappened(explosion);
 }
