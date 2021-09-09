@@ -2,8 +2,9 @@
 #include "ui_client_game_dialog.h"
 #include "game/map_loader.hpp"
 #include "net/client.hpp"
-#include "net/text_message.hpp"
-#include "net/client_ready_message.hpp"
+#include "net/messages/text_message.hpp"
+#include "net/messages/player_ready_message.hpp"
+#include "net/messages/client_joining_game_message.hpp"
 
 #include <QHostAddress>
 
@@ -41,7 +42,7 @@ Client *ClientGameDialog::client() const
 
 void ClientGameDialog::onReady()
 {
-    ClientReadyMessage message(client_->playerId());
+    ClientJoiningGameMessage message;
     client_->sendMessage(message);
 }
 

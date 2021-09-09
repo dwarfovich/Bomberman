@@ -49,9 +49,4 @@ const std::shared_ptr<Bomberman>& ServerGame::bomberman(object_id_t playerId) co
     return map_->bomberman(playerId);
 }
 
-object_id_t ServerGame::playerId() const
-{
-    return 0;
-}
-
 } // namespace bm

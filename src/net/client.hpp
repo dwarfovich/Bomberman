@@ -1,8 +1,8 @@
 #ifndef BM_CLIENT_HPP
 #define BM_CLIENT_HPP
 
-#include "message.hpp"
-#include "i_message_visitor.hpp"
+#include "messages/message.hpp"
+#include "messages/i_message_visitor.hpp"
 #include "game/game_object.hpp"
 
 #include <QObject>
@@ -57,7 +57,7 @@ public:
 
     // IMessageVisitor interface
 public:
-    void visit(const ClientIdMessage& message) override;
+    void visit(const SetPlayerIdMessage& message) override;
     void visit(const SelectMapRequestMessage& message) override;
 
     // IMessageVisitor interface

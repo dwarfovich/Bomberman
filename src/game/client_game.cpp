@@ -1,8 +1,10 @@
 #include "client_game.hpp"
 #include "net/client.hpp"
-#include "net/character_moved_message.hpp"
-#include "net/bomb_placed_message.hpp"
-#include "net/cell_changed_message.hpp"
+#include "net/messages/character_moved_message.hpp"
+#include "net/messages/bomb_placed_message.hpp"
+#include "net/messages/cell_changed_message.hpp"
+#include "net/messages/map_initialization_message.hpp"
+#include "net/messages/player_ready_message.hpp"
 
 namespace bm {
 
@@ -126,3 +128,19 @@ void ClientGame::visit(const CellChangedMessage &message)
 }
 
 } // namespace bm
+
+void bm::ClientGame::visit(const MapInitializationMessage &message)
+{
+    auto        map = std::make_shared<Map>();
+    QDataStream stream(message.data());
+    stream >> *map;
+    setMap(map);
+
+    PlayerReadyMessage readyMessage { playerId() };
+    client_->sendMessage(readyMessage);
+}
+
+void bm::ClientGame::visit(const SetPlayerIdMessage &message)
+{
+    playerId_ = message.playerId();
+}

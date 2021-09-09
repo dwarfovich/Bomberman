@@ -2,8 +2,9 @@
 #define BM_CLIENTGAME_HPP
 
 #include "game.hpp"
-#include "net/i_message_visitor.hpp"
-#include "net/message.hpp"
+#include "net/messages/i_message_visitor.hpp"
+#include "net/messages/message.hpp"
+#include "net/messages/set_player_id_message.hpp"
 
 namespace bm {
 class Socket;
@@ -57,6 +58,14 @@ public:
     // IMessageVisitor interface
 public:
     void visit(const CellChangedMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const MapInitializationMessage& message) override;
+
+    // IMessageVisitor interface
+public:
+    void visit(const SetPlayerIdMessage& message) override;
 };
 
 } // namespace bm

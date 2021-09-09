@@ -36,6 +36,7 @@ SOURCES += \
     src/game/game_over_conditions/game_over_condition.cpp \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
     src/game/game_result.cpp \
+    src/game/game_status.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
     src/game/modifier_deactivation_event.cpp \
@@ -64,26 +65,26 @@ SOURCES += \
     src/gui/sprite_item.cpp \
     src/gui/sprite_item_callbacks.cpp \
     src/main.cpp \
-    src/net/bomb_placed_message.cpp \
-    src/net/cell_changed_message.cpp \
-    src/net/character_moved_message.cpp \
     src/net/client.cpp \
-    src/net/client_id_message.cpp \
-    src/net/client_name_message.cpp \
-    src/net/client_ready_message.cpp \
-    src/net/i_message_visitor.cpp \
-    src/net/map_initialization_message.cpp \
-    src/net/map_initialized_message.cpp \
-    src/net/message.cpp \
-    src/net/message_factory.cpp \
-    src/net/notifying_message.cpp \
-    src/net/prepare_to_start_game_message.cpp \
-    src/net/select_map_request_message.cpp \
+    src/net/messages/bomb_placed_message.cpp \
+    src/net/messages/cell_changed_message.cpp \
+    src/net/messages/character_moved_message.cpp \
+    src/net/messages/client_joining_game_message.cpp \
+    src/net/messages/client_name_message.cpp \
+    src/net/messages/i_message_visitor.cpp \
+    src/net/messages/map_initialization_message.cpp \
+    src/net/messages/message.cpp \
+    src/net/messages/message_factory.cpp \
+    src/net/messages/notifying_message.cpp \
+    src/net/messages/player_ready_message.cpp \
+    src/net/messages/prepare_to_start_game_message.cpp \
+    src/net/messages/select_map_request_message.cpp \
+    src/net/messages/set_player_id_message.cpp \
+    src/net/messages/start_game_message.cpp \
+    src/net/messages/text_message.cpp \
     src/net/server.cpp \
     src/net/server_worker.cpp \
     src/net/socket.cpp \
-    src/net/start_game_message.cpp \
-    src/net/text_message.cpp \
     src/timer_queue.cpp \
     src/utils.cpp
 
@@ -117,6 +118,7 @@ HEADERS += \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
     src/game/game_parameters.hpp \
     src/game/game_result.hpp \
+    src/game/game_status.hpp \
     src/game/interval.hpp \
     src/game/map.hpp \
     src/game/map_constants.hpp \
@@ -148,29 +150,29 @@ HEADERS += \
     src/gui/sprite_factory.hpp \
     src/gui/sprite_item.hpp \
     src/gui/sprite_item_callbacks.hpp \
-    src/net/bomb_placed_message.hpp \
-    src/net/cell_changed_message.hpp \
-    src/net/character_moved_message.hpp \
     src/net/client.hpp \
-    src/net/client_id_message.hpp \
-    src/net/client_name_message.hpp \
-    src/net/client_ready_message.hpp \
-    src/net/i_message_maker.hpp \
-    src/net/i_message_visitor.hpp \
-    src/net/map_initialization_message.hpp \
-    src/net/map_initialized_message.hpp \
-    src/net/message.hpp \
-    src/net/message_factory.hpp \
-    src/net/message_maker.hpp \
-    src/net/message_type.hpp \
-    src/net/notifying_message.hpp \
-    src/net/prepare_to_start_game_message.hpp \
-    src/net/select_map_request_message.hpp \
+    src/net/messages/bomb_placed_message.hpp \
+    src/net/messages/cell_changed_message.hpp \
+    src/net/messages/character_moved_message.hpp \
+    src/net/messages/client_joining_game_message.hpp \
+    src/net/messages/client_name_message.hpp \
+    src/net/messages/i_message_maker.hpp \
+    src/net/messages/i_message_visitor.hpp \
+    src/net/messages/map_initialization_message.hpp \
+    src/net/messages/message.hpp \
+    src/net/messages/message_factory.hpp \
+    src/net/messages/message_maker.hpp \
+    src/net/messages/message_type.hpp \
+    src/net/messages/notifying_message.hpp \
+    src/net/messages/player_ready_message.hpp \
+    src/net/messages/prepare_to_start_game_message.hpp \
+    src/net/messages/select_map_request_message.hpp \
+    src/net/messages/set_player_id_message.hpp \
+    src/net/messages/start_game_message.hpp \
+    src/net/messages/text_message.hpp \
     src/net/server.hpp \
     src/net/server_worker.hpp \
     src/net/socket.hpp \
-    src/net/start_game_message.hpp \
-    src/net/text_message.hpp \
     src/time.hpp \
     src/timer_event.hpp \
     src/timer_queue.hpp \

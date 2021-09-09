@@ -6,10 +6,10 @@
 
 namespace bm {
 
-class ClientIdMessage : public Message
+class SetPlayerIdMessage : public Message
 {
 public:
-    explicit ClientIdMessage(object_id_t playerId = 0xFF);
+    explicit SetPlayerIdMessage(object_id_t playerId = 0xFF);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;

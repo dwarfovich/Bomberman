@@ -2,27 +2,18 @@
 #define BM_CLIENTREADYMESSAGE_HPP
 
 #include "message.hpp"
+#include "notifying_message.hpp"
 #include "message_type.hpp"
 
 #include <cinttypes>
 
 namespace bm {
 
-class ClientReadyMessage : public Message
+class ClientJoiningGameMessage : public NotifyingMessage
 {
 public:
-    ClientReadyMessage(uint8_t playerId = 0);
-
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
-    int         dataLength() const override;
-    void        dataToStream(QDataStream &stream) const override;
-    void        fromStream(QDataStream &stream) override;
-
-    uint8_t playerId() const;
-
-private:
-    uint8_t playerId_;
 };
 
 } // namespace bm

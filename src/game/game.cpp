@@ -20,10 +20,18 @@ Game::Game() : collider_ { this }
     });
 }
 
+object_id_t Game::playerId() const
+{
+    return playerId_;
+}
+
 void Game::start()
 {
     movementTimer_.start(game_ns::movementUpdatePeriod);
 }
+
+void Game::prepareToStart()
+{}
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
@@ -54,14 +62,25 @@ void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
     emit explosionFinished(explosion);
 }
 
+void Game::setGameStatus(GameStatus status)
+{
+    currentStatus_ = status;
+    emit gameStatusChanged(currentStatus_);
+}
+
+GameStatus Game::currentStatus() const
+{
+    return currentStatus_;
+}
+
 object_id_t Game::getPlayerBomberman() const
 {
-    return playerBomberman_;
+    return playerId_;
 }
 
 void Game::setPlayerBomberman(object_id_t playerBomberman)
 {
-    playerBomberman_ = playerBomberman;
+    playerId_ = playerBomberman;
 }
 
 void Game::onObjectsCollided(const Map::Collisions& collisions)

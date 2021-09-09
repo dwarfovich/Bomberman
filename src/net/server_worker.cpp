@@ -1,8 +1,8 @@
 #include "server_worker.hpp"
 #include "socket.hpp"
-#include "message_type.hpp"
-#include "message.hpp"
-#include "message_factory.hpp"
+#include "messages/message_type.hpp"
+#include "messages/message.hpp"
+#include "messages/message_factory.hpp"
 
 #include <QDataStream>
 

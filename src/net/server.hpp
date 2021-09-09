@@ -1,8 +1,9 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "message.hpp"
-#include "i_message_visitor.hpp"
+#include "game/game_object.hpp"
+#include "messages/message.hpp"
+#include "messages/i_message_visitor.hpp"
 
 #include <QTcpServer>
 
@@ -32,6 +33,7 @@ public:
     void                               startListen();
     void                               startListen(const QHostAddress& address, quint16 port);
     uint8_t                            clients() const;
+    void                               sendMessage(const Message& message, ServerWorker* excludeClient);
     void                               broadcastMessage(const Message& message, ServerWorker* excludeClient = nullptr);
     const std::unordered_set<uint8_t>& playersIds() const;
 
@@ -40,6 +42,7 @@ signals:
     void logMessageRequest(const QString& message);
     void clientConnected(uint8_t clientId, QString name);
     void clientNameChanged(uint8_t clientId, QString name);
+    void clientPreparingToStartGame(object_id_t playerId);
     // TODO: Rename signals.
     void allClientsWaitingForGameData();
     void reallyReadyToStartGame();
@@ -62,11 +65,11 @@ private: // data
 
     // IMessageVisitor interface
 public:
-    void visit(const ClientReadyMessage& message) override;
+    void visit(const ClientJoiningGameMessage& message) override;
 
     // IMessageVisitor interface
 public:
-    void          visit(const MapInitializedMessage& message) override;
+    void          visit(const PlayerReadyMessage& message) override;
     ServerWorker* currentMessageClient() const;
 };
 

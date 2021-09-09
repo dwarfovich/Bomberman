@@ -41,6 +41,7 @@ protected:
 private: // methods
     void initializeNetworkGame(const CreateNetworkGameDialog& dialog);
     void initializeClientGame(const ClientGameDialog& dialog);
+    void showInitializationGameErrorsMessage(const QStringList& errors);
 
 private: // data
     Ui::MainWindow*       ui_             = nullptr;

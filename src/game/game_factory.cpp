@@ -63,7 +63,7 @@ std::unique_ptr<Game> createNetworkGame(Server*                     server,
     }
 
     game->setMap(map);
-    game->startPreparing();
+    // game->startPreparing();
 
     return game;
 }

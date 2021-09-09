@@ -1,13 +1,13 @@
 #include "client.hpp"
 #include "socket.hpp"
-#include "text_message.hpp"
-#include "client_name_message.hpp"
-#include "message_factory.hpp"
-#include "text_message.hpp"
-#include "client_id_message.hpp"
-#include "select_map_request_message.hpp"
-#include "map_initialization_message.hpp"
-#include "map_initialized_message.hpp"
+#include "messages/text_message.hpp"
+#include "messages/client_name_message.hpp"
+#include "messages/message_factory.hpp"
+#include "messages/text_message.hpp"
+#include "messages/set_player_id_message.hpp"
+#include "messages/select_map_request_message.hpp"
+#include "messages/map_initialization_message.hpp"
+#include "messages/player_ready_message.hpp"
 #include "game/map.hpp"
 
 #include <QHostAddress>
@@ -96,7 +96,7 @@ void Client::visit(const PrepareToStartGame &message)
     emit readyForPreparingToGameStart();
 }
 
-void Client::visit(const ClientIdMessage &message)
+void Client::visit(const SetPlayerIdMessage &message)
 {
     playerId_ = message.playerId();
 }
@@ -108,13 +108,13 @@ void Client::visit(const SelectMapRequestMessage &message)
 
 void Client::visit(const MapInitializationMessage &message)
 {
-    initializedMap_ = std::make_shared<Map>();
-    QDataStream stream(message.data());
-    stream >> *initializedMap_;
+    //    initializedMap_ = std::make_shared<Map>();
+    //    QDataStream stream(message.data());
+    //    stream >> *initializedMap_;
 
-    MapInitializedMessage mapInitializedMessage;
-    emit                  readyToStartGame();
-    sendMessage(mapInitializedMessage);
+    //    PlayerReadyMessage readyMessage {gam};
+    //    emit                  readyToStartGame();
+    //    sendMessage(mapInitializedMessage);
 }
 
 } // namespace bm

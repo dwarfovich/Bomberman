@@ -4,6 +4,7 @@
 #include "game_scene.hpp"
 #include "game_creation_dialog.hpp"
 #include "game/game_initialization_data.hpp"
+#include "game/network_game.hpp"
 
 #include <QDir>
 #include <QStandardItemModel>
@@ -55,14 +56,15 @@ private: // data
         ClientId = Qt::UserRole + 1
     };
 
-    Ui::CreateNetworkGameDialog *ui_;
-    const QDir                   mapFolder = QDir::currentPath() + "/maps/";
-    QStandardItemModel           playersModel_;
-    QStandardItemModel           mapsComboBoxModel_;
-    Server *                     server_;
-    std::shared_ptr<Map>         selectedMap_;
-    GameScene                    scene_;
-    GameInitializationData       initializationData_;
+    Ui::CreateNetworkGameDialog *  ui_;
+    const QDir                     mapFolder = QDir::currentPath() + "/maps/";
+    QStandardItemModel             playersModel_;
+    QStandardItemModel             mapsComboBoxModel_;
+    Server *                       server_;
+    std::shared_ptr<Map>           selectedMap_;
+    GameScene                      scene_;
+    std::shared_ptr<NetworkGame>   game_; // = std::make_shared<NetworkGame>();
+    mutable GameInitializationData initializationData_;
 };
 
 } // namespace gui

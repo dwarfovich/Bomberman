@@ -1,5 +1,5 @@
 #include "socket.hpp"
-#include "message_factory.hpp"
+#include "messages/message_factory.hpp"
 
 #include <QTcpSocket>
 #include <QDataStream>

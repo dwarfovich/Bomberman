@@ -1,7 +1,7 @@
 #ifndef BM_SERVERWORKER_HPP
 #define BM_SERVERWORKER_HPP
 
-#include "message.hpp"
+#include "messages/message.hpp"
 
 #include <QObject>
 

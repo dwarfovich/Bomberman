@@ -3,8 +3,8 @@
 #include "game/game_factory.hpp"
 #include "game/map_loader.hpp"
 #include "net/server.hpp"
-#include "net/text_message.hpp"
-#include "net/select_map_request_message.hpp"
+#include "net/messages/text_message.hpp"
+#include "net/messages/select_map_request_message.hpp"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -17,7 +17,7 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
 {
     ui_->setupUi(this);
 
-    initializationData_.game = createNetworkGame(server_);
+    game_ = std::make_shared<NetworkGame>(server_);
 
     ui_->mapPreview->setScene(&scene_);
 
@@ -27,10 +27,9 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     addServerPlayerToModel();
 
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
-    connect(
-        server_, &Server::allClientsWaitingForGameData, this, &CreateNetworkGameDialog::onClientsWaitingForGameData);
     connect(server_, &Server::clientConnected, this, &CreateNetworkGameDialog::onClientConnected);
     connect(server_, &Server::clientNameChanged, this, &CreateNetworkGameDialog::onClientNameChanged);
+    connect(server_, &Server::clientPreparingToStartGame, this, &CreateNetworkGameDialog::onClientsWaitingForGameData);
 
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::sendMessage);
     connect(
@@ -38,8 +37,6 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     connect(ui_->startGameButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::accept);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::reject);
     connect(ui_->mapComboBox, &QComboBox::currentIndexChanged, this, &CreateNetworkGameDialog::onNewMapSelected);
-
-    // ui_->startGameButton->setDisabled(true);
 
     prepareMapList();
 
@@ -101,6 +98,9 @@ void CreateNetworkGameDialog::onClientNameChanged(uint8_t clientId, QString name
 void CreateNetworkGameDialog::onClientsWaitingForGameData()
 {
     logMessage("Ready to start game");
+    //    auto bomberman = std::make_shared<Bomberman>();
+    //    initializationData_.bombermans.push_back(bomberman);
+    // player
     // ui_->startGameButton->setEnabled(true);
 }
 
@@ -133,9 +133,9 @@ void CreateNetworkGameDialog::addServerPlayerToModel()
 {
     auto item = new QStandardItem { ui_->serverPlayerNameEdit->text() };
     playersModel_.appendRow(item);
-    auto bomberman = std::make_shared<Bomberman>();
-    initializationData_.bombermans.push_back(bomberman);
-    initializationData_.playerBomberman = bomberman->id();
+    //    auto bomberman = std::make_shared<Bomberman>();
+    //    initializationData_.bombermans.push_back(bomberman);
+    //    initializationData_.playerBomberman = bomberman->id();
 }
 
 void CreateNetworkGameDialog::prepareMapList()
@@ -168,6 +168,9 @@ void CreateNetworkGameDialog::prepareMapList()
 
 const GameInitializationData &CreateNetworkGameDialog::initializationData() const
 {
+    initializationData_.bombermans      = game_->playersBombermans();
+    initializationData_.game            = game_;
+    initializationData_.playerBomberman = game_->playerId();
     return initializationData_;
 }
 

@@ -1,10 +1,10 @@
 #include "server.hpp"
 #include "server_worker.hpp"
-#include "message.hpp"
-#include "text_message.hpp"
-#include "client_name_message.hpp"
-#include "client_id_message.hpp"
-#include "client_ready_message.hpp"
+#include "messages/message.hpp"
+#include "messages/text_message.hpp"
+#include "messages/client_name_message.hpp"
+#include "messages/set_player_id_message.hpp"
+#include "messages/player_ready_message.hpp"
 
 namespace bm {
 
@@ -50,6 +50,11 @@ uint8_t Server::clients() const
     return clients_.size();
 }
 
+void Server::sendMessage(const Message &message, ServerWorker *excludeClient)
+{
+    excludeClient->sendMessage(message);
+}
+
 void Server::incomingConnection(qintptr descriptor)
 {
     auto *worker = new ServerWorker(this);
@@ -78,7 +83,7 @@ void Server::incomingConnection(qintptr descriptor)
     emit clientConnected(newId, "New player");
     emit logMessageRequest("New client connected");
 
-    ClientIdMessage message { newId };
+    SetPlayerIdMessage message { newId };
     worker->sendMessage(message);
 }
 
@@ -134,15 +139,15 @@ const std::unordered_set<uint8_t> &Server::playersIds() const
     return playersReadyToStartGame_;
 }
 
-void Server::visit(const ClientReadyMessage &message)
+void Server::visit(const ClientJoiningGameMessage &message)
 {
-    playersReadyToStartGame_.insert(message.playerId());
-    if (playersReadyToStartGame_.size() == clients_.size() + 1) {
-        emit allClientsWaitingForGameData();
-    }
+    //    playersReadyToStartGame_.insert(message.playerId());
+    //    if (playersReadyToStartGame_.size() == clients_.size() + 1) {
+    //        emit allClientsWaitingForGameData();
+    //    }
 }
 
-void Server::visit(const MapInitializedMessage &message)
+void Server::visit(const PlayerReadyMessage &message)
 {
     // TODO: Refactor.
     playersWithInitializedMap_.insert(playersWithInitializedMap_.size());

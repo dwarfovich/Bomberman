@@ -5,6 +5,7 @@
 #include "timer_queue.hpp"
 #include "collider.hpp"
 #include "game_result.hpp"
+#include "game_status.hpp"
 
 #include <QTimer>
 
@@ -33,14 +34,17 @@ public:
     virtual void                              stopPlayer(object_id_t player)            = 0;
     virtual std::shared_ptr<Bomb>             placeBomb(object_id_t player)             = 0;
     virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const     = 0;
-    virtual object_id_t                       playerId() const                          = 0;
+    virtual object_id_t                       playerId() const;
 
     virtual void start();
+
     virtual void setMap(const std::shared_ptr<Map>& map);
     virtual Map* map() const;
 
     object_id_t getPlayerBomberman() const;
     void        setPlayerBomberman(object_id_t playerBomberman);
+
+    GameStatus currentStatus() const;
 
 signals:
     void gameOver(const bm::GameResult& result);
@@ -55,22 +59,27 @@ signals:
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void gameStatusChanged(bm::GameStatus newStatus);
 
 private slots:
     void onObjectsCollided(const Map::Collisions& collisions);
     void onCharacterIndexChanged(const std::shared_ptr<Character>& object, size_t index);
 
 protected: // methods
+    virtual void prepareToStart();
     virtual void addExplosionEvent(const std::shared_ptr<Bomb>& bomb);
     virtual void explodeBomb(const std::shared_ptr<Bomb>& bomb);
     virtual void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
 
+    void setGameStatus(GameStatus status);
+
 protected: // data
     std::shared_ptr<Map> map_;
-    object_id_t          playerBomberman_ = 0;
+    object_id_t          playerId_ = invalidId;
     Collider             collider_;
     TimerQueue           timerEventsQueue;
     QTimer               movementTimer_;
+    GameStatus           currentStatus_ = GameStatus::Waiting;
 };
 
 } // namespace bm

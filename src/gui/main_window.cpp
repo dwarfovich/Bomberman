@@ -190,6 +190,15 @@ void MainWindow::initializeClientGame(const ClientGameDialog& dialog)
     }
 }
 
+void MainWindow::showInitializationGameErrorsMessage(const QStringList& errors)
+{
+    QString message = "Cann't initialize game\n";
+    for (const auto& error : errors) {
+        message += error + '\n';
+    }
+    QMessageBox::critical(this, "Error!", message);
+}
+
 void MainWindow::startSinglePlayerGame()
 {
     const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
@@ -205,11 +214,7 @@ void MainWindow::startSinglePlayerGame()
     const auto& errors = initializeGame(gameData);
 
     if (!errors.empty()) {
-        QString message = "Cann't initialize game\n";
-        for (const auto& error : errors) {
-            message += error + '\n';
-        }
-        QMessageBox::critical(this, "Error!", message);
+        showInitializationGameErrorsMessage(errors);
         return;
     }
 
@@ -226,17 +231,14 @@ void MainWindow::startNetworkGame()
     CreateNetworkGameDialog dialog;
     auto                    answer = dialog.exec();
     if (answer == QDialog::Accepted) {
-        auto initializationData  = dialog.initializationData();
+        auto initializationData = dialog.initializationData();
+
         initializationData.scene = new GameScene(gameView_);
         initializationData.view  = gameView_;
         const auto& errors       = initializeGame(initializationData);
 
         if (!errors.empty()) {
-            QString message = "Cann't initialize game\n";
-            for (const auto& error : errors) {
-                message += error + '\n';
-            }
-            QMessageBox::critical(this, "Error!", message);
+            showInitializationGameErrorsMessage(errors);
             return;
         }
 

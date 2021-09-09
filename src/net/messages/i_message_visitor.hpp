@@ -5,13 +5,13 @@ namespace bm {
 class Message;
 class TextMessage;
 class ClientNameMessage;
-class ClientReadyMessage;
+class ClientJoiningGameMessage;
 class SelectMapRequestMessage;
 class MapInitializationMessage;
-class MapInitializedMessage;
+class PlayerReadyMessage;
 class PrepareToStartGame;
 class StartGameMessage;
-class ClientIdMessage;
+class SetPlayerIdMessage;
 class CharacterMovedMessage;
 class BombPlacedMessage;
 class CellChangedMessage;
@@ -24,18 +24,18 @@ public:
     virtual void visit(const Message& message);
     virtual void visit(const TextMessage& message);
     virtual void visit(const ClientNameMessage& message);
-    virtual void visit(const ClientReadyMessage& message);
+    virtual void visit(const ClientJoiningGameMessage& message);
     virtual void visit(const SelectMapRequestMessage& message);
 
     virtual void visit(const MapInitializationMessage& message);
-    virtual void visit(const MapInitializedMessage& message);
+    virtual void visit(const PlayerReadyMessage& message);
     virtual void visit(const CharacterMovedMessage& message);
     virtual void visit(const BombPlacedMessage& message);
     virtual void visit(const CellChangedMessage& message);
 
     virtual void visit(const PrepareToStartGame& message);
     virtual void visit(const StartGameMessage& message);
-    virtual void visit(const ClientIdMessage& message);
+    virtual void visit(const SetPlayerIdMessage& message);
 };
 
 } // namespace bm

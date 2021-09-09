@@ -8,8 +8,6 @@ namespace bm {
 class StartGameMessage : public NotifyingMessage
 {
 public:
-    // Message interface
-public:
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
 };
