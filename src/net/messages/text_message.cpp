@@ -5,11 +5,10 @@
 #include <QDataStream>
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::Text, TextMessage);
 
-TextMessage::TextMessage(const QString &text) : data_ { text.toUtf8() }
+TextMessage::TextMessage(const QString &text) : ByteArrayMessage<QString> { text }
 {}
 
 MessageType TextMessage::type() const
@@ -17,30 +16,9 @@ MessageType TextMessage::type() const
     return MessageType::Text;
 }
 
-int TextMessage::dataLength() const
-{
-    return data_.size();
-}
-
-QString TextMessage::toString() const
-{
-    return QString::fromUtf8(data_);
-}
-
-void TextMessage::dataToStream(QDataStream &stream) const
-{
-    stream << data_;
-}
-
-void TextMessage::fromStream(QDataStream &stream)
-{
-    stream >> data_;
-}
-
 void TextMessage::accept(IMessageVisitor &visitor)
 {
     visitor.visit(*this);
 }
 
-} // namespace message_ns
 } // namespace bm

@@ -1,30 +1,20 @@
 #ifndef BM_CLIENTIDMESSAGE_HPP
 #define BM_CLIENTIDMESSAGE_HPP
 
-#include "message.hpp"
+#include "byte_array_message.hpp"
 #include "game/game_object.hpp"
 
 namespace bm {
-namespace message_ns {
 
-class SetPlayerIdMessage : public Message
+class SetPlayerIdMessage : public ByteArrayMessage<object_id_t>
 {
 public:
     explicit SetPlayerIdMessage(object_id_t playerId = 0xFF);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
-    int         dataLength() const override;
-    void        dataToStream(QDataStream &stream) const override;
-    void        fromStream(QDataStream &stream) override;
-
-    object_id_t playerId() const;
-
-private:
-    object_id_t playerId_;
 };
 
-} // namespace message_ns
 } // namespace bm
 
 #endif // BM_CLIENTIDMESSAGE_HPP

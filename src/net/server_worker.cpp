@@ -45,7 +45,7 @@ void ServerWorker::setClientName(const QString &newClientName)
     clientName_ = newClientName;
 }
 
-void ServerWorker::sendMessage(const message_ns::Message &message)
+void ServerWorker::sendMessage(const Message &message)
 {
     socket_->sendMessage(message);
 }

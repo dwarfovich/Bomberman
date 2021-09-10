@@ -70,6 +70,7 @@ SOURCES += \
     src/net/client.cpp \
     src/net/messages/bomb_exploded_message.cpp \
     src/net/messages/bomb_placed_message.cpp \
+    src/net/messages/byte_array_message.cpp \
     src/net/messages/cell_changed_message.cpp \
     src/net/messages/character_moved_message.cpp \
     src/net/messages/client_joining_game_message.cpp \
@@ -159,6 +160,7 @@ HEADERS += \
     src/net/client.hpp \
     src/net/messages/bomb_exploded_message.hpp \
     src/net/messages/bomb_placed_message.hpp \
+    src/net/messages/byte_array_message.hpp \
     src/net/messages/cell_changed_message.hpp \
     src/net/messages/character_moved_message.hpp \
     src/net/messages/client_joining_game_message.hpp \

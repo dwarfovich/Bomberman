@@ -5,11 +5,10 @@
 #include <QDataStream>
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::MapInitialized, PlayerReadyMessage);
 
-PlayerReadyMessage::PlayerReadyMessage(object_id_t playerId) : playerId_ { playerId }
+PlayerReadyMessage::PlayerReadyMessage(object_id_t playerId) : ByteArrayMessage<object_id_t> { playerId }
 {}
 
 MessageType PlayerReadyMessage::type() const
@@ -22,25 +21,4 @@ void PlayerReadyMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
-int PlayerReadyMessage::dataLength() const
-{
-    return sizeof(playerId_);
-}
-
-void PlayerReadyMessage::dataToStream(QDataStream &stream) const
-{
-    stream << playerId_;
-}
-
-void PlayerReadyMessage::fromStream(QDataStream &stream)
-{
-    stream >> playerId_;
-}
-
-object_id_t PlayerReadyMessage::playerId() const
-{
-    return playerId_;
-}
-
-} // namespace message_ns
 } // namespace bm

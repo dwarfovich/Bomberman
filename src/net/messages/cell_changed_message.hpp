@@ -8,7 +8,6 @@
 namespace bm {
 class Cell;
 
-namespace message_ns {
 class CellChangedMessage : public Message
 {
 public:
@@ -27,7 +26,6 @@ private:
     QByteArray data_;
 };
 
-} // namespace message_ns
 } // namespace bm
 
 #endif // BM_CELLCHANGEDMESSAGE_HPP

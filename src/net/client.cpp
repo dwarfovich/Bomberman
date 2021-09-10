@@ -37,7 +37,7 @@ void Client::disconnect()
     socket_->disconnectFromHost();
 }
 
-void Client::sendMessage(const message_ns::Message &message)
+void Client::sendMessage(const Message &message)
 {
     socket_->sendMessage(message);
 }
@@ -50,7 +50,7 @@ void Client::onSocketError(QAbstractSocket::SocketError error)
 void Client::sendPlayerNameMessage()
 {
     if (socket_->isConnected()) {
-        message_ns::ClientNameMessage nameMessage { name_ };
+        ClientNameMessage nameMessage { name_ };
         sendMessage(nameMessage);
     }
 }
@@ -76,7 +76,7 @@ void Client::setName(const QString &newName)
     sendPlayerNameMessage();
 }
 
-void Client::onMessageReceived(const std::unique_ptr<message_ns::Message> &message)
+void Client::onMessageReceived(const std::unique_ptr<Message> &message)
 {
     message->accept(*this);
     emit messageReceived(message);
@@ -88,24 +88,24 @@ void Client::onConnectedToServer()
     sendPlayerNameMessage();
 }
 
-void Client::visit(const message_ns::TextMessage &message)
+void Client::visit(const TextMessage &message)
 {
-    emit logMessage(message.toString());
+    emit logMessage(message.payload());
 }
 
-void Client::visit(const message_ns::PrepareToStartGame &message)
+void Client::visit(const PrepareToStartGame &message)
 {
     emit readyForPreparingToGameStart();
 }
 
-void Client::visit(const message_ns::SetPlayerIdMessage &message)
+void Client::visit(const SetPlayerIdMessage &message)
 {
-    playerId_ = message.playerId();
+    playerId_ = message.payload();
 }
 
-void Client::visit(const message_ns::SelectMapRequestMessage &message)
+void Client::visit(const SelectMapRequestMessage &message)
 {
-    emit selectMapRequest(message.toString());
+    emit selectMapRequest(message.payload());
 }
 
 } // namespace bm

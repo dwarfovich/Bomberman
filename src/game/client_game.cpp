@@ -28,7 +28,7 @@ void ClientGame::movePlayer(object_id_t player, Direction direction)
     if (bomberman) {
         bomberman->setSpeed(bomberman_ns::defaultSpeed);
         bomberman->setDirection(direction);
-        message_ns::CharacterMovedMessage message(*bomberman);
+        CharacterMovedMessage message(*bomberman);
         client_->sendMessage(message);
     }
 }
@@ -38,7 +38,7 @@ void ClientGame::stopPlayer(object_id_t player)
     auto bomberman = map_->character(player);
     if (bomberman) {
         bomberman->setSpeed(0);
-        message_ns::CharacterMovedMessage message(*bomberman);
+        CharacterMovedMessage message(*bomberman);
         client_->sendMessage(message);
     }
 }
@@ -47,14 +47,9 @@ std::shared_ptr<Bomb> ClientGame::placeBomb(object_id_t player)
 {
     auto bomberman = map_->bomberman(player);
     if (bomberman && bomberman->canCreateBomb()) {
-        std::shared_ptr<Bomb> bomb  = bomberman->createBomb();
-        auto                  index = map_->coordinatesToIndex(bomberman->coordinates());
-        if (map_->isProperIndex(index)) {
-            bomb->cellIndex = index;
-            map_->placeBomb(bomb);
-        }
-
-        message_ns::BombPlacedMessage message { *bomb };
+        std::shared_ptr<Bomb> bomb = bomberman->createBomb();
+        bomb->cellIndex            = map_->coordinatesToIndex(bomberman->coordinates());
+        BombPlacedMessage message { *bomb };
         client_->sendMessage(message);
         return bomb;
     } else {
@@ -63,17 +58,17 @@ std::shared_ptr<Bomb> ClientGame::placeBomb(object_id_t player)
     }
 }
 
-void ClientGame::onMessageReceived(const std::unique_ptr<message_ns::Message> &message)
+void ClientGame::onMessageReceived(const std::unique_ptr<Message> &message)
 {
     message->accept(*this);
 }
 
-void ClientGame::visit(const message_ns::StartGameMessage &message)
+void ClientGame::visit(const StartGameMessage &message)
 {
     Game::start();
 }
 
-void ClientGame::visit(const message_ns::CharacterMovedMessage &message)
+void ClientGame::visit(const CharacterMovedMessage &message)
 {
     const auto &[characterId, moveData] = message.moveData();
     const auto &character               = map_->character(characterId);
@@ -88,31 +83,35 @@ void ClientGame::visit(const message_ns::CharacterMovedMessage &message)
     }
 }
 
-void ClientGame::visit(const message_ns::BombPlacedMessage &message)
+void ClientGame::visit(const BombPlacedMessage &message)
 {
     const auto &bomb = message.bomb();
     map_->placeBomb(bomb);
     emit bombPlaced(bomb);
 }
 
-void ClientGame::visit(const message_ns::CellChangedMessage &message)
+void ClientGame::visit(const CellChangedMessage &message)
 {
     const auto &cell = message.cell();
     map_->setCell(cell);
 }
 
-void ClientGame::visit(const message_ns::BombExplodedMessage &message)
+void ClientGame::visit(const BombExplodedMessage &message)
 {
     const auto &[bomb, explosion] = message.result();
     const auto &removedBomb       = map_->removeBomb(bomb->cellIndex);
     if (removedBomb) {
-        emit bombExploded(removedBomb);
+        emit        bombExploded(removedBomb);
+        const auto &owner = bomberman(removedBomb->ownerId);
+        if (owner) {
+            owner->decreaseActiveBombs();
+        }
     }
     map_->addExplosion(explosion);
     emit explosionHappened(explosion);
 }
 
-void ClientGame::visit(const message_ns::MapInitializationMessage &message)
+void ClientGame::visit(const MapInitializationMessage &message)
 {
     auto        map = std::make_shared<Map>();
     QDataStream stream(message.data());
@@ -120,19 +119,19 @@ void ClientGame::visit(const message_ns::MapInitializationMessage &message)
     setMap(map);
 
     setGameStatus(GameStatus::PreparingFinished);
-    message_ns::PlayerReadyMessage readyMessage { playerId() };
+    PlayerReadyMessage readyMessage { playerId() };
     client_->sendMessage(readyMessage);
 }
 
-void ClientGame::visit(const message_ns::SetPlayerIdMessage &message)
+void ClientGame::visit(const SetPlayerIdMessage &message)
 {
-    playerId_ = message.playerId();
+    playerId_ = message.payload();
     setGameStatus(GameStatus::Preparing);
 }
 
-void ClientGame::visit(const message_ns::ExplosionFinishedMessage &message)
+void ClientGame::visit(const ExplosionFinishedMessage &message)
 {
-    map_->removeExplosion(message.explosionId());
+    map_->removeExplosion(message.payload());
 }
 
 void ClientGame::setMap(const std::shared_ptr<Map> &map)

@@ -1,33 +1,23 @@
-#ifndef BM_CLIENTNAMEMESSAGE_HPP
-#define BM_CLIENTNAMEMESSAGE_HPP
+#ifndef BM_BYTEARRAYMESSAGE_HPP
+#define BM_BYTEARRAYMESSAGE_HPP
 
-#include "message.hpp"
+#include "byte_array_message.hpp"
 
 #include <QByteArray>
 #include <QString>
 
 namespace bm {
-namespace message_ns {
 
-class ClientNameMessage : public Message
+class ClientNameMessage : public ByteArrayMessage<QString>
 {
 public:
-    ClientNameMessage(const QString &name = {});
+    ClientNameMessage() = default;
+    ClientNameMessage(const QString &name);
 
     MessageType type() const override;
     void        accept(IMessageVisitor &visitor) override;
-    int         dataLength() const override;
-    void        dataToStream(QDataStream &stream) const override;
-    void        fromStream(QDataStream &stream) override;
-
-    void    setName(const QString &name);
-    QString toString() const;
-
-private:
-    QByteArray data_;
 };
 
-} // namespace message_ns
 } // namespace bm
 
-#endif // BM_CLIENTNAMEMESSAGE_HPP
+#endif // BM_BYTEARRAYMESSAGE_HPP

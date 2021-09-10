@@ -28,19 +28,19 @@ class Server : public QTcpServer, public IMessageVisitor
 public:
     explicit Server(QObject* parent = nullptr);
 
-    void visit(const message_ns::TextMessage& message) override;
-    void visit(const message_ns::ClientNameMessage& message) override;
+    void visit(const TextMessage& message) override;
+    void visit(const ClientNameMessage& message) override;
 
     void          setServerPort(quint16 port);
     void          startListen();
     void          startListen(const QHostAddress& address, quint16 port);
     uint8_t       clients() const;
-    void          sendMessage(const message_ns::Message& message, ServerWorker* excludeClient);
-    void          broadcastMessage(const message_ns::Message& message, ServerWorker* excludeClient = nullptr);
+    void          sendMessage(const Message& message, ServerWorker* excludeClient);
+    void          broadcastMessage(const Message& message, ServerWorker* excludeClient = nullptr);
     ServerWorker* currentMessageClient() const;
 
 signals:
-    void messageReceived(const std::unique_ptr<message_ns::Message>& message);
+    void messageReceived(const std::unique_ptr<Message>& message);
     void logMessageRequest(const QString& message);
     void clientConnected(uint8_t clientId, QString name);
     void clientNameChanged(uint8_t clientId, QString name);

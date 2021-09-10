@@ -27,12 +27,12 @@ public:
     bool           setSocketDescriptor(qintptr descriptor);
     const QString& clientName() const;
     void           setClientName(const QString& newClientName);
-    void           sendMessage(const message_ns::Message& message);
+    void           sendMessage(const Message& message);
 
     uint8_t clientId() const;
 
 signals:
-    void messageReceived(const std::unique_ptr<message_ns::Message>& message);
+    void messageReceived(const std::unique_ptr<Message>& message);
     void clientDisconnected();
 
 private: // methods

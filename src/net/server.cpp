@@ -11,16 +11,15 @@ namespace bm {
 Server::Server(QObject *parent) : QTcpServer { parent }
 {}
 
-void Server::visit(const message_ns::TextMessage &message)
+void Server::visit(const TextMessage &message)
 {
-    emit logMessageRequest(currentMessageClient_->clientName() + ": " + message.toString());
+    emit logMessageRequest(currentMessageClient_->clientName() + ": " + message.payload());
 }
 
-void Server::visit(const message_ns::ClientNameMessage &message)
+void Server::visit(const ClientNameMessage &message)
 {
-    const auto &name = message.toString();
-    currentMessageClient_->setClientName(message.toString());
-    auto e = currentMessageClient_->clientId();
+    const auto &name = message.payload();
+    currentMessageClient_->setClientName(name);
     emit clientNameChanged(currentMessageClient_->clientId(), name);
 }
 
@@ -51,7 +50,7 @@ uint8_t Server::clients() const
     return clients_.size();
 }
 
-void Server::sendMessage(const message_ns::Message &message, ServerWorker *excludeClient)
+void Server::sendMessage(const Message &message, ServerWorker *excludeClient)
 {
     excludeClient->sendMessage(message);
 }
@@ -100,7 +99,7 @@ ServerWorker *Server::currentMessageClient() const
     return currentMessageClient_;
 }
 
-void Server::broadcastMessage(const message_ns::Message &message, ServerWorker *excludeClient)
+void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
 {
     for (auto *client : clients_) {
         if (client != excludeClient) {

@@ -2,7 +2,6 @@
 #include "i_message_visitor.hpp"
 
 namespace bm {
-namespace message_ns {
 
 int NotifyingMessage::dataLength() const
 {
@@ -15,5 +14,4 @@ void NotifyingMessage::dataToStream(QDataStream &stream) const
 void NotifyingMessage::fromStream(QDataStream &stream)
 {}
 
-} // namespace message_ns
 } // namespace bm

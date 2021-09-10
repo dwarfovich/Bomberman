@@ -2,7 +2,6 @@
 #define BM_IMESSAGEVISITOR_HPP
 
 namespace bm {
-namespace message_ns {
 class Message;
 class TextMessage;
 class ClientNameMessage;
@@ -18,30 +17,27 @@ class BombPlacedMessage;
 class BombExplodedMessage;
 class ExplosionFinishedMessage;
 class CellChangedMessage;
-} // namespace message_ns
 
 class IMessageVisitor
 {
 public:
     virtual ~IMessageVisitor() = default;
 
-    virtual void visit(const message_ns::Message& message);
-    virtual void visit(const message_ns::TextMessage& message);
-    virtual void visit(const message_ns::ClientNameMessage& message);
-    virtual void visit(const message_ns::ClientJoiningGameMessage& message);
-    virtual void visit(const message_ns::SelectMapRequestMessage& message);
-
-    virtual void visit(const message_ns::MapInitializationMessage& message);
-    virtual void visit(const message_ns::PlayerReadyMessage& message);
-    virtual void visit(const message_ns::CharacterMovedMessage& message);
-    virtual void visit(const message_ns::BombPlacedMessage& message);
-    virtual void visit(const message_ns::BombExplodedMessage& message);
-    virtual void visit(const message_ns::ExplosionFinishedMessage& message);
-    virtual void visit(const message_ns::CellChangedMessage& message);
-
-    virtual void visit(const message_ns::PrepareToStartGame& message);
-    virtual void visit(const message_ns::StartGameMessage& message);
-    virtual void visit(const message_ns::SetPlayerIdMessage& message);
+    virtual void visit(const Message& message);
+    virtual void visit(const TextMessage& message);
+    virtual void visit(const ClientNameMessage& message);
+    virtual void visit(const ClientJoiningGameMessage& message);
+    virtual void visit(const SelectMapRequestMessage& message);
+    virtual void visit(const MapInitializationMessage& message);
+    virtual void visit(const PlayerReadyMessage& message);
+    virtual void visit(const CharacterMovedMessage& message);
+    virtual void visit(const BombPlacedMessage& message);
+    virtual void visit(const BombExplodedMessage& message);
+    virtual void visit(const ExplosionFinishedMessage& message);
+    virtual void visit(const CellChangedMessage& message);
+    virtual void visit(const PrepareToStartGame& message);
+    virtual void visit(const StartGameMessage& message);
+    virtual void visit(const SetPlayerIdMessage& message);
 };
 
 } // namespace bm

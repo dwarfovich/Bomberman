@@ -4,11 +4,10 @@
 #include "i_message_visitor.hpp"
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::ClientName, ClientNameMessage);
 
-ClientNameMessage::ClientNameMessage(const QString &name) : data_ { name.toUtf8() }
+ClientNameMessage::ClientNameMessage(const QString &name) : ByteArrayMessage<QString> { name }
 {}
 
 MessageType ClientNameMessage::type() const
@@ -21,30 +20,4 @@ void ClientNameMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
-int ClientNameMessage::dataLength() const
-{
-    return data_.size();
-}
-
-void ClientNameMessage::dataToStream(QDataStream &stream) const
-{
-    stream << data_;
-}
-
-void ClientNameMessage::fromStream(QDataStream &stream)
-{
-    stream >> data_;
-}
-
-void ClientNameMessage::setName(const QString &name)
-{
-    data_ = name.toUtf8();
-}
-
-QString ClientNameMessage::toString() const
-{
-    return QString::fromUtf8(data_);
-}
-
-} // namespace message_ns
 } // namespace bm

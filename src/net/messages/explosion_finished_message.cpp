@@ -5,11 +5,10 @@
 #include <QDataStream>
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::ExplosionFinished, ExplosionFinishedMessage);
 
-ExplosionFinishedMessage::ExplosionFinishedMessage(object_id_t id) : explosionId_ { id }
+ExplosionFinishedMessage::ExplosionFinishedMessage(object_id_t id) : ByteArrayMessage<object_id_t> { id }
 {}
 
 MessageType ExplosionFinishedMessage::type() const
@@ -22,25 +21,4 @@ void ExplosionFinishedMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
-int ExplosionFinishedMessage::dataLength() const
-{
-    return 1;
-}
-
-void ExplosionFinishedMessage::dataToStream(QDataStream &stream) const
-{
-    stream << explosionId_;
-}
-
-void ExplosionFinishedMessage::fromStream(QDataStream &stream)
-{
-    stream >> explosionId_;
-}
-
-object_id_t ExplosionFinishedMessage::explosionId() const
-{
-    return explosionId_;
-}
-
-} // namespace message_ns
 } // namespace bm

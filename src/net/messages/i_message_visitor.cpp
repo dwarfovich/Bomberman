@@ -2,49 +2,49 @@
 
 namespace bm {
 
-void IMessageVisitor::visit(const message_ns::Message &message)
+void IMessageVisitor::visit(const Message &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::TextMessage &message)
+void IMessageVisitor::visit(const TextMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::ClientNameMessage &message)
+void IMessageVisitor::visit(const ClientNameMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::ClientJoiningGameMessage &message)
+void IMessageVisitor::visit(const ClientJoiningGameMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::SelectMapRequestMessage &message)
+void IMessageVisitor::visit(const SelectMapRequestMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::MapInitializationMessage &message)
+void IMessageVisitor::visit(const MapInitializationMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::PlayerReadyMessage &message)
+void IMessageVisitor::visit(const PlayerReadyMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::CharacterMovedMessage &message)
+void IMessageVisitor::visit(const CharacterMovedMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::BombPlacedMessage &message)
+void IMessageVisitor::visit(const BombPlacedMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::BombExplodedMessage &message)
+void IMessageVisitor::visit(const BombExplodedMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::ExplosionFinishedMessage &message)
+void IMessageVisitor::visit(const ExplosionFinishedMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::CellChangedMessage &message)
+void IMessageVisitor::visit(const CellChangedMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::PrepareToStartGame &message)
+void IMessageVisitor::visit(const PrepareToStartGame &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::StartGameMessage &message)
+void IMessageVisitor::visit(const StartGameMessage &message)
 {}
 
-void IMessageVisitor::visit(const message_ns::SetPlayerIdMessage &message)
+void IMessageVisitor::visit(const SetPlayerIdMessage &message)
 {}
 
 } // namespace bm

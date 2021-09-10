@@ -3,11 +3,10 @@
 #include "message_maker.hpp"
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::SelectMapRequest, SelectMapRequestMessage);
 
-SelectMapRequestMessage::SelectMapRequestMessage(QString mapFileName) : data_ { mapFileName.toUtf8() }
+SelectMapRequestMessage::SelectMapRequestMessage(QString mapFileName) : ByteArrayMessage<QString> { mapFileName }
 {}
 
 MessageType SelectMapRequestMessage::type() const
@@ -20,25 +19,4 @@ void SelectMapRequestMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
-int SelectMapRequestMessage::dataLength() const
-{
-    return data_.size();
-}
-
-void SelectMapRequestMessage::dataToStream(QDataStream &stream) const
-{
-    stream << data_;
-}
-
-void SelectMapRequestMessage::fromStream(QDataStream &stream)
-{
-    stream >> data_;
-}
-
-QString SelectMapRequestMessage::toString() const
-{
-    return QString { data_ };
-}
-
-} // namespace message_ns
 } // namespace bm

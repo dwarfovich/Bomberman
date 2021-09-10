@@ -6,7 +6,6 @@
 #include <QDataStream>
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::CharacterMoved, CharacterMovedMessage);
 
@@ -51,5 +50,4 @@ std::pair<object_id_t, MoveData> CharacterMovedMessage::moveData() const
     return moveData;
 }
 
-} // namespace message_ns
 } // namespace bm

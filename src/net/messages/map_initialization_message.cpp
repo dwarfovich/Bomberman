@@ -6,7 +6,6 @@
 #include <QIODevice>
 
 namespace bm {
-namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::MapInitialization, MapInitializationMessage);
 
@@ -52,5 +51,4 @@ const QByteArray &MapInitializationMessage::data() const
     return data_;
 }
 
-} // namespace message_ns
 } // namespace bm

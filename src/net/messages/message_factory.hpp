@@ -20,8 +20,8 @@ public:
 
     static MessageFactory& get();
 
-    void                                 registerMaker(MessageType type, IMessageMaker* maker);
-    std::unique_ptr<message_ns::Message> createMessage(MessageType type) const;
+    void                     registerMaker(MessageType type, IMessageMaker* maker);
+    std::unique_ptr<Message> createMessage(MessageType type) const;
 
 private: // methods
     MessageFactory();

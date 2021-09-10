@@ -12,7 +12,6 @@ QT_END_NAMESPACE
 namespace bm {
 class IMessageVisitor;
 
-namespace message_ns {
 inline const qint64 messageHeaderSize = sizeof(MessageType) + sizeof(int /*length*/);
 
 class Message
@@ -31,8 +30,6 @@ public:
     virtual void        toStream(QDataStream& stream) const;
     virtual void        defaultHeaderToStream(QDataStream& stream) const;
 };
-
-} // namespace message_ns
 
 } // namespace bm
 

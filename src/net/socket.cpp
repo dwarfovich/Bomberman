@@ -34,7 +34,7 @@ void Socket::disconnectFromHost()
     socket_->disconnectFromHost();
 }
 
-void Socket::sendMessage(const message_ns::Message &message)
+void Socket::sendMessage(const Message &message)
 {
     QDataStream stream { socket_ };
     stream << message;
