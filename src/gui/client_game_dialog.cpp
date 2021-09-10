@@ -5,6 +5,7 @@
 #include "game/game_initialization_data.hpp"
 #include "net/client.hpp"
 #include "net/messages/text_message.hpp"
+#include "net/messages/client_name_message.hpp"
 #include "net/messages/player_ready_message.hpp"
 #include "net/messages/client_joining_game_message.hpp"
 
@@ -25,6 +26,7 @@ ClientGameDialog::ClientGameDialog(QWidget *parent)
     connect(game_.get(), &Game::gameStatusChanged, this, &ClientGameDialog::onGameStatusChanged);
 
     connect(client_, &Client::logMessage, this, &ClientGameDialog::onLogMessageRequest);
+    connect(client_, &Client::connectedToServer, this, &ClientGameDialog::onConnectedToServer);
     connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::accept);
     connect(client_, &Client::selectMapRequest, this, &ClientGameDialog::onSelectMapRequest);
 
@@ -63,6 +65,12 @@ void ClientGameDialog::connectToServer()
     client_->connectToServer(address, ui_->portSpinBox->value());
 }
 
+void ClientGameDialog::onConnectedToServer()
+{
+    ClientNameMessage message { ui_->playerNameEdit->text() };
+    client_->sendMessage(message);
+}
+
 void ClientGameDialog::sendMessage()
 {
     const auto &text = ui_->messageEdit->toPlainText();
@@ -91,9 +99,6 @@ void ClientGameDialog::onSelectMapRequest(QString mapFilename)
         onLogMessageRequest("Cann't load map preview for file " + mapFilePath);
     }
 }
-
-void ClientGameDialog::onReadyForPreparingToStartGame()
-{}
 
 void ClientGameDialog::onGameStatusChanged(GameStatus status)
 {

@@ -5,6 +5,7 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::ExplosionFinished, ExplosionFinishedMessage);
 
@@ -41,4 +42,5 @@ object_id_t ExplosionFinishedMessage::explosionId() const
     return explosionId_;
 }
 
+} // namespace message_ns
 } // namespace bm

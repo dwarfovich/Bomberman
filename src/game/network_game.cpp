@@ -47,10 +47,13 @@ void NetworkGame::setMap(const std::shared_ptr<Map> &map)
 {
     if (map_) {
         disconnect(map_.get(), &Map::cellStructureChanged, this, &NetworkGame::onMapCellChanged);
+        disconnect(map_.get(), &Map::modifierAdded, this, &NetworkGame::onMapCellChanged);
+        disconnect(map_.get(), &Map::modifierRemoved, this, &NetworkGame::onMapCellChanged);
     }
     ServerGame::setMap(map);
-    //    makeConnections();
-    connect(map.get(), &Map::cellStructureChanged, this, &NetworkGame::onMapCellChanged);
+    connect(map_.get(), &Map::cellStructureChanged, this, &NetworkGame::onMapCellChanged);
+    connect(map_.get(), &Map::modifierAdded, this, &NetworkGame::onMapCellChanged);
+    connect(map_.get(), &Map::modifierRemoved, this, &NetworkGame::onMapCellChanged);
 }
 
 void NetworkGame::onMessageReceived(const std::unique_ptr<Message> &message)
@@ -64,11 +67,6 @@ void NetworkGame::onMapCellChanged(size_t index)
     CellChangedMessage message { cell };
     server_->broadcastMessage(message);
 }
-
-// void NetworkGame::makeConnections()
-//{
-//    connectionsMade_ = true;
-//}
 
 void NetworkGame::sendMapInitializationMessage()
 {
@@ -117,28 +115,28 @@ std::shared_ptr<Bomb> NetworkGame::placeBomb(object_id_t player)
 {
     const auto &bomb = ServerGame::placeBomb(player);
     if (bomb) {
-        BombPlacedMessage message { *bomb };
+        message_ns::BombPlacedMessage message { *bomb };
         server_->broadcastMessage(message);
     }
 
     return bomb;
 }
 
-void NetworkGame::visit(const CharacterMovedMessage &message)
+void NetworkGame::visit(const message_ns::CharacterMovedMessage &message)
 {
     const auto &moveData = message.moveData();
     map_->moveCharacter(moveData.first, moveData.second);
     server_->broadcastMessage(message, server_->currentMessageClient());
 }
 
-void NetworkGame::visit(const BombPlacedMessage &message)
+void NetworkGame::visit(const message_ns::BombPlacedMessage &message)
 {
     const auto &bomb = message.bomb();
     map_->placeBomb(bomb);
     server_->broadcastMessage(message, server_->currentMessageClient());
 }
 
-void NetworkGame::visit(const ClientJoiningGameMessage &message)
+void NetworkGame::visit(const message_ns::ClientJoiningGameMessage &message)
 {
     if (currentStatus() == GameStatus::Waiting) {
         auto bomberman = std::make_shared<Bomberman>();
@@ -151,13 +149,11 @@ void NetworkGame::visit(const ClientJoiningGameMessage &message)
     }
 }
 
-void NetworkGame::visit(const PlayerReadyMessage &message)
+void NetworkGame::visit(const message_ns::PlayerReadyMessage &message)
 {
     playersReady_.insert(message.playerId());
     emit server_->logMessageRequest("Player ready: " + QString::number(message.playerId()));
-    qDebug() << "Player ready: " << message.playerId();
     if (allPlayersReady()) {
-        qDebug() << "Starting game";
         startGame();
     }
 }
@@ -179,14 +175,14 @@ void NetworkGame::explodeBomb(const std::shared_ptr<Bomb> &bomb)
     emit bombExploded(bomb);
     emit explosionHappened(explosion);
 
-    qDebug() << bomb->id() << explosion->id();
     BombExplodedMessage message { *bomb, *explosion };
     server_->broadcastMessage(message);
 }
 
 void NetworkGame::onExplosionFinished(const std::shared_ptr<Explosion> &explosion)
 {
-    Game::explosionFinished(explosion);
+    Game::onExplosionFinished(explosion);
+    emit                     explosionFinished(explosion);
     ExplosionFinishedMessage message { explosion->id() };
     server_->broadcastMessage(message);
 }

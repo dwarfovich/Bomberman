@@ -17,8 +17,10 @@ namespace bm {
 
 Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { this } }
 {
-    connect(socket_, &Socket::connected, this, &Client::onConnectedToServer);
+    connect(socket_, &Socket::connected, this, &Client::connectedToServer);
     connect(socket_, &Socket::disconnected, this, [this]() {
+        // TODO: Check the situation when server is out of ids and client's socket is still connected.
+        // In that case client cann't connect again even when new ids are available.
         emit logMessage("Disconnected from server");
     });
     connect(socket_, &Socket::messageReceived, this, &Client::onMessageReceived);
@@ -35,7 +37,7 @@ void Client::disconnect()
     socket_->disconnectFromHost();
 }
 
-void Client::sendMessage(const Message &message)
+void Client::sendMessage(const message_ns::Message &message)
 {
     socket_->sendMessage(message);
 }
@@ -48,7 +50,7 @@ void Client::onSocketError(QAbstractSocket::SocketError error)
 void Client::sendPlayerNameMessage()
 {
     if (socket_->isConnected()) {
-        ClientNameMessage nameMessage { name_ };
+        message_ns::ClientNameMessage nameMessage { name_ };
         sendMessage(nameMessage);
     }
 }
@@ -74,7 +76,7 @@ void Client::setName(const QString &newName)
     sendPlayerNameMessage();
 }
 
-void Client::onMessageReceived(const std::unique_ptr<Message> &message)
+void Client::onMessageReceived(const std::unique_ptr<message_ns::Message> &message)
 {
     message->accept(*this);
     emit messageReceived(message);
@@ -86,35 +88,24 @@ void Client::onConnectedToServer()
     sendPlayerNameMessage();
 }
 
-void Client::visit(const TextMessage &message)
+void Client::visit(const message_ns::TextMessage &message)
 {
     emit logMessage(message.toString());
 }
 
-void Client::visit(const PrepareToStartGame &message)
+void Client::visit(const message_ns::PrepareToStartGame &message)
 {
     emit readyForPreparingToGameStart();
 }
 
-void Client::visit(const SetPlayerIdMessage &message)
+void Client::visit(const message_ns::SetPlayerIdMessage &message)
 {
     playerId_ = message.playerId();
 }
 
-void Client::visit(const SelectMapRequestMessage &message)
+void Client::visit(const message_ns::SelectMapRequestMessage &message)
 {
     emit selectMapRequest(message.toString());
-}
-
-void Client::visit(const MapInitializationMessage &message)
-{
-    //    initializedMap_ = std::make_shared<Map>();
-    //    QDataStream stream(message.data());
-    //    stream >> *initializedMap_;
-
-    //    PlayerReadyMessage readyMessage {gam};
-    //    emit                  readyToStartGame();
-    //    sendMessage(mapInitializedMessage);
 }
 
 } // namespace bm

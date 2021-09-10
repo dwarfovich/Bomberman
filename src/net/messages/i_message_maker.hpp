@@ -4,14 +4,17 @@
 #include <memory>
 
 namespace bm {
+namespace message_ns {
+
 class Message;
+}
 
 class IMessageMaker
 {
 public:
     virtual ~IMessageMaker() = default;
 
-    virtual std::unique_ptr<Message> create() const = 0;
+    virtual std::unique_ptr<message_ns::Message> create() const = 0;
 };
 
 } // namespace bm

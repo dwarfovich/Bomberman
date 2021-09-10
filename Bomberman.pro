@@ -33,6 +33,7 @@ SOURCES += \
     src/game/game_initialization_data.cpp \
     src/game/game_initializer.cpp \
     src/game/game_object.cpp \
+    src/game/game_object_id.cpp \
     src/game/game_over_conditions/game_over_condition.cpp \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
     src/game/game_result.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
     src/gui/create_network_game_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
     src/gui/game_creation_dialog.cpp \
+    src/gui/game_gui_initializer.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_menu_widget.cpp \
@@ -115,6 +117,7 @@ HEADERS += \
     src/game/game_initialization_data.hpp \
     src/game/game_initializer.hpp \
     src/game/game_object.hpp \
+    src/game/game_object_id.hpp \
     src/game/game_over_conditions/game_over_condition.hpp \
     src/game/game_over_conditions/game_winner_type.hpp \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
@@ -142,6 +145,7 @@ HEADERS += \
     src/gui/create_network_game_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
     src/gui/game_creation_dialog.hpp \
+    src/gui/game_gui_initializer.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \

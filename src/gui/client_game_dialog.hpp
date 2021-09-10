@@ -34,11 +34,11 @@ private slots:
     void onReady();
     void onLogMessageRequest(const QString& message);
     void connectToServer();
+    void onConnectedToServer();
     void sendMessage();
     void changePlayerName();
     void onSelectMapRequest(QString mapFilename);
-    void onReadyForPreparingToStartGame();
-    void onGameStatusChanged(GameStatus status);
+    void onGameStatusChanged(bm::GameStatus status);
 
 private:
     ::Ui::ClientGameDialog*     ui_;

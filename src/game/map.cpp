@@ -130,7 +130,9 @@ void Map::setCell(const Cell& cell)
     if (cell.modifier()) {
         emit modifierAdded(cell.index(), cell.modifier());
     }
-    emit cellStructureChanged(cell.index(), previousStructure);
+    if (previousStructure != cell.structure()) {
+        emit cellStructureChanged(cell.index(), previousStructure);
+    }
 }
 
 bool Map::placeBomb(const std::shared_ptr<Bomb>& bomb)
@@ -163,10 +165,11 @@ const std::shared_ptr<Bomb> Map::removeBomb(size_t index)
 bool Map::setModifier(size_t index, const std::shared_ptr<IModifier>& modifier)
 {
     if (isProperIndex(index)) {
-        if (cells_[index]->modifier()) {
-            emit modifierRemoved(index, cells_[index]->modifier());
-        }
+        auto previousModifier = cells_[index]->modifier();
         cells_[index]->setModifier(modifier);
+        if (previousModifier) {
+            emit modifierRemoved(index, previousModifier);
+        }
         if (modifier) {
             emit modifierAdded(index, modifier);
         }
@@ -219,12 +222,12 @@ void Map::removeBot(const std::shared_ptr<Bot>& bot)
     }
 }
 
-void Map::moveCharacter(object_id_t id, const MoveData& moveData) const
+void Map::moveCharacter(object_id_t id, const MoveData& moveData)
 {
     auto iter = idToCharacterMap_.find(id);
     if (iter != idToCharacterMap_.cend()) {
-        qDebug() << "Move: " << id << moveData.speed << moveData.coordinates;
         iter->second->setMovementData(moveData);
+        emit characterMoved(iter->second);
     }
 }
 

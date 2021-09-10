@@ -8,6 +8,7 @@
 #include <QByteArray>
 
 namespace bm {
+namespace message_ns {
 
 class MapInitializationMessage : public Message
 {
@@ -27,6 +28,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_MAPINITIALIZATIONMESSAGE_HPP

@@ -75,7 +75,7 @@ protected: // methods
 
 protected: // data
     std::shared_ptr<Map> map_;
-    object_id_t          playerId_ = invalidId;
+    object_id_t          playerId_ = invalidObjectId;
     Collider             collider_;
     TimerQueue           timerEventsQueue;
     QTimer               movementTimer_;

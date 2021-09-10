@@ -11,15 +11,16 @@ namespace bm {
 Server::Server(QObject *parent) : QTcpServer { parent }
 {}
 
-void Server::visit(const TextMessage &message)
+void Server::visit(const message_ns::TextMessage &message)
 {
     emit logMessageRequest(currentMessageClient_->clientName() + ": " + message.toString());
 }
 
-void Server::visit(const ClientNameMessage &message)
+void Server::visit(const message_ns::ClientNameMessage &message)
 {
     const auto &name = message.toString();
     currentMessageClient_->setClientName(message.toString());
+    auto e = currentMessageClient_->clientId();
     emit clientNameChanged(currentMessageClient_->clientId(), name);
 }
 
@@ -50,28 +51,36 @@ uint8_t Server::clients() const
     return clients_.size();
 }
 
-void Server::sendMessage(const Message &message, ServerWorker *excludeClient)
+void Server::sendMessage(const message_ns::Message &message, ServerWorker *excludeClient)
 {
     excludeClient->sendMessage(message);
 }
 
 void Server::incomingConnection(qintptr descriptor)
 {
-    auto *worker = new ServerWorker(this);
-    if (!worker->setSocketDescriptor(descriptor)) {
-        emit logMessageRequest("Cannot set socket descriptor");
-        worker->deleteLater();
+    ServerWorker *client = new ServerWorker { this };
+    if (!client->isValid()) {
+        emit logMessageRequest("Cann't connect client: out of clients ids");
+        client->deleteLater();
         return;
     }
 
-    connect(worker, &ServerWorker::clientDisconnected, this, std::bind(&Server::onUserDisconnected, this, worker));
+    if (!client->setSocketDescriptor(descriptor)) {
+        emit logMessageRequest("Cannot set socket descriptor");
+        client->deleteLater();
+        return;
+    }
 
-    connect(worker,
+    connect(client, &ServerWorker::clientDisconnected, this, std::bind(&Server::onUserDisconnected, this, client));
+
+    connect(client,
             &ServerWorker::messageReceived,
             this,
-            std::bind(&Server::onMessageReceived, this, worker, std::placeholders::_1));
+            std::bind(&Server::onMessageReceived, this, client, std::placeholders::_1));
 
-    clients_.push_back(worker);
+    clients_.push_back(client);
+    currentMessageClient_ = client;
+    emit clientConnected(-1, client->clientName());
     emit logMessageRequest("New client connected");
 }
 
@@ -91,7 +100,7 @@ ServerWorker *Server::currentMessageClient() const
     return currentMessageClient_;
 }
 
-void Server::broadcastMessage(const Message &message, ServerWorker *excludeClient)
+void Server::broadcastMessage(const message_ns::Message &message, ServerWorker *excludeClient)
 {
     for (auto *client : clients_) {
         if (client != excludeClient) {

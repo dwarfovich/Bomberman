@@ -5,6 +5,7 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::Text, TextMessage);
 
@@ -41,4 +42,5 @@ void TextMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
+} // namespace message_ns
 } // namespace bm

@@ -3,6 +3,7 @@
 
 #include "game/game.hpp"
 #include "player_key_controls.hpp"
+#include "game/game_initialization_data.hpp"
 
 #include <QMainWindow>
 
@@ -39,16 +40,17 @@ protected:
     void keyReleaseEvent(QKeyEvent* event) override;
 
 private: // methods
-    void initializeNetworkGame(const CreateNetworkGameDialog& dialog);
-    void initializeClientGame(const ClientGameDialog& dialog);
     void showInitializationGameErrorsMessage(const QStringList& errors);
+    void createNewGameInitializationData();
+    void initializeGame(GameInitializationData& data);
+    void startGame(const GameInitializationData& data);
 
 private: // data
-    Ui::MainWindow*       ui_             = nullptr;
-    MainMenuWidget*       mainMenuWidget_ = nullptr;
-    PlayerKeyControls     keyControls_;
-    GameView*             gameView_ = nullptr;
-    std::shared_ptr<Game> game_;
+    Ui::MainWindow*        ui_             = nullptr;
+    MainMenuWidget*        mainMenuWidget_ = nullptr;
+    PlayerKeyControls      keyControls_;
+    GameView*              gameView_ = nullptr;
+    GameInitializationData gameData_;
 };
 
 } // namespace gui

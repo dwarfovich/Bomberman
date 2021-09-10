@@ -13,7 +13,10 @@ class QHostAddress;
 QT_END_NAMESPACE
 
 namespace bm {
+namespace message_ns {
 class Message;
+
+}
 
 class Socket : public QObject
 {
@@ -31,14 +34,14 @@ public:
     bool    setSocketDescriptor(qintptr descriptor);
     void    connectToHost(const QHostAddress& address, quint16 port);
     void    disconnectFromHost();
-    void    sendMessage(const Message& message);
+    void    sendMessage(const message_ns::Message& message);
     QString errorString();
 
 signals:
     void connected();
     void disconnected();
     void socketError(QAbstractSocket::SocketError error);
-    void messageReceived(const std::unique_ptr<Message>& message);
+    void messageReceived(const std::unique_ptr<message_ns::Message>& message);
 
 private slots:
     void onReadyRead();
@@ -54,10 +57,10 @@ private: // data
         Data
     };
 
-    QTcpSocket*              socket_;
-    MessageReadingStage      currentStage_       = MessageReadingStage::Header;
-    int                      currentMessageSize_ = 0;
-    std::unique_ptr<Message> currentMessage_     = nullptr;
+    QTcpSocket*                          socket_;
+    MessageReadingStage                  currentStage_       = MessageReadingStage::Header;
+    int                                  currentMessageSize_ = 0;
+    std::unique_ptr<message_ns::Message> currentMessage_     = nullptr;
 };
 
 } // namespace bm

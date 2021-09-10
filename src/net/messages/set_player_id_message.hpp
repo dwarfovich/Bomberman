@@ -5,6 +5,7 @@
 #include "game/game_object.hpp"
 
 namespace bm {
+namespace message_ns {
 
 class SetPlayerIdMessage : public Message
 {
@@ -23,6 +24,7 @@ private:
     object_id_t playerId_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_CLIENTIDMESSAGE_HPP

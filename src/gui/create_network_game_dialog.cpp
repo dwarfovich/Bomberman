@@ -29,8 +29,6 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
     connect(server_, &Server::clientConnected, this, &CreateNetworkGameDialog::onClientConnected);
     connect(server_, &Server::clientNameChanged, this, &CreateNetworkGameDialog::onClientNameChanged);
-    // connect(server_, &Server::clientPreparingToStartGame, this,
-    // &CreateNetworkGameDialog::onClientsWaitingForGameData);
 
     connect(ui_->sendMessageButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::sendMessage);
     connect(
@@ -82,7 +80,7 @@ void CreateNetworkGameDialog::onClientConnected(uint8_t clientId, QString name)
 
     const auto &            selectedMapFileName = ui_->mapComboBox->currentData(MapsComboBoxRoles::Filename).toString();
     SelectMapRequestMessage message { selectedMapFileName };
-    server_->broadcastMessage(message);
+    server_->sendMessage(message, server_->currentMessageClient());
 }
 
 void CreateNetworkGameDialog::onClientNameChanged(uint8_t clientId, QString name)
@@ -99,10 +97,6 @@ void CreateNetworkGameDialog::onClientNameChanged(uint8_t clientId, QString name
 void CreateNetworkGameDialog::onClientsWaitingForGameData()
 {
     logMessage("Ready to start game");
-    //    auto bomberman = std::make_shared<Bomberman>();
-    //    initializationData_.bombermans.push_back(bomberman);
-    // player
-    // ui_->startGameButton->setEnabled(true);
 }
 
 void CreateNetworkGameDialog::onNewMapSelected(int index)

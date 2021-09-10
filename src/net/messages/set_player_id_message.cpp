@@ -5,6 +5,7 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::SetPlayerId, SetPlayerIdMessage);
 
@@ -42,4 +43,5 @@ object_id_t SetPlayerIdMessage::playerId() const
     return playerId_;
 }
 
+} // namespace message_ns
 } // namespace bm

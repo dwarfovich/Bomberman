@@ -8,6 +8,7 @@
 namespace bm {
 class Bomb;
 
+namespace message_ns {
 class BombPlacedMessage : public Message
 {
 public:
@@ -26,6 +27,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_BOMBPLACEDMESSAGE_HPP

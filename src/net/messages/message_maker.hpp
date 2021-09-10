@@ -5,9 +5,9 @@
 #include "i_message_maker.hpp"
 #include "message_factory.hpp"
 
-#define REGISTER_MESSAGE_MAKER(messageType, T) \
-    namespace {                                \
-    static MessageMaker<T> maker(messageType); \
+#define REGISTER_MESSAGE_MAKER(messageType, T)             \
+    namespace {                                            \
+    static MessageMaker<message_ns::T> maker(messageType); \
     } // namespace
 
 namespace bm {
@@ -18,7 +18,7 @@ class MessageMaker : public IMessageMaker
 public:
     MessageMaker(MessageType type) { MessageFactory::get().registerMaker(type, this); }
 
-    std::unique_ptr<Message> create() const override { return std::make_unique<Type>(); }
+    std::unique_ptr<message_ns::Message> create() const override { return std::make_unique<Type>(); }
 };
 
 } // namespace bm

@@ -3,6 +3,7 @@
 #include "message_maker.hpp"
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::SelectMapRequest, SelectMapRequestMessage);
 
@@ -38,4 +39,6 @@ QString SelectMapRequestMessage::toString() const
 {
     return QString { data_ };
 }
+
+} // namespace message_ns
 } // namespace bm

@@ -18,7 +18,7 @@ void MessageFactory::registerMaker(MessageType type, IMessageMaker* maker)
     makers_[index] = maker;
 }
 
-std::unique_ptr<Message> MessageFactory::createMessage(MessageType type) const
+std::unique_ptr<message_ns::Message> MessageFactory::createMessage(MessageType type) const
 {
     const auto index = static_cast<size_t>(type);
     if (index < makers_.size()) {

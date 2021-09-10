@@ -3,6 +3,7 @@
 #include "message_maker.hpp"
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::StartGame, StartGameMessage);
 
@@ -16,4 +17,5 @@ void StartGameMessage::accept(IMessageVisitor &visitor)
     visitor.visit(*this);
 }
 
+} // namespace message_ns
 } // namespace bm

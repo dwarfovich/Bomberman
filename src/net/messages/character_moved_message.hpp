@@ -11,6 +11,7 @@
 namespace bm {
 class Character;
 
+namespace message_ns {
 class CharacterMovedMessage : public Message
 {
 public:
@@ -29,6 +30,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_CHARACTERMOVEDMESSAGE_HPP

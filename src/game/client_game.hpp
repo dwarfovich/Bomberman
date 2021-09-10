@@ -23,17 +23,17 @@ public:
     void                  stopPlayer(object_id_t player) override;
     std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
 
-    void visit(const SetPlayerIdMessage& message) override;
-    void visit(const MapInitializationMessage& message) override;
-    void visit(const StartGameMessage& message) override;
-    void visit(const CharacterMovedMessage& message) override;
-    void visit(const BombPlacedMessage& message) override;
-    void visit(const CellChangedMessage& message) override;
-    void visit(const BombExplodedMessage& message) override;
-    void visit(const ExplosionFinishedMessage& message) override;
+    void visit(const message_ns::SetPlayerIdMessage& message) override;
+    void visit(const message_ns::MapInitializationMessage& message) override;
+    void visit(const message_ns::StartGameMessage& message) override;
+    void visit(const message_ns::CharacterMovedMessage& message) override;
+    void visit(const message_ns::BombPlacedMessage& message) override;
+    void visit(const message_ns::CellChangedMessage& message) override;
+    void visit(const message_ns::BombExplodedMessage& message) override;
+    void visit(const message_ns::ExplosionFinishedMessage& message) override;
 
 private slots:
-    void onMessageReceived(const std::unique_ptr<Message>& message);
+    void onMessageReceived(const std::unique_ptr<message_ns::Message>& message);
 
 private:
     Client* client_;

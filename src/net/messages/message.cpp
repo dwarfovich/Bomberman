@@ -3,6 +3,8 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
+
 QDataStream& operator<<(QDataStream& stream, const Message& message)
 {
     message.toStream(stream);
@@ -29,4 +31,5 @@ void Message::defaultHeaderToStream(QDataStream& stream) const
     stream << dataLength();
 }
 
+} // namespace message_ns
 } // namespace bm

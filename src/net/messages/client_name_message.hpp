@@ -7,6 +7,7 @@
 #include <QString>
 
 namespace bm {
+namespace message_ns {
 
 class ClientNameMessage : public Message
 {
@@ -26,6 +27,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_CLIENTNAMEMESSAGE_HPP

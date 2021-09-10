@@ -24,10 +24,10 @@ public:
     void                  stopPlayer(object_id_t player) override;
     std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
 
-    void visit(const ClientJoiningGameMessage& message) override;
-    void visit(const PlayerReadyMessage& message) override;
-    void visit(const CharacterMovedMessage& message) override;
-    void visit(const BombPlacedMessage& message) override;
+    void visit(const message_ns::ClientJoiningGameMessage& message) override;
+    void visit(const message_ns::PlayerReadyMessage& message) override;
+    void visit(const message_ns::CharacterMovedMessage& message) override;
+    void visit(const message_ns::BombPlacedMessage& message) override;
 
     const std::vector<std::shared_ptr<Bomberman>>& playersBombermans() const;
 
@@ -37,7 +37,7 @@ protected:
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion) override;
 
 private slots:
-    void onMessageReceived(const std::unique_ptr<Message>& message);
+    void onMessageReceived(const std::unique_ptr<message_ns::Message>& message);
     void onMapCellChanged(size_t index);
 
 private: // methods

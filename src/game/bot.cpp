@@ -15,7 +15,8 @@ bool Bot::notifyIfMeetedWall() const
 
 void Bot::meetsWall()
 {
-    setDirection(ai_->chooseNextDirection());
+    // setDirection(ai_->chooseNextDirection());
+    ai_->updateActivity();
 }
 
 void Bot::setAi(std::unique_ptr<BotAi> ai)

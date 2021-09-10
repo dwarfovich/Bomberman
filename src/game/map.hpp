@@ -45,7 +45,7 @@ public:
     const std::shared_ptr<Bomberman>& bomberman(object_id_t id) const;
     void                              addBot(const std::shared_ptr<Bot>& bot);
     void                              removeBot(const std::shared_ptr<Bot>& bot);
-    void                              moveCharacter(object_id_t id, const MoveData& moveData) const;
+    void                              moveCharacter(object_id_t id, const MoveData& moveData);
     void                              removeCharacter(object_id_t id);
     void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
     void                              removeExplosion(object_id_t id);

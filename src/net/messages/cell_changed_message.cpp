@@ -6,6 +6,7 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::CellChanged, CellChangedMessage);
 
@@ -49,4 +50,5 @@ Cell CellChangedMessage::cell() const
     return cell;
 }
 
+} // namespace message_ns
 } // namespace bm

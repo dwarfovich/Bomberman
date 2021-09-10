@@ -7,6 +7,7 @@
 #include <QDataStream>
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::BombExploded, BombExplodedMessage);
 
@@ -54,4 +55,5 @@ std::pair<std::shared_ptr<Bomb>, std::shared_ptr<Explosion>> BombExplodedMessage
     return {};
 }
 
+} // namespace message_ns
 } // namespace bm

@@ -8,6 +8,7 @@
 #include <QByteArray>
 
 namespace bm {
+namespace message_ns {
 
 class TextMessage : public Message
 {
@@ -26,6 +27,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_TEXTMESSAGE_HPP

@@ -4,6 +4,7 @@
 #include "i_message_visitor.hpp"
 
 namespace bm {
+namespace message_ns {
 
 REGISTER_MESSAGE_MAKER(MessageType::ClientName, ClientNameMessage);
 
@@ -45,4 +46,5 @@ QString ClientNameMessage::toString() const
     return QString::fromUtf8(data_);
 }
 
+} // namespace message_ns
 } // namespace bm

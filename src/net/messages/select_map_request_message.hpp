@@ -7,6 +7,7 @@
 #include <QString>
 
 namespace bm {
+namespace message_ns {
 
 class SelectMapRequestMessage : public Message
 {
@@ -25,6 +26,7 @@ private:
     QByteArray data_;
 };
 
+} // namespace message_ns
 } // namespace bm
 
 #endif // BM_SELECTMAPREQUESTMESSAGE_HPP
