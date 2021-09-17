@@ -21,6 +21,7 @@ SOURCES += \
     src/game/bot.cpp \
     src/game/bot_ai.cpp \
     src/game/bot_factory.cpp \
+    src/game/campaign.cpp \
     src/game/cell.cpp \
     src/game/cell_location.cpp \
     src/game/character.cpp \
@@ -104,6 +105,7 @@ HEADERS += \
     src/game/bot_ai.hpp \
     src/game/bot_factory.hpp \
     src/game/bot_type.hpp \
+    src/game/campaign.hpp \
     src/game/cell.hpp \
     src/game/cell_location.hpp \
     src/game/cell_structure.hpp \
@@ -122,10 +124,8 @@ HEADERS += \
     src/game/game_over_conditions/game_over_condition.hpp \
     src/game/game_over_conditions/game_winner_type.hpp \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
-    src/game/game_parameters.hpp \
     src/game/game_result.hpp \
     src/game/game_status.hpp \
-    src/game/interval.hpp \
     src/game/map.hpp \
     src/game/map_constants.hpp \
     src/game/map_loader.hpp \

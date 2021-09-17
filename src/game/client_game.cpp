@@ -28,6 +28,8 @@ void ClientGame::movePlayer(object_id_t player, Direction direction)
     if (bomberman) {
         bomberman->setSpeed(bomberman_ns::defaultSpeed);
         bomberman->setDirection(direction);
+        emit characterStartedMoving(bomberman);
+
         CharacterMovedMessage message(*bomberman);
         client_->sendMessage(message);
     }
@@ -38,6 +40,8 @@ void ClientGame::stopPlayer(object_id_t player)
     auto bomberman = map_->character(player);
     if (bomberman) {
         bomberman->setSpeed(0);
+        emit characterStopped(bomberman);
+
         CharacterMovedMessage message(*bomberman);
         client_->sendMessage(message);
     }

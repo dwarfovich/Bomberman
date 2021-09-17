@@ -124,18 +124,20 @@ std::shared_ptr<Bomb> NetworkGame::placeBomb(object_id_t player)
 
 void NetworkGame::visit(const CharacterMovedMessage &message)
 {
-    const auto &moveData = message.moveData();
-    map_->moveCharacter(moveData.first, moveData.second);
+    const auto &[objectId, moveData] = message.moveData();
+    map_->moveCharacter(objectId, moveData);
     server_->broadcastMessage(message, server_->currentMessageClient());
+    const auto &character = map_->character(objectId);
+    if (moveData.speed == 0) {
+        emit characterStopped(character);
+    } else {
+        emit characterStartedMoving(character);
+    }
 }
 
 void NetworkGame::visit(const BombPlacedMessage &message)
 {
     placeBomb(message.bomb()->ownerId);
-    //    const auto &bomb = message.bomb();
-    //    map_->placeBomb(bomb);
-    //    emit bombPlaced(bomb);
-    //    server_->broadcastMessage(message);
 }
 
 void NetworkGame::visit(const ClientJoiningGameMessage &message)

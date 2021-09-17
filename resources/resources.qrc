@@ -7,5 +7,7 @@
         <file>gfx/cell.png</file>
         <file>gfx/explosion - Copy.png</file>
         <file>gfx/modifiers.png</file>
+        <file>gui/player_connected.png</file>
+        <file>gui/player_ready.png</file>
     </qresource>
 </RCC>

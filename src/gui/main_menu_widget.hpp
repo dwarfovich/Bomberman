@@ -24,7 +24,7 @@ signals:
     void connectToServerRequest();
 
 private:
-    Ui::MainMenuWidget *ui;
+    Ui::MainMenuWidget *ui_;
 };
 
 } // namespace gui

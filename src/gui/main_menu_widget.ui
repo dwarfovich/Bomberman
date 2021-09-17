@@ -45,23 +45,30 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="newSinglePlayerGameButton">
+        <widget class="QPushButton" name="startCampainButton">
          <property name="text">
-          <string>New single-player game</string>
+          <string>Campain</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="newNetworkGameButton">
+        <widget class="QPushButton" name="startFastGameButton">
          <property name="text">
-          <string>New network game</string>
+          <string>Fast game</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="connectToServerButton">
+        <widget class="QPushButton" name="startSkirmishButton">
          <property name="text">
-          <string>Connect to server</string>
+          <string>Skirmish</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="joinNetworkGameButton">
+         <property name="text">
+          <string>Join network game</string>
          </property>
         </widget>
        </item>

@@ -36,8 +36,9 @@ public slots:
 
 private slots:
     void onServerPlayerNameChanged(const QString &newName);
-    void onClientConnected(uint8_t clientId, QString name);
+    void onClientConnected(uint8_t clientId, const QString &name);
     void onClientNameChanged(uint8_t clientId, QString name);
+    void onClientJoinedGame(uint8_t clientId);
     void onClientsWaitingForGameData();
     void onNewMapSelected(int index);
     void sendMessage();
@@ -45,6 +46,7 @@ private slots:
 private: // methods
     void addServerPlayerToModel();
     void prepareMapList();
+    void addPlayerToModel(uint8_t clientId, const QString &name);
 
 private: // data
     enum MapsComboBoxRoles
@@ -63,8 +65,10 @@ private: // data
     Server *                       server_;
     std::shared_ptr<Map>           selectedMap_;
     GameScene                      scene_;
-    std::shared_ptr<NetworkGame>   game_; // = std::make_shared<NetworkGame>();
+    std::shared_ptr<NetworkGame>   game_;
     mutable GameInitializationData initializationData_;
+    QIcon                          playerConnectedIcon_ { ":/gui/player_connected.png" };
+    QIcon                          playerReadyIcon_ { ":/gui/player_ready.png" };
 };
 
 } // namespace gui

@@ -12,6 +12,7 @@
 
 namespace bm {
 class ServerWorker;
+
 namespace message_ns {
 class Message;
 class TextMessage;
@@ -30,6 +31,7 @@ public:
 
     void visit(const TextMessage& message) override;
     void visit(const ClientNameMessage& message) override;
+    void visit(const ClientJoiningGameMessage& message) override;
 
     void          setServerPort(quint16 port);
     void          startListen();
@@ -44,6 +46,7 @@ signals:
     void logMessageRequest(const QString& message);
     void clientConnected(uint8_t clientId, QString name);
     void clientNameChanged(uint8_t clientId, QString name);
+    void clientJoinedGame(uint8_t clientId);
 
 protected:
     void incomingConnection(qintptr descriptor) override;

@@ -5,6 +5,7 @@
 #include "messages/client_name_message.hpp"
 #include "messages/set_player_id_message.hpp"
 #include "messages/player_ready_message.hpp"
+#include "messages/client_joining_game_message.hpp"
 
 namespace bm {
 
@@ -79,7 +80,7 @@ void Server::incomingConnection(qintptr descriptor)
 
     clients_.push_back(client);
     currentMessageClient_ = client;
-    emit clientConnected(-1, client->clientName());
+    emit clientConnected(client->clientId(), client->clientName());
     emit logMessageRequest("New client connected");
 }
 
@@ -106,6 +107,11 @@ void Server::broadcastMessage(const Message &message, ServerWorker *excludeClien
             client->sendMessage(message);
         }
     }
+}
+
+void Server::visit(const ClientJoiningGameMessage &message)
+{
+    emit clientJoinedGame(currentMessageClient_->clientId());
 }
 
 } // namespace bm
