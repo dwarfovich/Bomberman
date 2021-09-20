@@ -8,6 +8,7 @@
 #include "bomb.hpp"
 #include "explosion.hpp"
 #include "respawn_type.hpp"
+#include "map_constants.hpp"
 
 #include <QObject>
 #include <QPoint>
@@ -85,6 +86,9 @@ public:
     const QString& name() const;
     void           setName(const QString& newName);
 
+    size_t getExitCell() const;
+    void   setExitCell(size_t newExitCell);
+
 signals:
     void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& character);
@@ -134,6 +138,7 @@ private: // data
     uint32_t                           randomSeed_    = 0;
     size_t                             widthInCells_  = 0;
     size_t                             heightInCells_ = 0;
+    size_t                             exitCell       = invalidMapIndex;
     std::vector<std::shared_ptr<Cell>> cells_;
     using IdCharactersMap = std::unordered_map<object_id_t, std::shared_ptr<Character>>;
     IdCharactersMap                                idToCharacterMap_;

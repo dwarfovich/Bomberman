@@ -49,11 +49,13 @@ SOURCES += \
     src/game/modifiers/permanent_modifier.cpp \
     src/game/move_data.cpp \
     src/game/network_game.cpp \
+    src/game/player.cpp \
     src/game/server_game.cpp \
     src/gui/cell_sprite_item.cpp \
     src/gui/character_sprite_item.cpp \
     src/gui/client_game_dialog.cpp \
     src/gui/create_network_game_dialog.cpp \
+    src/gui/create_player_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
     src/gui/game_creation_dialog.cpp \
     src/gui/game_gui_initializer.cpp \
@@ -138,12 +140,14 @@ HEADERS += \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
     src/game/network_game.hpp \
+    src/game/player.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
     src/gui/cell_sprite_item.hpp \
     src/gui/character_sprite_item.hpp \
     src/gui/client_game_dialog.hpp \
     src/gui/create_network_game_dialog.hpp \
+    src/gui/create_player_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
     src/gui/game_creation_dialog.hpp \
     src/gui/game_gui_initializer.hpp \
@@ -191,6 +195,7 @@ HEADERS += \
 FORMS += \
     src/gui/client_game_dialog.ui \
     src/gui/create_network_game_dialog.ui \
+    src/gui/create_player_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \
     src/gui/map_widget.ui

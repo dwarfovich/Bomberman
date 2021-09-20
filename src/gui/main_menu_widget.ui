@@ -45,6 +45,9 @@
         </spacer>
        </item>
        <item>
+        <widget class="QComboBox" name="playerNameComboBox"/>
+       </item>
+       <item>
         <widget class="QPushButton" name="startCampainButton">
          <property name="text">
           <string>Campain</string>

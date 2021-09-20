@@ -674,6 +674,16 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     }
 }
 
+size_t Map::getExitCell() const
+{
+    return exitCell;
+}
+
+void Map::setExitCell(size_t newExitCell)
+{
+    exitCell = newExitCell;
+}
+
 const QString& Map::name() const
 {
     return name_;

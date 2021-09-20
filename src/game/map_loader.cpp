@@ -84,7 +84,6 @@ std::unique_ptr<Map> createTestMap()
 
 MapData loadFromFile(const QString& filePath)
 {
-    // qDebug() << filePath;
     QFile file { filePath };
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Cann't open map file:" << filePath;
@@ -117,6 +116,11 @@ MapData loadFromFile(const QString& filePath)
 
         for (qsizetype i = 0; i < mapJsonArray.size(); ++i) {
             map->setCellType(static_cast<size_t>(i), jsonValueToCellStructure(mapJsonArray[i].toInt()));
+        }
+
+        const auto& exitCellValue = jsonObject.value("exit");
+        if (!exitCellValue.isUndefined()) {
+            map->setExitCell(jsonObject["exit"].toInt());
         }
 
         MapData mapData;
