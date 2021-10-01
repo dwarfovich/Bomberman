@@ -39,6 +39,7 @@ SOURCES += \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
     src/game/game_result.cpp \
     src/game/game_status.cpp \
+    src/game/game_utils.cpp \
     src/game/map.cpp \
     src/game/map_loader.cpp \
     src/game/modifier_deactivation_event.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
     src/game/network_game.cpp \
     src/game/player.cpp \
     src/game/server_game.cpp \
+    src/gui/campaign_game_dialog.cpp \
     src/gui/cell_sprite_item.cpp \
     src/gui/character_sprite_item.cpp \
     src/gui/client_game_dialog.cpp \
@@ -58,7 +60,9 @@ SOURCES += \
     src/gui/create_player_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
     src/gui/game_creation_dialog.cpp \
+    src/gui/game_dialogs.cpp \
     src/gui/game_gui_initializer.cpp \
+    src/gui/game_over_dialog.cpp \
     src/gui/game_scene.cpp \
     src/gui/game_view.cpp \
     src/gui/main_menu_widget.cpp \
@@ -128,6 +132,7 @@ HEADERS += \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
     src/game/game_result.hpp \
     src/game/game_status.hpp \
+    src/game/game_utils.hpp \
     src/game/map.hpp \
     src/game/map_constants.hpp \
     src/game/map_loader.hpp \
@@ -143,6 +148,7 @@ HEADERS += \
     src/game/player.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
+    src/gui/campaign_game_dialog.hpp \
     src/gui/cell_sprite_item.hpp \
     src/gui/character_sprite_item.hpp \
     src/gui/client_game_dialog.hpp \
@@ -150,7 +156,9 @@ HEADERS += \
     src/gui/create_player_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
     src/gui/game_creation_dialog.hpp \
+    src/gui/game_dialogs.hpp \
     src/gui/game_gui_initializer.hpp \
+    src/gui/game_over_dialog.hpp \
     src/gui/game_scene.hpp \
     src/gui/game_view.hpp \
     src/gui/main_menu_widget.hpp \
@@ -193,9 +201,11 @@ HEADERS += \
     src/utils.hpp
 
 FORMS += \
+    src/gui/campaign_game_dialog.ui \
     src/gui/client_game_dialog.ui \
     src/gui/create_network_game_dialog.ui \
     src/gui/create_player_dialog.ui \
+    src/gui/game_over_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \
     src/gui/map_widget.ui

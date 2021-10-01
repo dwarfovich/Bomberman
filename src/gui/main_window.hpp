@@ -31,6 +31,7 @@ public:
     ~MainWindow();
 
 public slots:
+    void startCampaignGame();
     void startSinglePlayerGame();
     void startNetworkGame();
     void connectToServer();

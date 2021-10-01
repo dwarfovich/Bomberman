@@ -1,10 +1,13 @@
 #include "player.hpp"
 
+#include <QDataStream>
+
 namespace bm {
 
 QDataStream& operator<<(QDataStream& stream, const Player& player)
 {
     stream << player.name_;
+    stream << player.campaignLevel_;
 
     return stream;
 }
@@ -12,6 +15,7 @@ QDataStream& operator<<(QDataStream& stream, const Player& player)
 QDataStream& operator>>(QDataStream& stream, Player& player)
 {
     stream >> player.name_;
+    stream >> player.campaignLevel_;
 
     return stream;
 }
@@ -37,6 +41,16 @@ const QString& Player::name() const
 void Player::setName(const QString& newName)
 {
     name_ = newName;
+}
+
+size_t Player::campaignLevel() const
+{
+    return campaignLevel_;
+}
+
+void Player::setCampaignLevel(size_t newCampaignLevel)
+{
+    campaignLevel_ = newCampaignLevel;
 }
 
 } // namespace bm

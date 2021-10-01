@@ -13,6 +13,7 @@ class GameCreationDialog : public QDialog
 public:
     explicit GameCreationDialog(QWidget* parent = nullptr);
 
+    // TODO: may be just return GameInitializationData by value?
     virtual const GameInitializationData& initializationData() const = 0;
 };
 

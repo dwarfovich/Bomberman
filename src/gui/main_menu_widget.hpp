@@ -13,6 +13,8 @@ class MainMenuWidget;
 }
 
 namespace bm {
+class Player;
+
 namespace gui {
 
 class MainMenuWidget : public QWidget
@@ -23,7 +25,11 @@ public:
     explicit MainMenuWidget(QWidget *parent = nullptr);
     ~MainMenuWidget();
 
+public:
+    const std::shared_ptr<Player> selectedPlayer() const;
+
 signals:
+    void campaignGameRequest();
     void newSinglePlayerGameRequest();
     void newNetworkGameRequest();
     void connectToServerRequest();
@@ -32,10 +38,9 @@ private slots:
     void onPlayerNamesComboIndexChanged(int index);
 
 private:
-    void    loadPlayers();
-    bool    createNewPlayer();
-    QString generateFilenameForPlayer(const QString &name) const;
-    void    updatePlayerNamesComboBox();
+    void loadPlayers();
+    bool createNewPlayer();
+    void updatePlayerNamesComboBox();
 
 private:
     Ui::MainMenuWidget *                 ui_;

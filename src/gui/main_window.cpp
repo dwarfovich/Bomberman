@@ -5,6 +5,7 @@
 #include "game/game_factory.hpp"
 #include "game_view.hpp"
 #include "main_menu_widget.hpp"
+#include "campaign_game_dialog.hpp"
 #include "create_network_game_dialog.hpp"
 #include "client_game_dialog.hpp"
 #include "game_gui_initializer.hpp"
@@ -33,6 +34,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     setCentralWidget(mainMenuWidget_);
 
+    connect(mainMenuWidget_, &MainMenuWidget::campaignGameRequest, this, &MainWindow::startCampaignGame);
     connect(mainMenuWidget_, &MainMenuWidget::newSinglePlayerGameRequest, this, &MainWindow::startSinglePlayerGame);
     connect(mainMenuWidget_, &MainMenuWidget::newNetworkGameRequest, this, &MainWindow::startNetworkGame);
     connect(mainMenuWidget_, &MainMenuWidget::connectToServerRequest, this, &MainWindow::connectToServer);
@@ -41,6 +43,17 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     delete ui_;
+}
+
+void MainWindow::startCampaignGame()
+{
+    const auto& player = mainMenuWidget_->selectedPlayer();
+    if (player) {
+        CampaignGameDialog dialog { player };
+        dialog.exec();
+    } else {
+        QMessageBox::information(this, "Cann't play campaign", "Please select correct player to play campaign");
+    }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event)

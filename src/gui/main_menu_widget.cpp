@@ -1,6 +1,7 @@
 #include "main_menu_widget.hpp"
 #include "ui_main_menu_widget.h"
 #include "create_player_dialog.hpp"
+#include "game/game_utils.hpp"
 
 #include <QDir>
 #include <QDataStream>
@@ -18,7 +19,7 @@ MainMenuWidget::MainMenuWidget(QWidget* parent) : QWidget(parent), ui_(new ::Ui:
             this,
             &MainMenuWidget::onPlayerNamesComboIndexChanged);
     connect(ui_->playerNameComboBox, &QComboBox::activated, this, &MainMenuWidget::onPlayerNamesComboIndexChanged);
-    connect(ui_->startCampainButton, &QPushButton::clicked, this, &MainMenuWidget::newSinglePlayerGameRequest);
+    connect(ui_->startCampainButton, &QPushButton::clicked, this, &MainMenuWidget::campaignGameRequest);
     connect(ui_->startSkirmishButton, &QPushButton::clicked, this, &MainMenuWidget::newNetworkGameRequest);
     connect(ui_->joinNetworkGameButton, &QPushButton::clicked, this, &MainMenuWidget::connectToServerRequest);
     connect(ui_->startFastGameButton, &QPushButton::clicked, this, &MainMenuWidget::newSinglePlayerGameRequest);
@@ -33,6 +34,17 @@ MainMenuWidget::MainMenuWidget(QWidget* parent) : QWidget(parent), ui_(new ::Ui:
 MainMenuWidget::~MainMenuWidget()
 {
     delete ui_;
+}
+
+const std::shared_ptr<Player> MainMenuWidget::selectedPlayer() const
+{
+    auto playerIndex = ui_->playerNameComboBox->currentIndex();
+    if (playerIndex < players_.size()) {
+        return players_[playerIndex];
+    } else {
+        static const std::shared_ptr<Player> empty;
+        return empty;
+    }
 }
 
 void MainMenuWidget::onPlayerNamesComboIndexChanged(int index)
@@ -54,17 +66,8 @@ void MainMenuWidget::onPlayerNamesComboIndexChanged(int index)
 
 void MainMenuWidget::loadPlayers()
 {
-    QDir        playersDir  = QDir::currentPath() + "/players/";
-    const auto& playerFiles = playersDir.entryList({ "*.sav" }, QDir::Files);
-    for (const auto& playerFile : playerFiles) {
-        QFile file { playersDir.filePath(playerFile) };
-        if (file.open(QIODevice::ReadOnly)) {
-            QDataStream stream { &file };
-            auto        player = std::make_shared<Player>(playerFile);
-            stream >> *player;
-            players_.push_back(std::move(player));
-        }
-    }
+    auto playersFolder = QDir::currentPath() + "/players/";
+    players_           = game_utils::loadPlayers(playersFolder);
 }
 
 bool MainMenuWidget::createNewPlayer()
@@ -72,36 +75,24 @@ bool MainMenuWidget::createNewPlayer()
     CreatePlayerDialog dialog;
     if (dialog.exec() == QDialog::Accepted) {
         const auto& name     = dialog.playerName();
-        const auto& filename = generateFilenameForPlayer(name);
+        const auto& filename = game_utils::generateFilenameForPlayer(name, QDir::currentPath() + "/players/");
         if (filename.isEmpty()) {
             QMessageBox::critical(
                 this, "Critical error", "Cann't create file for player, please choose another player's name");
         } else {
             auto player = std::make_shared<Player>(QDir::currentPath() + "/players/" + filename);
             player->setName(name);
-            players_.push_back(std::move(player));
-            return true;
+            auto result = game_utils::savePlayer(*player, QDir::currentPath() + "/players/");
+            if (result) {
+                players_.push_back(std::move(player));
+                return true;
+            } else {
+                QMessageBox::critical(this, "Critical error", "Cann't save player.");
+            }
         }
     }
 
     return false;
-}
-
-QString MainMenuWidget::generateFilenameForPlayer(const QString& name) const
-{
-    auto playersDir = QDir::currentPath() + "/players/";
-    if (QFile::exists(playersDir + name + ".sav")) {
-        for (int i = 1; i <= 100; ++i) {
-            auto filename = name + QString::number(i) + ".sav";
-            if (!QFile::exists(playersDir + filename)) {
-                return filename;
-            }
-        }
-    } else {
-        return name + ".sav";
-    }
-
-    return {};
 }
 
 void MainMenuWidget::updatePlayerNamesComboBox()
