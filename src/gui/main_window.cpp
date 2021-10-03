@@ -88,6 +88,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
+void MainWindow::onGameOver()
+{
+    QMessageBox::information(this, "Game over", "Game over");
+}
+
 void MainWindow::showInitializationGameErrorsMessage(const QStringList& errors)
 {
     QString message = "Cann't initialize game\n";
@@ -117,7 +122,10 @@ void MainWindow::initializeGame(GameInitializationData& data)
     data.scene       = new GameScene(gameView_);
     data.view        = gameView_;
     data.keyControls = &keyControls_;
-    initializaGameGui(data);
+
+    connect(data.game, &Game::gameOver, this, &MainWindow::onGameOver);
+
+    initializeGameGui(data);
 }
 
 void MainWindow::startGame(const GameInitializationData& data)
@@ -131,17 +139,16 @@ void MainWindow::startGame(const GameInitializationData& data)
 
 void MainWindow::startSinglePlayerGame()
 {
-    const auto mapFile = QDir::currentPath() + "/maps/test_map.json";
-    auto       mapData = map_loader::loadFromFile(mapFile);
-    if (!mapData.map) {
-        QMessageBox::critical(this, "Error!", "Cann't load map");
-        exit(1);
-    }
+    gameDialogs_ = createGamesDialog(this, GameType::Fast);
 
-    auto initializationData = createSinglePlayerGame(mapData.map);
-    // TODO: Check if gameData has errors.
-    initializeGame(initializationData);
-    startGame(initializationData);
+    auto answer = gameDialogs_.creationDialog->exec();
+    if (answer == QDialog::Accepted) {
+        //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
+        auto initializationData = gameDialogs_.creationDialog->initializationData();
+        // TODO: Check if gameData has errors.
+        initializeGame(initializationData);
+        startGame(initializationData);
+    }
 }
 
 void MainWindow::startNetworkGame()

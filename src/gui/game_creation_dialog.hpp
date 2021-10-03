@@ -3,7 +3,10 @@
 
 #include <QDialog>
 
+#include <memory>
+
 namespace bm {
+class Map;
 class GameInitializationData;
 
 namespace gui {
@@ -15,6 +18,8 @@ public:
 
     // TODO: may be just return GameInitializationData by value?
     virtual const GameInitializationData& initializationData() const = 0;
+    // TODO: remove.
+    virtual const std::shared_ptr<Map>& map() const;
 };
 
 } // namespace gui

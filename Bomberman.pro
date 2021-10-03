@@ -59,8 +59,10 @@ SOURCES += \
     src/gui/create_network_game_dialog.cpp \
     src/gui/create_player_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
+    src/gui/fast_game_creation_dialog.cpp \
     src/gui/game_creation_dialog.cpp \
     src/gui/game_dialogs.cpp \
+    src/gui/game_dialogs_factory.cpp \
     src/gui/game_gui_initializer.cpp \
     src/gui/game_over_dialog.cpp \
     src/gui/game_scene.cpp \
@@ -132,6 +134,7 @@ HEADERS += \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
     src/game/game_result.hpp \
     src/game/game_status.hpp \
+    src/game/game_type.hpp \
     src/game/game_utils.hpp \
     src/game/map.hpp \
     src/game/map_constants.hpp \
@@ -155,8 +158,10 @@ HEADERS += \
     src/gui/create_network_game_dialog.hpp \
     src/gui/create_player_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
+    src/gui/fast_game_creation_dialog.hpp \
     src/gui/game_creation_dialog.hpp \
     src/gui/game_dialogs.hpp \
+    src/gui/game_dialogs_factory.hpp \
     src/gui/game_gui_initializer.hpp \
     src/gui/game_over_dialog.hpp \
     src/gui/game_scene.hpp \
@@ -205,6 +210,7 @@ FORMS += \
     src/gui/client_game_dialog.ui \
     src/gui/create_network_game_dialog.ui \
     src/gui/create_player_dialog.ui \
+    src/gui/fast_game_creation_dialog.ui \
     src/gui/game_over_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \

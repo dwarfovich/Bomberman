@@ -47,6 +47,10 @@ private:
     QDir                        mapFolder_ = QDir::currentPath() + "/maps/";
     GameScene                   scene_;
     std::shared_ptr<Map>        selectedMap_;
+
+    // GameCreationDialog interface
+public:
+    const std::shared_ptr<Map>& map() const override;
 };
 
 } // namespace gui

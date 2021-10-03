@@ -47,7 +47,7 @@ public:
     GameStatus currentStatus() const;
 
 signals:
-    void gameOver(const bm::GameResult& result);
+    void gameOver();
     void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& object);
     void characterStartedMoving(const std::shared_ptr<Character>& character);

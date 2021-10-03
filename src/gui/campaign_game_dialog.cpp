@@ -30,3 +30,13 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
 
 } // namespace gui
 } // namespace bm
+
+const std::shared_ptr<bm::Map> &bm::gui::CampaignGameDialog::map() const
+{
+    if (game_) {
+        return game_->map();
+    } else {
+        static const std::shared_ptr<bm::Map> empty { nullptr };
+        return empty;
+    }
+}

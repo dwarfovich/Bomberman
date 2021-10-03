@@ -6,7 +6,7 @@ class GameInitializationData;
 
 namespace gui {
 
-bool initializaGameGui(GameInitializationData& data);
+bool initializeGameGui(GameInitializationData& data);
 
 } // namespace gui
 } // namespace bm

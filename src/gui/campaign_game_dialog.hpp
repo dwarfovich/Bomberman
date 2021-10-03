@@ -31,6 +31,10 @@ private:
     std::shared_ptr<Player>        player_;
     std::shared_ptr<Game>          game_;
     mutable GameInitializationData initializationData_;
+
+    // GameCreationDialog interface
+public:
+    const std::shared_ptr<Map> &map() const override;
 };
 
 } // namespace gui

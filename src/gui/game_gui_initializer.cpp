@@ -8,7 +8,7 @@
 namespace bm {
 namespace gui {
 
-bool initializaGameGui(GameInitializationData& data)
+bool initializeGameGui(GameInitializationData& data)
 {
     Q_ASSERT(data.game);
     Q_ASSERT(data.map);

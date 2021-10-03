@@ -17,10 +17,11 @@ class GameDialogs
 public:
     explicit GameDialogs(QWidget* parentWidget = nullptr);
 
+    GameCreationDialog* creationDialog = nullptr;
+    GameOverDialog*     gameOverDialog = nullptr;
+
 private:
-    QWidget*            parentWidget_;
-    GameCreationDialog* creationDialog_;
-    GameOverDialog*     gameOverDialog_;
+    QWidget* parentWidget_ = nullptr;
 };
 
 } // namespace gui

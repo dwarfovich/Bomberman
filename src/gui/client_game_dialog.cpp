@@ -119,3 +119,14 @@ const GameInitializationData &ClientGameDialog::initializationData() const
 
 } // namespace gui
 } // namespace bm
+
+const std::shared_ptr<bm::Map> &bm::gui::ClientGameDialog::map() const
+{
+    if (game_) {
+        return game_->map();
+
+    } else {
+        static const std::shared_ptr<Map> empty { nullptr };
+        return empty;
+    }
+}

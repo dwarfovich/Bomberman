@@ -4,6 +4,8 @@
 #include "game/game.hpp"
 #include "player_key_controls.hpp"
 #include "game/game_initialization_data.hpp"
+#include "game_dialogs.hpp"
+#include "game_dialogs_factory.hpp"
 
 #include <QMainWindow>
 
@@ -40,6 +42,9 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
 
+private slots:
+    void onGameOver();
+
 private: // methods
     void showInitializationGameErrorsMessage(const QStringList& errors);
     void createNewGameInitializationData();
@@ -49,8 +54,9 @@ private: // methods
 private: // data
     Ui::MainWindow*        ui_             = nullptr;
     MainMenuWidget*        mainMenuWidget_ = nullptr;
+    GameView*              gameView_       = nullptr;
+    GameDialogs            gameDialogs_;
     PlayerKeyControls      keyControls_;
-    GameView*              gameView_ = nullptr;
     GameInitializationData gameData_;
 };
 

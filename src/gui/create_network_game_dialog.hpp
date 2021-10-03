@@ -69,6 +69,10 @@ private: // data
     mutable GameInitializationData initializationData_;
     QIcon                          playerConnectedIcon_ { ":/gui/player_connected.png" };
     QIcon                          playerReadyIcon_ { ":/gui/player_ready.png" };
+
+    // GameCreationDialog interface
+public:
+    const std::shared_ptr<Map> &map() const override;
 };
 
 } // namespace gui
