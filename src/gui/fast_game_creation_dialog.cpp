@@ -1,5 +1,6 @@
 #include "fast_game_creation_dialog.hpp"
 #include "ui_fast_game_creation_dialog.h"
+#include "game/single_player_game_process.hpp"
 #include "game/server_game.hpp"
 #include "game/game_initialization_data.hpp"
 #include "game/map_loader.hpp"
@@ -38,6 +39,9 @@ const GameInitializationData& FastGameCreationDialog::initializationData() const
         data.playerBomberman = bomberman->id();
     }
     data.game->setMap(map);
+    auto gameProcess = std::make_unique<SinglePlayerGameProcess>();
+    gameProcess->setGame(data.game);
+    data.game->setGameProcessHandler(std::move(gameProcess));
     data.map = data.game->map();
 
     return data;

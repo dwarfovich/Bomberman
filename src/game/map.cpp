@@ -240,6 +240,7 @@ void Map::removeCharacter(object_id_t id)
             bombermans_.erase(bomberman);
         } else {
             bots_.erase(std::remove(bots_.begin(), bots_.end(), characterPtr));
+            emit botRemoved();
         }
         idToCharacterMap_.erase(id);
     }
@@ -276,6 +277,12 @@ const std::shared_ptr<Character>& Map::character(object_id_t id) const
         static const std::shared_ptr<Character> empty;
         return empty;
     }
+}
+
+void Map::activateExit()
+{
+    isExitActivated_ = true;
+    emit exitActivated();
 }
 
 const Cell& Map::cell(size_t index) const
@@ -674,14 +681,19 @@ int Map::inCellCoordinate(const QPoint& coordinates, Direction direction)
     }
 }
 
+bool Map::isExitActivated() const
+{
+    return isExitActivated_;
+}
+
 size_t Map::getExitCell() const
 {
-    return exitCell;
+    return exitCell_;
 }
 
 void Map::setExitCell(size_t newExitCell)
 {
-    exitCell = newExitCell;
+    exitCell_ = newExitCell;
 }
 
 const QString& Map::name() const

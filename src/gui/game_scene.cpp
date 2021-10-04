@@ -175,6 +175,11 @@ void GameScene::onModifierAdded(size_t index, const std::shared_ptr<IModifier>& 
     QGraphicsScene::addItem(item.release());
 }
 
+void GameScene::onExitActivated()
+{
+    qDebug() << "Exit activated";
+}
+
 void GameScene::onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier)
 {
     auto iter = gameObjects_.find(modifier);

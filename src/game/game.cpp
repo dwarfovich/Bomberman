@@ -3,7 +3,6 @@
 #include "bomb_explosion_event.hpp"
 #include "bomb_explosion_finished_event.hpp"
 #include "modifier_deactivation_event.hpp"
-
 #include "map_constants.hpp"
 #include "bomb_explosion.hpp"
 
@@ -41,12 +40,14 @@ void Game::prepareToStart()
 
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
+    // TODO: count connected and disconnected signals.
     if (map_) {
         disconnect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
         disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
         disconnect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
         disconnect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
         disconnect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
+        disconnect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
     }
     map_ = map;
     connect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
@@ -55,11 +56,17 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     connect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
     connect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
     connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
+    connect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
 }
 
 const std::shared_ptr<Map>& Game::map() const
 {
     return map_;
+}
+
+void Game::setGameProcessHandler(std::unique_ptr<GameProcessHandler> handler)
+{
+    gameProcessHandler_ = std::move(handler);
 }
 
 void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)

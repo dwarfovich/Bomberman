@@ -51,6 +51,7 @@ public:
     void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
     void                              removeExplosion(object_id_t id);
     const std::shared_ptr<Character>& character(object_id_t id) const;
+    void                              activateExit();
 
     const Cell&                               cell(size_t index) const;
     CellLocation                              coordinatesToLocation(const QPoint& coordinates) const;
@@ -89,6 +90,8 @@ public:
     size_t getExitCell() const;
     void   setExitCell(size_t newExitCell);
 
+    bool isExitActivated() const;
+
 signals:
     void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& character);
@@ -98,6 +101,8 @@ signals:
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
     void explosionRemoved(const std::shared_ptr<Explosion>& explosion);
+    void botRemoved();
+    void exitActivated();
 
 private: // methods
     void checkBombermanAndBotCollisions(Collisions& collisions);
@@ -135,10 +140,11 @@ private: // methods
 
 private: // data
     QString                            name_;
-    uint32_t                           randomSeed_    = 0;
-    size_t                             widthInCells_  = 0;
-    size_t                             heightInCells_ = 0;
-    size_t                             exitCell       = invalidMapIndex;
+    uint32_t                           randomSeed_      = 0;
+    size_t                             widthInCells_    = 0;
+    size_t                             heightInCells_   = 0;
+    size_t                             exitCell_        = invalidMapIndex;
+    bool                               isExitActivated_ = false;
     std::vector<std::shared_ptr<Cell>> cells_;
     using IdCharactersMap = std::unordered_map<object_id_t, std::shared_ptr<Character>>;
     IdCharactersMap                                idToCharacterMap_;

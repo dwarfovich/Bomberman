@@ -32,6 +32,7 @@ bool initializeGameGui(GameInitializationData& data)
     QObject::connect(game, &Game::objectDestroyed, data.scene, &gui::GameScene::onObjectDestroyed);
     QObject::connect(game, &Game::modifierAdded, data.scene, &gui::GameScene::onModifierAdded);
     QObject::connect(game, &Game::modifierRemoved, data.scene, &gui::GameScene::onModifierRemoved);
+    QObject::connect(game, &Game::exitActivated, data.scene, &gui::GameScene::onExitActivated);
 
     return true;
 }

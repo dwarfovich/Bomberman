@@ -1,9 +1,10 @@
 #include "game_factory.hpp"
-#include "game/game_initialization_data.hpp" e
+#include "game_initialization_data.hpp"
 #include "server_game.hpp"
 #include "network_game.hpp"
 #include "client_game.hpp"
-#include "game/map_loader.hpp"
+#include "map_loader.hpp"
+#include "single_player_game_process.hpp"
 #include "net/server.hpp"
 #include "net/client.hpp"
 
@@ -41,6 +42,7 @@ GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map)
     const auto& bomberman = std::make_shared<Bomberman>();
     data.bombermans.push_back(bomberman);
     data.playerBomberman = bomberman->id();
+    data.game->setGameProcessHandler(std::make_unique<SinglePlayerGameProcess>());
 
     return data;
 }

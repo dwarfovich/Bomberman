@@ -6,12 +6,15 @@
 #include "collider.hpp"
 #include "game_result.hpp"
 #include "game_status.hpp"
+#include "game_process_handler.hpp"
 
 #include <QTimer>
 
 #include <memory>
 
 namespace bm {
+class GameProcessHandler;
+
 namespace gui {
 class GameScene;
 }
@@ -25,6 +28,7 @@ class Game : public QObject
     Q_OBJECT
 
     friend class Collider;
+    friend class GameProcessHandler;
 
 public:
     Game();
@@ -40,6 +44,8 @@ public:
 
     virtual void                        setMap(const std::shared_ptr<Map>& map);
     virtual const std::shared_ptr<Map>& map() const;
+
+    virtual void setGameProcessHandler(std::unique_ptr<GameProcessHandler> handler);
 
     object_id_t getPlayerBomberman() const;
     void        setPlayerBomberman(object_id_t playerBomberman);
@@ -59,6 +65,7 @@ signals:
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void exitActivated();
     void gameStatusChanged(bm::GameStatus newStatus);
 
 private slots:
@@ -74,12 +81,13 @@ protected: // methods
     void setGameStatus(GameStatus status);
 
 protected: // data
-    std::shared_ptr<Map> map_;
-    object_id_t          playerId_ = invalidObjectId;
-    Collider             collider_;
-    TimerQueue           timerEventsQueue;
-    QTimer               movementTimer_;
-    GameStatus           currentStatus_ = GameStatus::Waiting;
+    std::shared_ptr<Map>                map_;
+    std::unique_ptr<GameProcessHandler> gameProcessHandler_;
+    object_id_t                         playerId_ = invalidObjectId;
+    Collider                            collider_;
+    TimerQueue                          timerEventsQueue;
+    QTimer                              movementTimer_;
+    GameStatus                          currentStatus_ = GameStatus::Waiting;
 };
 
 } // namespace bm

@@ -123,7 +123,7 @@ void MainWindow::initializeGame(GameInitializationData& data)
     data.view        = gameView_;
     data.keyControls = &keyControls_;
 
-    connect(data.game, &Game::gameOver, this, &MainWindow::onGameOver);
+    connect(data.game.get(), &Game::gameOver, this, &MainWindow::onGameOver);
 
     initializeGameGui(data);
 }

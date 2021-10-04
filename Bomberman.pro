@@ -37,6 +37,7 @@ SOURCES += \
     src/game/game_object_id.cpp \
     src/game/game_over_conditions/game_over_condition.cpp \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
+    src/game/game_process_handler.cpp \
     src/game/game_result.cpp \
     src/game/game_status.cpp \
     src/game/game_utils.cpp \
@@ -52,6 +53,7 @@ SOURCES += \
     src/game/network_game.cpp \
     src/game/player.cpp \
     src/game/server_game.cpp \
+    src/game/single_player_game_process.cpp \
     src/gui/campaign_game_dialog.cpp \
     src/gui/cell_sprite_item.cpp \
     src/gui/character_sprite_item.cpp \
@@ -132,6 +134,7 @@ HEADERS += \
     src/game/game_over_conditions/game_over_condition.hpp \
     src/game/game_over_conditions/game_winner_type.hpp \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
+    src/game/game_process_handler.hpp \
     src/game/game_result.hpp \
     src/game/game_status.hpp \
     src/game/game_type.hpp \
@@ -151,6 +154,7 @@ HEADERS += \
     src/game/player.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
+    src/game/single_player_game_process.hpp \
     src/gui/campaign_game_dialog.hpp \
     src/gui/cell_sprite_item.hpp \
     src/gui/character_sprite_item.hpp \
