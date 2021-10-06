@@ -15,6 +15,7 @@ class Map;
 namespace gui {
 class GameScene;
 class GameView;
+class MainWindow;
 class PlayerKeyControls;
 } // namespace gui
 
@@ -27,6 +28,7 @@ public:
     object_id_t                             playerBomberman = invalidObjectId;
     gui::GameScene*                         scene           = nullptr;
     gui::GameView*                          view            = nullptr;
+    gui::MainWindow*                        mainWindow      = nullptr;
     gui::PlayerKeyControls*                 keyControls     = nullptr;
     QStringList                             errors;
 };

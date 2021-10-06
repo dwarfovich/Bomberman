@@ -686,12 +686,12 @@ bool Map::isExitActivated() const
     return isExitActivated_;
 }
 
-size_t Map::getExitCell() const
+size_t Map::exitIndex() const
 {
     return exitCell_;
 }
 
-void Map::setExitCell(size_t newExitCell)
+void Map::setExitIndex(size_t newExitCell)
 {
     exitCell_ = newExitCell;
 }

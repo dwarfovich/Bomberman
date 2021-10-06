@@ -78,6 +78,9 @@ void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 void Game::setGameStatus(GameStatus status)
 {
     currentStatus_ = status;
+    if (status == GameStatus::GameOver) {
+        movementTimer_.stop();
+    }
     emit gameStatusChanged(currentStatus_);
 }
 

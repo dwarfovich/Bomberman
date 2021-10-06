@@ -44,6 +44,7 @@ public slots:
     void onObjectDestroyed(std::shared_ptr<GameObject> object);
     void onCellStructureChanged(size_t index, bm::CellStructure previousStructure);
     void onModifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void onExitRevealed(size_t index);
     void onExitActivated();
     // TODO: try to replace onModifierRemoved slot with onObjectDestroyed.
     void onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
@@ -66,6 +67,7 @@ private:
     std::unordered_map<std::shared_ptr<GameObject>, SpriteItem*> gameObjects_;
     std::unordered_set<SpriteItem*>                              spriteItems_;
     std::unordered_set<SpriteItem*>                              animations_;
+    SpriteItem*                                                  exitSprite_ = nullptr;
     std::vector<std::pair<SpriteItem*, bool /*removeItem*/>>     animationsToDelete_;
     QTimer                                                       animationTimer_;
     const std::chrono::milliseconds                              animationPeriod_ { 100 };

@@ -9,6 +9,7 @@
 #include "create_network_game_dialog.hpp"
 #include "client_game_dialog.hpp"
 #include "game_gui_initializer.hpp"
+#include "game_over_dialog.hpp"
 #include "net/client.hpp"
 
 #include <QKeyEvent>
@@ -30,9 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui_->setupUi(this);
 
-    gameView_->hide();
-
-    setCentralWidget(mainMenuWidget_);
+    showMainMenu();
 
     connect(mainMenuWidget_, &MainMenuWidget::campaignGameRequest, this, &MainWindow::startCampaignGame);
     connect(mainMenuWidget_, &MainMenuWidget::newSinglePlayerGameRequest, this, &MainWindow::startSinglePlayerGame);
@@ -43,6 +42,13 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     delete ui_;
+}
+
+void MainWindow::showMainMenu()
+{
+    gameView_->hide();
+    setCentralWidget(mainMenuWidget_);
+    mainMenuWidget_->show();
 }
 
 void MainWindow::startCampaignGame()
@@ -88,9 +94,16 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-void MainWindow::onGameOver()
+void MainWindow::gameStatusChanged(GameStatus newStatus)
 {
-    QMessageBox::information(this, "Game over", "Game over");
+    if (newStatus == GameStatus::GameOver) {
+        auto* gameOverDialog = gameDialogs_.gameOverDialog;
+        auto  answer         = gameOverDialog->exec();
+        if (answer == QDialog::Accepted) {
+        } else {
+            showMainMenu();
+        }
+    }
 }
 
 void MainWindow::showInitializationGameErrorsMessage(const QStringList& errors)
@@ -121,9 +134,8 @@ void MainWindow::initializeGame(GameInitializationData& data)
 
     data.scene       = new GameScene(gameView_);
     data.view        = gameView_;
+    data.mainWindow  = this;
     data.keyControls = &keyControls_;
-
-    connect(data.game.get(), &Game::gameOver, this, &MainWindow::onGameOver);
 
     initializeGameGui(data);
 }

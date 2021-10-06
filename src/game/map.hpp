@@ -87,8 +87,8 @@ public:
     const QString& name() const;
     void           setName(const QString& newName);
 
-    size_t getExitCell() const;
-    void   setExitCell(size_t newExitCell);
+    size_t exitIndex() const;
+    void   setExitIndex(size_t newExitCell);
 
     bool isExitActivated() const;
 

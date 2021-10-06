@@ -65,6 +65,7 @@ signals:
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void exitRevealed(size_t index);
     void exitActivated();
     void gameStatusChanged(bm::GameStatus newStatus);
 

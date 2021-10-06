@@ -62,6 +62,7 @@ SOURCES += \
     src/gui/create_player_dialog.cpp \
     src/gui/explosion_sprite_item.cpp \
     src/gui/fast_game_creation_dialog.cpp \
+    src/gui/fast_game_over_dialog.cpp \
     src/gui/game_creation_dialog.cpp \
     src/gui/game_dialogs.cpp \
     src/gui/game_dialogs_factory.cpp \
@@ -163,6 +164,7 @@ HEADERS += \
     src/gui/create_player_dialog.hpp \
     src/gui/explosion_sprite_item.hpp \
     src/gui/fast_game_creation_dialog.hpp \
+    src/gui/fast_game_over_dialog.hpp \
     src/gui/game_creation_dialog.hpp \
     src/gui/game_dialogs.hpp \
     src/gui/game_dialogs_factory.hpp \
@@ -215,6 +217,7 @@ FORMS += \
     src/gui/create_network_game_dialog.ui \
     src/gui/create_player_dialog.ui \
     src/gui/fast_game_creation_dialog.ui \
+    src/gui/fast_game_over_dialog.ui \
     src/gui/game_over_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \

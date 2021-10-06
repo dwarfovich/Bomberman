@@ -35,6 +35,7 @@ public:
                                                       const Map&       map,
                                                       const QPoint&    centerCoordinates = {});
     std::unique_ptr<SpriteItem>          createSprite(size_t index, const std::shared_ptr<IModifier>& modifier);
+    std::unique_ptr<SpriteItem>          createExitSprite();
 
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
@@ -46,6 +47,7 @@ private:
     QPixmap                          bomb_;
     QPixmap                          explosion_;
     QPixmap                          modifiers_;
+    QPixmap                          exit_;
 };
 
 } // namespace gui

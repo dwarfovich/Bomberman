@@ -9,5 +9,6 @@
         <file>gfx/modifiers.png</file>
         <file>gui/player_connected.png</file>
         <file>gui/player_ready.png</file>
+        <file>gfx/exit.png</file>
     </qresource>
 </RCC>

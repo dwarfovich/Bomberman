@@ -3,6 +3,7 @@
 #include "game/game.hpp"
 #include "game_scene.hpp"
 #include "game_view.hpp"
+#include "main_window.hpp"
 #include "player_key_controls.hpp"
 
 namespace bm {
@@ -32,7 +33,9 @@ bool initializeGameGui(GameInitializationData& data)
     QObject::connect(game, &Game::objectDestroyed, data.scene, &gui::GameScene::onObjectDestroyed);
     QObject::connect(game, &Game::modifierAdded, data.scene, &gui::GameScene::onModifierAdded);
     QObject::connect(game, &Game::modifierRemoved, data.scene, &gui::GameScene::onModifierRemoved);
+    QObject::connect(game, &Game::exitRevealed, data.scene, &gui::GameScene::onExitRevealed);
     QObject::connect(game, &Game::exitActivated, data.scene, &gui::GameScene::onExitActivated);
+    QObject::connect(game, &Game::gameStatusChanged, data.mainWindow, &gui::MainWindow::gameStatusChanged);
 
     return true;
 }

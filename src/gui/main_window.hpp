@@ -32,18 +32,18 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+    void showMainMenu();
+
 public slots:
     void startCampaignGame();
     void startSinglePlayerGame();
     void startNetworkGame();
     void connectToServer();
+    void gameStatusChanged(bm::GameStatus newStatus);
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
-
-private slots:
-    void onGameOver();
 
 private: // methods
     void showInitializationGameErrorsMessage(const QStringList& errors);
@@ -52,9 +52,10 @@ private: // methods
     void startGame(const GameInitializationData& data);
 
 private: // data
-    Ui::MainWindow*        ui_             = nullptr;
-    MainMenuWidget*        mainMenuWidget_ = nullptr;
-    GameView*              gameView_       = nullptr;
+    Ui::MainWindow* ui_             = nullptr;
+    MainMenuWidget* mainMenuWidget_ = nullptr;
+    GameView*       gameView_       = nullptr;
+    // TODO: delete old dialogs before assigning new.
     GameDialogs            gameDialogs_;
     PlayerKeyControls      keyControls_;
     GameInitializationData gameData_;

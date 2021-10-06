@@ -2,6 +2,9 @@
 #include "game.hpp"
 #include "map.hpp"
 
+#include <QDebug>
+#define DEB qDebug()
+
 namespace bm {
 
 SinglePlayerGameProcess::SinglePlayerGameProcess()
@@ -28,8 +31,9 @@ void SinglePlayerGameProcess::onBotRemoved()
 
 void SinglePlayerGameProcess::onCharacterIndexChanged(const std::shared_ptr<Character>& character, size_t index)
 {
-    if (character->id() == game_->playerId() && game_->map()->isExitActivated()) {
+    if (character->id() == game_->playerId() && game_->map()->isExitActivated() && index == game_->map()->exitIndex()) {
         changeGameStatus(GameStatus::GameOver);
+        DEB << "Game over";
     }
 }
 

@@ -120,7 +120,7 @@ MapData loadFromFile(const QString& filePath)
 
         const auto& exitCellValue = jsonObject.value("exit");
         if (!exitCellValue.isUndefined()) {
-            map->setExitCell(jsonObject["exit"].toInt());
+            map->setExitIndex(jsonObject["exit"].toInt());
         }
 
         MapData mapData;

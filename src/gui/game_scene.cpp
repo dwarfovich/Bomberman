@@ -175,9 +175,17 @@ void GameScene::onModifierAdded(size_t index, const std::shared_ptr<IModifier>& 
     QGraphicsScene::addItem(item.release());
 }
 
+void GameScene::onExitRevealed(size_t index)
+{
+    auto exitSprite = spriteFactory_.createExitSprite();
+    exitSprite->setPos(map_->indexToCoordinates(index));
+    exitSprite_ = exitSprite.get();
+    addItem(exitSprite.release());
+}
+
 void GameScene::onExitActivated()
 {
-    qDebug() << "Exit activated";
+    addAnimation(exitSprite_);
 }
 
 void GameScene::onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier)
