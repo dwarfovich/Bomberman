@@ -141,6 +141,7 @@ void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
     }
 
     auto* sprite = itemIter->second;
+    Q_ASSERT(sprite != exitSprite_);
     gameObjects_.erase(itemIter);
     if (sprite->hasDestroyAnimation()) {
         animations_.insert(sprite);

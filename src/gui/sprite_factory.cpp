@@ -29,6 +29,7 @@ SpriteObjectFactory::SpriteObjectFactory(const SpriteItemCallbacks *const callba
 std::unique_ptr<CellSpriteItem> SpriteObjectFactory::createSprite(const Cell *cell)
 {
     auto item = std::make_unique<CellSpriteItem>(callbacks_, cell_);
+    item->setZValue(SpriteZValue::ZCell);
     item->setFramesCount(5);
     if (cell->structure() == CellStructure::Empty) {
         item->setStructureFrame(CellSpriteItem::CellStructureFrame::Empty);
@@ -44,7 +45,7 @@ std::unique_ptr<CellSpriteItem> SpriteObjectFactory::createSprite(const Cell *ce
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bomberman> &character)
 {
     auto item = std::make_unique<CharacterSpriteItem>(callbacks_, bomberman_);
-    item->setZValue(2);
+    item->setZValue(SpriteZValue::ZCharacter);
     item->setCharacter(character);
     item->setFramesCount(10);
 
@@ -54,6 +55,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bot> &character)
 {
     auto item = std::make_unique<CharacterSpriteItem>(callbacks_, bot_);
+    item->setZValue(SpriteZValue::ZCharacter);
     item->setCharacter(character);
     item->setFramesCount(10);
 
@@ -63,6 +65,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bomb> &bomb)
 {
     auto item = std::make_unique<SpriteItem>(callbacks_, bomb_);
+    item->setZValue(SpriteZValue::ZBomb);
     item->setFramesCount(4);
 
     return item;
@@ -76,6 +79,7 @@ std::unique_ptr<ExplosionSpriteItem> SpriteObjectFactory::createSprite(const Exp
 
     item->setPixmap(explosion_);
     item->setFramesCount(4);
+    item->setZValue(SpriteZValue::ZExplosion);
     item->setPos(centerCoordinates);
 
     for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
@@ -127,6 +131,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(size_t index, cons
 {
     auto item = std::make_unique<ModifierSpriteItem>(callbacks_, modifiers_);
     item->setFramesCount(5);
+    item->setZValue(SpriteZValue::ZModifier);
     item->setCurrentSpriteRow(static_cast<int>(modifier->type()) - 1);
 
     return item;
@@ -136,7 +141,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createExitSprite()
 {
     auto item = std::make_unique<SpriteItem>(callbacks_, exit_);
     item->setFramesCount(5);
-    item->setZValue(1);
+    item->setZValue(SpriteZValue::ZExit);
 
     return item;
 }

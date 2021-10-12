@@ -40,6 +40,16 @@ public:
     QPoint mapCoordinatesToSceneCoordinates(const QPoint& coordinates) const;
 
 private:
+    enum SpriteZValue
+    {
+        ZCell,
+        ZExit,
+        ZModifier,
+        ZCharacter,
+        ZBomb,
+        ZExplosion
+    };
+
     const SpriteItemCallbacks* const callbacks_;
     QPixmap                          cell_;
     QPixmap                          bomberman_;

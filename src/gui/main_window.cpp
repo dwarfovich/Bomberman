@@ -41,6 +41,10 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+    // TODO: examine can you just deleteLater mainMenuWidget_.
+    if (!mainMenuWidget_->parent()) {
+        delete mainMenuWidget_;
+    }
     delete ui_;
 }
 
@@ -144,6 +148,7 @@ void MainWindow::startGame(const GameInitializationData& data)
 {
     gameData_ = data;
     mainMenuWidget_->hide();
+    mainMenuWidget_->setParent(nullptr);
     setCentralWidget(gameView_);
     gameView_->show();
     gameData_.game->start();
