@@ -104,6 +104,10 @@ void MainWindow::gameStatusChanged(GameStatus newStatus)
         auto* gameOverDialog = gameDialogs_.gameOverDialog;
         auto  answer         = gameOverDialog->exec();
         if (answer == QDialog::Accepted) {
+            auto initializationData = gameDialogs_.creationDialog->initializationData();
+            // TODO: Check if gameData has errors.
+            initializeGame(initializationData);
+            startGame(initializationData);
         } else {
             showMainMenu();
         }
@@ -136,7 +140,10 @@ void MainWindow::initializeGame(GameInitializationData& data)
         return;
     }
 
-    data.scene       = new GameScene(gameView_);
+    if (!data.scene) {
+        data.scene                = new GameScene(gameView_);
+        data.sceneConnectedToGame = false;
+    }
     data.view        = gameView_;
     data.mainWindow  = this;
     data.keyControls = &keyControls_;
@@ -146,7 +153,9 @@ void MainWindow::initializeGame(GameInitializationData& data)
 
 void MainWindow::startGame(const GameInitializationData& data)
 {
-    gameData_ = data;
+    if (&gameData_ != &data) {
+        gameData_ = data;
+    }
     mainMenuWidget_->hide();
     mainMenuWidget_->setParent(nullptr);
     setCentralWidget(gameView_);

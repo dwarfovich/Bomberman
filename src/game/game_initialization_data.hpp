@@ -25,11 +25,12 @@ public:
     std::shared_ptr<Game>                   game = nullptr;
     std::shared_ptr<Map>                    map;
     std::vector<std::shared_ptr<Bomberman>> bombermans;
-    object_id_t                             playerBomberman = invalidObjectId;
-    gui::GameScene*                         scene           = nullptr;
-    gui::GameView*                          view            = nullptr;
-    gui::MainWindow*                        mainWindow      = nullptr;
-    gui::PlayerKeyControls*                 keyControls     = nullptr;
+    object_id_t                             playerBomberman      = invalidObjectId;
+    bool                                    sceneConnectedToGame = false;
+    gui::GameScene*                         scene                = nullptr;
+    gui::GameView*                          view                 = nullptr;
+    gui::MainWindow*                        mainWindow           = nullptr;
+    gui::PlayerKeyControls*                 keyControls          = nullptr;
     QStringList                             errors;
 };
 
