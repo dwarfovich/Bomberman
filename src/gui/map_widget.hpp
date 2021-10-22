@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+// TODO: Delete MapWidget if it's unused.
 namespace Ui {
 class MapWidget;
 }

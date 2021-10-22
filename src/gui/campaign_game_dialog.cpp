@@ -5,13 +5,15 @@
 namespace bm {
 namespace gui {
 
-CampaignGameDialog::CampaignGameDialog(const std::shared_ptr<Player> player, QWidget *parent)
-    : GameCreationDialog { parent }
+CampaignGameDialog::CampaignGameDialog(const std::shared_ptr<Player> &player, QWidget *parent)
+    : GameCreationDialog { parent, player }
     , ui_ { new Ui::CampaignGameDialog }
-    , player_ { player }
     , game_ { std::make_shared<ServerGame>() }
 {
     ui_->setupUi(this);
+
+    connect(ui_->cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+    connect(ui_->startButton, &QPushButton::clicked, this, &QDialog::accept);
 }
 
 CampaignGameDialog::~CampaignGameDialog()

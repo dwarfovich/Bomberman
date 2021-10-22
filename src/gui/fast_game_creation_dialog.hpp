@@ -17,7 +17,7 @@ class FastGameCreationDialog : public GameCreationDialog
     Q_OBJECT
 
 public:
-    explicit FastGameCreationDialog(QWidget *parent = nullptr);
+    explicit FastGameCreationDialog(QWidget *parent = nullptr, const std::shared_ptr<Player> &player = nullptr);
     ~FastGameCreationDialog();
 
     const GameInitializationData &initializationData() const override;

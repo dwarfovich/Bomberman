@@ -6,14 +6,18 @@
 
 #include <Qt>
 
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 class QWidget;
 QT_END_NAMESPACE
 
 namespace bm {
+class Player;
+
 namespace gui {
 
-GameDialogs createGamesDialog(QWidget* parentWidget, GameType type);
+GameDialogs createGamesDialog(QWidget* parentWidget, GameType type, const std::shared_ptr<Player>& player);
 
 } // namespace gui
 } // namespace bm

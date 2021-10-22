@@ -14,6 +14,7 @@
 namespace bm {
 namespace gui {
 
+// TODO: Fix bug. Bug scenario - start fast game, win, press "Cancel", start fast game again, crash.
 GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }, callbacks_ { this }, spriteFactory_ { &callbacks_ }
 {
     connect(&animationTimer_, &QTimer::timeout, this, &GameScene::updateAnimations);

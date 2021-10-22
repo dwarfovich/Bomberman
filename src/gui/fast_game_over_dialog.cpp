@@ -8,7 +8,7 @@ FastGameOverDialog::FastGameOverDialog(QWidget *parent) : GameOverDialog { paren
 {
     ui_->setupUi(this);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &QDialog::reject);
-    connect(ui_->onceMoreGameButoon, &QPushButton::clicked, this, &QDialog::accept);
+    connect(ui_->onceMoreGameButton, &QPushButton::clicked, this, &QDialog::accept);
 }
 
 FastGameOverDialog::~FastGameOverDialog()

@@ -55,17 +55,6 @@ void MainWindow::showMainMenu()
     mainMenuWidget_->show();
 }
 
-void MainWindow::startCampaignGame()
-{
-    const auto& player = mainMenuWidget_->selectedPlayer();
-    if (player) {
-        CampaignGameDialog dialog { player };
-        dialog.exec();
-    } else {
-        QMessageBox::information(this, "Cann't play campaign", "Please select correct player to play campaign");
-    }
-}
-
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == keyControls_.moveUp) {
@@ -101,13 +90,19 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
 void MainWindow::gameStatusChanged(GameStatus newStatus)
 {
     if (newStatus == GameStatus::GameOver) {
-        auto* gameOverDialog = gameDialogs_.gameOverDialog;
-        auto  answer         = gameOverDialog->exec();
-        if (answer == QDialog::Accepted) {
-            auto initializationData = gameDialogs_.creationDialog->initializationData();
-            // TODO: Check if gameData has errors.
-            initializeGame(initializationData);
-            startGame(initializationData);
+        auto* gameOverDialog       = gameDialogs_.gameOverDialog;
+        auto  gameOverDialogAnswer = gameOverDialog->exec();
+        if (gameOverDialogAnswer == QDialog::Accepted) {
+            auto answer = gameDialogs_.creationDialog->exec();
+            if (answer == QDialog::Accepted) {
+                //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
+                auto initializationData = gameDialogs_.creationDialog->initializationData();
+                // TODO: Check if gameData has errors.
+                initializeGame(initializationData);
+                startGame(initializationData);
+            } else {
+                showMainMenu();
+            }
         } else {
             showMainMenu();
         }
@@ -165,7 +160,7 @@ void MainWindow::startGame(const GameInitializationData& data)
 
 void MainWindow::startSinglePlayerGame()
 {
-    gameDialogs_ = createGamesDialog(this, GameType::Fast);
+    gameDialogs_ = createGamesDialog(this, GameType::Fast, mainMenuWidget_->selectedPlayer());
 
     auto answer = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
@@ -174,6 +169,24 @@ void MainWindow::startSinglePlayerGame()
         // TODO: Check if gameData has errors.
         initializeGame(initializationData);
         startGame(initializationData);
+    }
+}
+
+void MainWindow::startCampaignGame()
+{
+    const auto& player = mainMenuWidget_->selectedPlayer();
+    if (player) {
+        gameDialogs_ = createGamesDialog(this, GameType::Campaign, player);
+        auto answer  = gameDialogs_.creationDialog->exec();
+        if (answer == QDialog::Accepted) {
+            //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
+            auto initializationData = gameDialogs_.creationDialog->initializationData();
+            // TODO: Check if gameData has errors.
+            initializeGame(initializationData);
+            startGame(initializationData);
+        }
+    } else {
+        QMessageBox::information(this, "Cann't play campaign", "Please select correct player to play campaign");
     }
 }
 

@@ -2,6 +2,7 @@
 #define BM_SINGLEPLAYERGAMEPROCESS_HPP
 
 #include "game_process_handler.hpp"
+#include "game_result.hpp"
 
 namespace bm {
 class Character;
@@ -18,6 +19,9 @@ public:
 private slots:
     void onBotRemoved();
     void onCharacterIndexChanged(const std::shared_ptr<Character>& character, size_t index);
+
+private:
+    GameResult generateGameResult();
 };
 
 } // namespace bm

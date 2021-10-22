@@ -32,9 +32,15 @@ void SinglePlayerGameProcess::onBotRemoved()
 void SinglePlayerGameProcess::onCharacterIndexChanged(const std::shared_ptr<Character>& character, size_t index)
 {
     if (character->id() == game_->playerId() && game_->map()->isExitActivated() && index == game_->map()->exitIndex()) {
+        assignGameResultToGame(generateGameResult());
         changeGameStatus(GameStatus::GameOver);
-        DEB << "Game over";
     }
+}
+
+GameResult SinglePlayerGameProcess::generateGameResult()
+{
+    GameResult result;
+    return result;
 }
 
 } // namespace bm

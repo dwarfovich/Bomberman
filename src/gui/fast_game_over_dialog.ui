@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="onceMoreGameButoon">
+  <widget class="QPushButton" name="onceMoreGameButton">
    <property name="geometry">
     <rect>
      <x>250</x>

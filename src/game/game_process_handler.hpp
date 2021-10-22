@@ -9,6 +9,7 @@
 
 namespace bm {
 class Game;
+class GameResult;
 
 class GameProcessHandler : public QObject
 {
@@ -21,6 +22,7 @@ public:
 
 protected: // methods
     void changeGameStatus(GameStatus newStatus);
+    void assignGameResultToGame(const GameResult& result);
 
 protected: // data
     std::shared_ptr<Game> game_;

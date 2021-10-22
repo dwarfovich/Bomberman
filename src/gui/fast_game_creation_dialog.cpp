@@ -12,8 +12,8 @@
 namespace bm {
 namespace gui {
 
-FastGameCreationDialog::FastGameCreationDialog(QWidget* parent)
-    : GameCreationDialog { parent }, ui_ { new Ui::FastGameCreationDialog }
+FastGameCreationDialog::FastGameCreationDialog(QWidget* parent, const std::shared_ptr<Player>& player)
+    : GameCreationDialog { parent, player }, ui_ { new Ui::FastGameCreationDialog }
 {
     ui_->setupUi(this);
 

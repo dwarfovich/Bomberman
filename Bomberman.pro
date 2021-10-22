@@ -55,6 +55,7 @@ SOURCES += \
     src/game/server_game.cpp \
     src/game/single_player_game_process.cpp \
     src/gui/campaign_game_dialog.cpp \
+    src/gui/campaign_game_over_dialog.cpp \
     src/gui/cell_sprite_item.cpp \
     src/gui/character_sprite_item.cpp \
     src/gui/client_game_dialog.cpp \
@@ -157,6 +158,7 @@ HEADERS += \
     src/game/server_game.hpp \
     src/game/single_player_game_process.hpp \
     src/gui/campaign_game_dialog.hpp \
+    src/gui/campaign_game_over_dialog.hpp \
     src/gui/cell_sprite_item.hpp \
     src/gui/character_sprite_item.hpp \
     src/gui/client_game_dialog.hpp \
@@ -213,6 +215,7 @@ HEADERS += \
 
 FORMS += \
     src/gui/campaign_game_dialog.ui \
+    src/gui/campaign_game_over_dialog.ui \
     src/gui/client_game_dialog.ui \
     src/gui/create_network_game_dialog.ui \
     src/gui/create_player_dialog.ui \

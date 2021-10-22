@@ -89,6 +89,7 @@ protected: // data
     TimerQueue                          timerEventsQueue;
     QTimer                              movementTimer_;
     GameStatus                          currentStatus_ = GameStatus::Waiting;
+    GameResult                          gameResult_;
 };
 
 } // namespace bm

@@ -13,4 +13,9 @@ void GameProcessHandler::changeGameStatus(GameStatus newStatus)
     game_->setGameStatus(newStatus);
 }
 
+void GameProcessHandler::assignGameResultToGame(const GameResult& result)
+{
+    game_->gameResult_ = result;
+}
+
 } // namespace bm

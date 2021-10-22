@@ -21,14 +21,13 @@ class CampaignGameDialog : public GameCreationDialog
     Q_OBJECT
 
 public:
-    explicit CampaignGameDialog(const std::shared_ptr<Player> player, QWidget *parent = nullptr);
+    explicit CampaignGameDialog(const std::shared_ptr<Player> &player, QWidget *parent = nullptr);
     ~CampaignGameDialog();
 
     const GameInitializationData &initializationData() const override;
 
 private:
     Ui::CampaignGameDialog *       ui_;
-    std::shared_ptr<Player>        player_;
     std::shared_ptr<Game>          game_;
     mutable GameInitializationData initializationData_;
 
