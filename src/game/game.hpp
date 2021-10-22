@@ -52,6 +52,8 @@ public:
 
     GameStatus currentStatus() const;
 
+    const GameResult& gameResult() const;
+
 signals:
     void gameOver();
     void cellStructureChanged(size_t index, CellStructure previousStructure);

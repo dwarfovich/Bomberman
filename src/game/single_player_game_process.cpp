@@ -15,17 +15,25 @@ void SinglePlayerGameProcess::setGame(const std::shared_ptr<Game>& game)
     Q_ASSERT(game);
     Q_ASSERT(game->map());
 
+    botsKilled_.clear();
     GameProcessHandler::setGame(game);
     const auto& map = game_->map();
-    connect(map.get(), &Map::botRemoved, this, &SinglePlayerGameProcess::onBotRemoved);
+    connect(map.get(), &Map::characterDestroyed, this, &SinglePlayerGameProcess::onCharacterDestroyed);
+    //    connect(map.get(), &Map::botRemoved, this, &SinglePlayerGameProcess::onBotRemoved);
     connect(map.get(), &Map::characterIndexChanged, this, &SinglePlayerGameProcess::onCharacterIndexChanged);
 }
 
-void SinglePlayerGameProcess::onBotRemoved()
+void SinglePlayerGameProcess::onCharacterDestroyed(const std::shared_ptr<Character>& character)
 {
-    const auto& map = game_->map();
-    if (map->bots().empty()) {
-        map->activateExit();
+    if (character->type() == CharacterType::Bot) {
+        botsKilled_.push_back(character->id());
+        const auto& map = game_->map();
+        if (map->bots().size() == 1) {
+            map->activateExit();
+        }
+    } else {
+        assignGameResultToGame(generateGameResult());
+        changeGameStatus(GameStatus::GameOver);
     }
 }
 
@@ -39,7 +47,18 @@ void SinglePlayerGameProcess::onCharacterIndexChanged(const std::shared_ptr<Char
 
 GameResult SinglePlayerGameProcess::generateGameResult()
 {
-    GameResult result;
+    GameResult  result;
+    const auto& map = game_->map();
+    if (map->bots().empty()) {
+        result.characterIdWon   = game_->playerId();
+        result.characterTypeWon = CharacterType::Bomberman;
+        result.gameWon          = true;
+    } else {
+        result.characterTypeWon = CharacterType::Bot;
+        result.gameWon          = false;
+    }
+    result.characterIdsLoose = std::move(botsKilled_);
+
     return result;
 }
 

@@ -18,6 +18,8 @@ public:
     explicit FastGameOverDialog(QWidget *parent = nullptr);
     ~FastGameOverDialog();
 
+    void setGameResult(const GameResult &gameResult) override;
+
 private:
     Ui::FastGameOverDialog *ui_;
 };

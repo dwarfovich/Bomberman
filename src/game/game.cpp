@@ -84,6 +84,11 @@ void Game::setGameStatus(GameStatus status)
     emit gameStatusChanged(currentStatus_);
 }
 
+const GameResult& Game::gameResult() const
+{
+    return gameResult_;
+}
+
 GameStatus Game::currentStatus() const
 {
     return currentStatus_;

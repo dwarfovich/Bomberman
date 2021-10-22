@@ -102,6 +102,7 @@ signals:
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
     void explosionRemoved(const std::shared_ptr<Explosion>& explosion);
     void botRemoved();
+    void characterDestroyed(const std::shared_ptr<Character>& character);
     void exitActivated();
 
 private: // methods

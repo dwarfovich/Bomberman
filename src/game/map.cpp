@@ -189,6 +189,7 @@ void Map::removeBomberman(const Bomberman& bomberman)
 {
     auto iter = idToCharacterMap_.find(bomberman.id());
     if (iter != idToCharacterMap_.cend()) {
+        emit characterDestroyed(iter->second);
         bombermans_.erase(&bomberman);
         idToCharacterMap_.erase(iter);
     }
@@ -217,6 +218,7 @@ void Map::removeBot(const std::shared_ptr<Bot>& bot)
 {
     auto iter = idToCharacterMap_.find(bot->id());
     if (iter != idToCharacterMap_.cend()) {
+        emit characterDestroyed(bot);
         idToCharacterMap_.erase(iter);
         bots_.erase(std::remove(bots_.begin(), bots_.end(), bot));
     }
@@ -235,12 +237,13 @@ void Map::removeCharacter(object_id_t id)
 {
     const auto& characterPtr = character(id);
     if (characterPtr) {
+        emit characterDestroyed(characterPtr);
         if (characterPtr->type() == CharacterType::Bomberman) {
             const auto* bomberman = static_cast<Bomberman*>(characterPtr.get());
             bombermans_.erase(bomberman);
         } else {
             bots_.erase(std::remove(bots_.begin(), bots_.end(), characterPtr));
-            emit botRemoved();
+            // emit botRemoved();
         }
         idToCharacterMap_.erase(id);
     }

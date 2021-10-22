@@ -90,8 +90,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
 void MainWindow::gameStatusChanged(GameStatus newStatus)
 {
     if (newStatus == GameStatus::GameOver) {
-        auto* gameOverDialog       = gameDialogs_.gameOverDialog;
-        auto  gameOverDialogAnswer = gameOverDialog->exec();
+        auto* gameOverDialog = gameDialogs_.gameOverDialog;
+        gameOverDialog->setGameResult(gameData_.game->gameResult());
+        auto gameOverDialogAnswer = gameOverDialog->exec();
         if (gameOverDialogAnswer == QDialog::Accepted) {
             auto answer = gameDialogs_.creationDialog->exec();
             if (answer == QDialog::Accepted) {

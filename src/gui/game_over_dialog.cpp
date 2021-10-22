@@ -4,17 +4,18 @@
 namespace bm {
 namespace gui {
 
-GameOverDialog::GameOverDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::GameOverDialog)
+GameOverDialog::GameOverDialog(QWidget *parent) : QDialog(parent), ui_(new Ui::GameOverDialog)
 {
-    ui->setupUi(this);
+    ui_->setupUi(this);
 }
 
 GameOverDialog::~GameOverDialog()
 {
-    delete ui;
+    delete ui_;
 }
+
+void GameOverDialog::setGameResult(const GameResult &gameResult)
+{}
 
 } // namespace gui
 } // namespace bm

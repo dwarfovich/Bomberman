@@ -17,11 +17,14 @@ public:
     void setGame(const std::shared_ptr<Game>& game) override;
 
 private slots:
-    void onBotRemoved();
+    void onCharacterDestroyed(const std::shared_ptr<Character>& character);
     void onCharacterIndexChanged(const std::shared_ptr<Character>& character, size_t index);
 
-private:
+private: // methods
     GameResult generateGameResult();
+
+private: // data
+    std::vector<object_id_t> botsKilled_;
 };
 
 } // namespace bm

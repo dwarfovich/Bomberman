@@ -1,9 +1,11 @@
 #ifndef BM_GUI_GAME_OVER_DIALOG_HPP
-    #define BM_GUI_GAME_OVER_DIALOG_HPP
+#define BM_GUI_GAME_OVER_DIALOG_HPP
 
-    #include <QDialog>
+#include <QDialog>
 
 namespace bm {
+class GameResult;
+
 namespace gui {
 
 namespace Ui {
@@ -18,11 +20,13 @@ public:
     explicit GameOverDialog(QWidget *parent = nullptr);
     ~GameOverDialog();
 
-private:
-    Ui::GameOverDialog *ui;
-};
+    virtual void setGameResult(const GameResult &gameResult);
 
+private:
+    Ui::GameOverDialog *ui_;
+};
 
 } // namespace gui
 } // namespace bm
+
 #endif // BM_GUI_GAME_OVER_DIALOG_HPP
