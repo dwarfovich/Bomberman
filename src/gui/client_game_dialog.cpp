@@ -1,9 +1,13 @@
 #include "client_game_dialog.hpp"
 #include "ui_client_game_dialog.h"
 #include "game/map_loader.hpp"
+#include "game/client_game.hpp"
+#include "game/game_initialization_data.hpp"
 #include "net/client.hpp"
-#include "net/text_message.hpp"
-#include "net/client_ready_message.hpp"
+#include "net/messages/text_message.hpp"
+#include "net/messages/client_name_message.hpp"
+#include "net/messages/player_ready_message.hpp"
+#include "net/messages/client_joining_game_message.hpp"
 
 #include <QHostAddress>
 
@@ -11,13 +15,18 @@ namespace bm {
 namespace gui {
 
 ClientGameDialog::ClientGameDialog(QWidget *parent)
-    : QDialog(parent), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
+    : GameCreationDialog(parent), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
 {
     ui_->setupUi(this);
 
+    game_ = std::make_shared<ClientGame>(client_);
+
     ui_->mapPreview->setScene(&scene_);
 
+    connect(game_.get(), &Game::gameStatusChanged, this, &ClientGameDialog::onGameStatusChanged);
+
     connect(client_, &Client::logMessage, this, &ClientGameDialog::onLogMessageRequest);
+    connect(client_, &Client::connectedToServer, this, &ClientGameDialog::onConnectedToServer);
     connect(client_, &Client::readyToStartGame, this, &ClientGameDialog::accept);
     connect(client_, &Client::selectMapRequest, this, &ClientGameDialog::onSelectMapRequest);
 
@@ -41,7 +50,7 @@ Client *ClientGameDialog::client() const
 
 void ClientGameDialog::onReady()
 {
-    ClientReadyMessage message(client_->playerId());
+    ClientJoiningGameMessage message;
     client_->sendMessage(message);
 }
 
@@ -54,6 +63,12 @@ void ClientGameDialog::connectToServer()
 {
     QHostAddress address { ui_->serverAddressEdit->text() };
     client_->connectToServer(address, ui_->portSpinBox->value());
+}
+
+void ClientGameDialog::onConnectedToServer()
+{
+    ClientNameMessage message { ui_->playerNameEdit->text() };
+    client_->sendMessage(message);
 }
 
 void ClientGameDialog::sendMessage()
@@ -85,8 +100,33 @@ void ClientGameDialog::onSelectMapRequest(QString mapFilename)
     }
 }
 
-void ClientGameDialog::onReadyForPreparingToStartGame()
-{}
+void ClientGameDialog::onGameStatusChanged(GameStatus status)
+{
+    if (status == GameStatus::PreparingFinished) {
+        accept();
+    }
+}
+
+const GameInitializationData &ClientGameDialog::initializationData() const
+{
+    static GameInitializationData data;
+    data.game            = game_;
+    data.map             = game_->map();
+    data.playerBomberman = game_->playerId();
+
+    return data;
+}
 
 } // namespace gui
 } // namespace bm
+
+const std::shared_ptr<bm::Map> &bm::gui::ClientGameDialog::map() const
+{
+    if (game_) {
+        return game_->map();
+
+    } else {
+        static const std::shared_ptr<Map> empty { nullptr };
+        return empty;
+    }
+}

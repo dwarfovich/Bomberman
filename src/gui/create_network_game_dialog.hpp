@@ -2,8 +2,10 @@
 #define BM_GUI_CREATE_NETWORK_GAME_DIALOG_HPP
 
 #include "game_scene.hpp"
+#include "game_creation_dialog.hpp"
+#include "game/game_initialization_data.hpp"
+#include "game/network_game.hpp"
 
-#include <QDialog>
 #include <QDir>
 #include <QStandardItemModel>
 
@@ -16,13 +18,15 @@ namespace Ui {
 class CreateNetworkGameDialog;
 }
 
-class CreateNetworkGameDialog : public QDialog
+class CreateNetworkGameDialog : public GameCreationDialog
 {
     Q_OBJECT
 
 public:
     explicit CreateNetworkGameDialog(QWidget *parent = nullptr);
     ~CreateNetworkGameDialog();
+
+    const GameInitializationData &initializationData() const override;
 
     Server *server() const;
 
@@ -32,8 +36,9 @@ public slots:
 
 private slots:
     void onServerPlayerNameChanged(const QString &newName);
-    void onClientConnected(uint8_t clientId, QString name);
+    void onClientConnected(uint8_t clientId, const QString &name);
     void onClientNameChanged(uint8_t clientId, QString name);
+    void onClientJoinedGame(uint8_t clientId);
     void onClientsWaitingForGameData();
     void onNewMapSelected(int index);
     void sendMessage();
@@ -41,6 +46,7 @@ private slots:
 private: // methods
     void addServerPlayerToModel();
     void prepareMapList();
+    void addPlayerToModel(uint8_t clientId, const QString &name);
 
 private: // data
     enum MapsComboBoxRoles
@@ -52,13 +58,21 @@ private: // data
         ClientId = Qt::UserRole + 1
     };
 
-    Ui::CreateNetworkGameDialog *ui_;
-    const QDir                   mapFolder = QDir::currentPath() + "/maps/";
-    QStandardItemModel           playersModel_;
-    QStandardItemModel           mapsComboBoxModel_;
-    Server *                     server_;
-    std::shared_ptr<Map>         selectedMap_;
-    GameScene                    scene_;
+    Ui::CreateNetworkGameDialog *  ui_;
+    const QDir                     mapFolder = QDir::currentPath() + "/maps/";
+    QStandardItemModel             playersModel_;
+    QStandardItemModel             mapsComboBoxModel_;
+    Server *                       server_;
+    std::shared_ptr<Map>           selectedMap_;
+    GameScene                      scene_;
+    std::shared_ptr<NetworkGame>   game_;
+    mutable GameInitializationData initializationData_;
+    QIcon                          playerConnectedIcon_ { ":/gui/player_connected.png" };
+    QIcon                          playerReadyIcon_ { ":/gui/player_ready.png" };
+
+    // GameCreationDialog interface
+public:
+    const std::shared_ptr<Map> &map() const override;
 };
 
 } // namespace gui

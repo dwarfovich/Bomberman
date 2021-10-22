@@ -1,8 +1,7 @@
 #ifndef BM_GAMEINITIALIZATIONDATA_HPP
 #define BM_GAMEINITIALIZATIONDATA_HPP
 
-#include "game_object.hpp"
-
+#include "game_object_id.hpp"
 #include <QStringList>
 
 #include <memory>
@@ -16,16 +15,22 @@ class Map;
 namespace gui {
 class GameScene;
 class GameView;
+class MainWindow;
+class PlayerKeyControls;
 } // namespace gui
 
 class GameInitializationData
 {
 public:
-    std::unique_ptr<Game>                   game = nullptr;
+    std::shared_ptr<Game>                   game = nullptr;
     std::shared_ptr<Map>                    map;
     std::vector<std::shared_ptr<Bomberman>> bombermans;
-    gui::GameScene*                         scene = nullptr;
-    gui::GameView*                          view  = nullptr;
+    object_id_t                             playerBomberman      = invalidObjectId;
+    bool                                    sceneConnectedToGame = false;
+    gui::GameScene*                         scene                = nullptr;
+    gui::GameView*                          view                 = nullptr;
+    gui::MainWindow*                        mainWindow           = nullptr;
+    gui::PlayerKeyControls*                 keyControls          = nullptr;
     QStringList                             errors;
 };
 

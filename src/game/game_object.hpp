@@ -1,7 +1,8 @@
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
 
-#include <cinttypes>
+#include "game_object_id.hpp"
+
 #include <unordered_set>
 
 #define ACCEPT_COLLISION                                                            \
@@ -16,8 +17,6 @@ namespace bm {
 class Collider;
 class CollisionDispatcherBase;
 
-using object_id_t = uint16_t;
-
 class GameObject
 {
 public:
@@ -29,8 +28,6 @@ public:
 
     object_id_t id() const;
 
-protected: // methods
-           // void setId(object_id_t newObjectId);
 protected: // data
     object_id_t id_;
 

@@ -1,7 +1,7 @@
 #ifndef BM_SERVERWORKER_HPP
 #define BM_SERVERWORKER_HPP
 
-#include "message.hpp"
+#include "messages/message.hpp"
 
 #include <QObject>
 
@@ -23,6 +23,7 @@ public:
     ServerWorker& operator=(const ServerWorker&) = delete;
     ServerWorker& operator=(ServerWorker&&) = delete;
 
+    bool           isValid() const;
     bool           setSocketDescriptor(qintptr descriptor);
     const QString& clientName() const;
     void           setClientName(const QString& newClientName);
@@ -30,16 +31,21 @@ public:
 
     uint8_t clientId() const;
 
-    void setClientId(uint8_t newClientId);
-
 signals:
-    void messageReceived(const std::unique_ptr<bm::Message>& message);
+    void messageReceived(const std::unique_ptr<Message>& message);
     void clientDisconnected();
 
-private:
+private: // methods
+    static uint8_t nextId();
+
+private: // data
     Socket* socket_;
     QString clientName_ = "Unknown";
     uint8_t clientId_;
+
+    static uint8_t              nextClientId_;
+    static std::vector<uint8_t> freedIds;
+    static constexpr uint8_t    invalidClientId = -1;
 };
 
 } // namespace bm

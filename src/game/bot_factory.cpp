@@ -4,7 +4,7 @@
 
 namespace bm {
 
-std::unique_ptr<Bot> createBot(BotType type, const Map& map)
+std::unique_ptr<Bot> createBot(BotType type, Map &map)
 {
     if (type == BotType::Regular) {
         auto bot = std::make_unique<Bot>();

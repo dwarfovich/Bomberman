@@ -19,8 +19,13 @@ void Collider::collide(Explosion &explosion, GameObject &object) const
 void Collider::collide(Explosion &explosion, Cell &cell) const
 {
     if (cell.structure() == CellStructure::Bricks) {
-        game_->map_->setCellType(cell.index(), CellStructure::Empty);
-        game_->map_->setModifier(cell.index(), modifierCreator_.chooseModifier());
+        const auto &map = game_->map();
+        if (cell.index() == map->exitIndex()) {
+            emit game_->exitRevealed(cell.index());
+        } else {
+            map->setModifier(cell.index(), modifierCreator_.chooseModifier());
+        }
+        map->setCellType(cell.index(), CellStructure::Empty);
     }
 }
 

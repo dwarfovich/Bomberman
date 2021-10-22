@@ -8,6 +8,7 @@
 #include "bomb.hpp"
 #include "explosion.hpp"
 #include "respawn_type.hpp"
+#include "map_constants.hpp"
 
 #include <QObject>
 #include <QPoint>
@@ -38,18 +39,19 @@ public:
     void                              setCellType(size_t index, CellStructure structure);
     void                              setCell(const Cell& cell);
     bool                              placeBomb(const std::shared_ptr<Bomb>& bomb);
-    bool                              removeBomb(size_t index);
+    const std::shared_ptr<Bomb>       removeBomb(size_t index);
     bool                              setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
     void                              addBomberman(const std::shared_ptr<Bomberman>& bomberman);
     void                              removeBomberman(const Bomberman& bomberman);
     const std::shared_ptr<Bomberman>& bomberman(object_id_t id) const;
     void                              addBot(const std::shared_ptr<Bot>& bot);
     void                              removeBot(const std::shared_ptr<Bot>& bot);
-    void                              moveCharacter(object_id_t id, const MoveData& moveData) const;
+    void                              moveCharacter(object_id_t id, const MoveData& moveData);
     void                              removeCharacter(object_id_t id);
     void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
-    void                              removeExplosion(const std::shared_ptr<Explosion>& explosion);
+    void                              removeExplosion(object_id_t id);
     const std::shared_ptr<Character>& character(object_id_t id) const;
+    void                              activateExit();
 
     const Cell&                               cell(size_t index) const;
     CellLocation                              coordinatesToLocation(const QPoint& coordinates) const;
@@ -85,6 +87,11 @@ public:
     const QString& name() const;
     void           setName(const QString& newName);
 
+    size_t exitIndex() const;
+    void   setExitIndex(size_t newExitCell);
+
+    bool isExitActivated() const;
+
 signals:
     void cellStructureChanged(size_t index, CellStructure previousStructure);
     void characterMoved(const std::shared_ptr<Character>& character);
@@ -93,6 +100,10 @@ signals:
     void objectsCollided(const Map::Collisions& collisions);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
+    void explosionRemoved(const std::shared_ptr<Explosion>& explosion);
+    void botRemoved();
+    void characterDestroyed(const std::shared_ptr<Character>& character);
+    void exitActivated();
 
 private: // methods
     void checkBombermanAndBotCollisions(Collisions& collisions);
@@ -130,9 +141,11 @@ private: // methods
 
 private: // data
     QString                            name_;
-    uint32_t                           randomSeed_    = 0;
-    size_t                             widthInCells_  = 0;
-    size_t                             heightInCells_ = 0;
+    uint32_t                           randomSeed_      = 0;
+    size_t                             widthInCells_    = 0;
+    size_t                             heightInCells_   = 0;
+    size_t                             exitCell_        = invalidMapIndex;
+    bool                               isExitActivated_ = false;
     std::vector<std::shared_ptr<Cell>> cells_;
     using IdCharactersMap = std::unordered_map<object_id_t, std::shared_ptr<Character>>;
     IdCharactersMap                                idToCharacterMap_;

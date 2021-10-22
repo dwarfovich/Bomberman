@@ -14,6 +14,7 @@
 namespace bm {
 namespace gui {
 
+// TODO: Fix bug. Bug scenario - start fast game, win, press "Cancel", start fast game again, crash.
 GameScene::GameScene(QObject* parent) : QGraphicsScene { parent }, callbacks_ { this }, spriteFactory_ { &callbacks_ }
 {
     connect(&animationTimer_, &QTimer::timeout, this, &GameScene::updateAnimations);
@@ -35,6 +36,14 @@ void GameScene::setMap(const std::shared_ptr<Map>& map)
 
             QGraphicsScene::addItem(cellItem.release());
         }
+    }
+
+    for (const auto& [bomberman, bombermanSptr] : map->bombermans()) {
+        addBomberman(bombermanSptr);
+    }
+
+    for (const auto& bot : map->bots()) {
+        addBot(bot);
     }
 }
 
@@ -133,6 +142,7 @@ void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
     }
 
     auto* sprite = itemIter->second;
+    Q_ASSERT(sprite != exitSprite_);
     gameObjects_.erase(itemIter);
     if (sprite->hasDestroyAnimation()) {
         animations_.insert(sprite);
@@ -145,7 +155,7 @@ void GameScene::onObjectDestroyed(std::shared_ptr<GameObject> object)
     spriteItems_.erase(sprite);
 }
 
-void GameScene::onCellChanged(size_t index, CellStructure previousStructure)
+void GameScene::onCellStructureChanged(size_t index, CellStructure previousStructure)
 {
     if (index < cellItems_.size()) {
         if (previousStructure == CellStructure::Bricks) {
@@ -162,12 +172,22 @@ void GameScene::onModifierAdded(size_t index, const std::shared_ptr<IModifier>& 
     auto item = spriteFactory_.createSprite(index, modifier);
     item->setPos(map_->indexToCoordinates(index));
     auto inserted = gameObjects_.emplace(modifier, item.get());
-    if (!inserted.second) {
-        int r = 0;
-    }
     spriteItems_.insert(item.get());
     animations_.insert(item.get());
     QGraphicsScene::addItem(item.release());
+}
+
+void GameScene::onExitRevealed(size_t index)
+{
+    auto exitSprite = spriteFactory_.createExitSprite();
+    exitSprite->setPos(map_->indexToCoordinates(index));
+    exitSprite_ = exitSprite.get();
+    addItem(exitSprite.release());
+}
+
+void GameScene::onExitActivated()
+{
+    addAnimation(exitSprite_);
 }
 
 void GameScene::onModifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier)

@@ -6,6 +6,8 @@ namespace bm {
 
 QDataStream& operator<<(QDataStream& stream, const Bomb& bomb)
 {
+    stream << bomb.id_;
+    stream << bomb.ownerId;
     stream << bomb.radius;
     stream << bomb.cellIndex;
     stream << bomb.explosionDelay;
@@ -16,6 +18,8 @@ QDataStream& operator<<(QDataStream& stream, const Bomb& bomb)
 
 QDataStream& operator>>(QDataStream& stream, Bomb& bomb)
 {
+    stream >> bomb.id_;
+    stream >> bomb.ownerId;
     stream >> bomb.radius;
     stream >> bomb.cellIndex;
     stream >> bomb.explosionDelay;

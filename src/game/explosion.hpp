@@ -17,6 +17,7 @@ public:
     friend QDataStream& operator<<(QDataStream& stream, const Explosion& explosion);
     friend QDataStream& operator>>(QDataStream& stream, Explosion& explosion);
 
+    Explosion() = default;
     Explosion(const CellLocation&              center,
               const std::pair<size_t, size_t>& xMinMax,
               const std::pair<size_t, size_t>& yMinMax);

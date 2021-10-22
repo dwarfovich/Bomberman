@@ -1,7 +1,7 @@
 #ifndef BM_SOCKET_HPP
 #define BM_SOCKET_HPP
 
-#include "message.hpp"
+#include "messages/message.hpp"
 
 #include <QObject>
 #include <QDataStream>
@@ -13,7 +13,10 @@ class QHostAddress;
 QT_END_NAMESPACE
 
 namespace bm {
+namespace message_ns {
 class Message;
+
+}
 
 class Socket : public QObject
 {

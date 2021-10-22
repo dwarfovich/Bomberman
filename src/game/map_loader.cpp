@@ -33,7 +33,12 @@ void parseRespawnLocations(const QJsonObject& json, MapData& mapData)
     //        mapData.bombermans.push_back(bomberman);
     //    }
 
-    const auto& botArray = json["bot_respawns"].toArray();
+    const auto&         botArray = json["bot_respawns"].toArray();
+    std::vector<size_t> respawns;
+    for (size_t i = 0; i < botArray.size(); ++i) {
+        respawns.push_back(botArray[i].toInt());
+    }
+    mapData.map->setRespawnPlaces(RespawnType::Bot, respawns);
     for (size_t i = 0; i < botArray.size(); ++i) {
         auto index = botArray[i].toInt();
         auto bot   = createBot(BotType::Regular, *mapData.map);
@@ -79,7 +84,6 @@ std::unique_ptr<Map> createTestMap()
 
 MapData loadFromFile(const QString& filePath)
 {
-    // qDebug() << filePath;
     QFile file { filePath };
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Cann't open map file:" << filePath;
@@ -112,6 +116,11 @@ MapData loadFromFile(const QString& filePath)
 
         for (qsizetype i = 0; i < mapJsonArray.size(); ++i) {
             map->setCellType(static_cast<size_t>(i), jsonValueToCellStructure(mapJsonArray[i].toInt()));
+        }
+
+        const auto& exitCellValue = jsonObject.value("exit");
+        if (!exitCellValue.isUndefined()) {
+            map->setExitIndex(jsonObject["exit"].toInt());
         }
 
         MapData mapData;

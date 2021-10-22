@@ -1,9 +1,10 @@
 #include "game_factory.hpp"
-#include "game/game_initialization_data.hpp" e
+#include "game_initialization_data.hpp"
 #include "server_game.hpp"
 #include "network_game.hpp"
 #include "client_game.hpp"
-#include "game/map_loader.hpp"
+#include "map_loader.hpp"
+#include "single_player_game_process.hpp"
 #include "net/server.hpp"
 #include "net/client.hpp"
 
@@ -36,34 +37,14 @@ GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map)
     Q_ASSERT(map);
 
     GameInitializationData data;
-    data.map  = map;
-    data.game = std::make_unique<ServerGame>();
-    data.bombermans.push_back(std::make_shared<Bomberman>());
+    data.map              = map;
+    data.game             = std::make_unique<ServerGame>();
+    const auto& bomberman = std::make_shared<Bomberman>();
+    data.bombermans.push_back(bomberman);
+    data.playerBomberman = bomberman->id();
+    data.game->setGameProcessHandler(std::make_unique<SinglePlayerGameProcess>());
 
     return data;
-}
-
-std::unique_ptr<Game> createNetworkGame(Server*                     server,
-                                        const std::shared_ptr<Map>& map,
-                                        const map_loader::MapData&  mapData)
-{
-    auto        game       = std::make_unique<NetworkGame>(server);
-    const auto& playersIds = server->playersIds();
-
-    bool success = createBombermansForPlayers(playersIds, *map, *game);
-    if (!success) {
-        return nullptr;
-    }
-
-    auto bots = mapData.bots;
-    for (const auto& bot : mapData.bots) {
-        mapData.map->addBot(bot);
-    }
-
-    game->setMap(map);
-    game->startPreparing();
-
-    return game;
 }
 
 std::unique_ptr<Game> createClientGame(Client* client)
@@ -72,6 +53,13 @@ std::unique_ptr<Game> createClientGame(Client* client)
     auto map2 = client->initializedMap();
     game->setMap(client->initializedMap());
     //    game->startPreparing();
+
+    return game;
+}
+
+std::unique_ptr<Game> createNetworkGame(Server* server)
+{
+    auto game = std::make_unique<NetworkGame>(server);
 
     return game;
 }

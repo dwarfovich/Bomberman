@@ -44,14 +44,10 @@ std::shared_ptr<Bomb> ServerGame::placeBomb(object_id_t player)
     }
 }
 
+// TODO: Remove this unnnecessary overload.
 const std::shared_ptr<Bomberman>& ServerGame::bomberman(object_id_t playerId) const
 {
     return map_->bomberman(playerId);
-}
-
-object_id_t ServerGame::playerId() const
-{
-    return 0;
 }
 
 } // namespace bm

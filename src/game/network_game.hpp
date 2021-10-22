@@ -2,14 +2,14 @@
 #define BM_NETWORKGAME_HPP
 
 #include "server_game.hpp"
-#include "net/message.hpp"
-#include "net/i_message_visitor.hpp"
+#include "net/messages/message.hpp"
+#include "net/messages/i_message_visitor.hpp"
 
 #include "unordered_set"
 
 namespace bm {
 class Server;
-class ClientReadyMessage;
+class ClientJoiningGameMessage;
 
 class NetworkGame : public ServerGame, public IMessageVisitor
 {
@@ -18,9 +18,23 @@ class NetworkGame : public ServerGame, public IMessageVisitor
 public:
     explicit NetworkGame(Server* server);
 
-    void start() override;
-    void startPreparing();
-    void setMap(const std::shared_ptr<Map>& map) override;
+    void                  start() override;
+    void                  setMap(const std::shared_ptr<Map>& map) override;
+    void                  movePlayer(object_id_t player, Direction direction) override;
+    void                  stopPlayer(object_id_t player) override;
+    std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
+
+    void visit(const ClientJoiningGameMessage& message) override;
+    void visit(const PlayerReadyMessage& message) override;
+    void visit(const CharacterMovedMessage& message) override;
+    void visit(const BombPlacedMessage& message) override;
+
+    const std::vector<std::shared_ptr<Bomberman>>& playersBombermans() const;
+
+protected:
+    void prepareToStart() override;
+    void explodeBomb(const std::shared_ptr<Bomb>& bomb) override;
+    void onExplosionFinished(const std::shared_ptr<Explosion>& explosion) override;
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -30,24 +44,14 @@ private: // methods
     void makeConnections();
     void sendMapInitializationMessage();
     void startGame();
+    bool allPlayersReady();
 
 private: // data
-    Server* server_;
-    bool    connectionsMade_ = false;
-
-    // Game interface
-public:
-    void                  movePlayer(object_id_t player, Direction direction) override;
-    void                  stopPlayer(object_id_t player) override;
-    std::shared_ptr<Bomb> placeBomb(object_id_t player) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const CharacterMovedMessage& message) override;
-
-    // IMessageVisitor interface
-public:
-    void visit(const BombPlacedMessage& message) override;
+    Server*                                 server_;
+    bool                                    connectionsMade_ = false;
+    std::unordered_set<uint8_t>             playersPreparingToStartGame_;
+    std::unordered_set<uint8_t>             playersReady_;
+    std::vector<std::shared_ptr<Bomberman>> playersBombermans_;
 };
 
 } // namespace bm

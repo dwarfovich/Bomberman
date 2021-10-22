@@ -23,11 +23,13 @@ SpriteObjectFactory::SpriteObjectFactory(const SpriteItemCallbacks *const callba
     bomb_      = QPixmap { QStringLiteral(":/gfx/bomb.png") };
     explosion_ = QPixmap { QStringLiteral(":/gfx/explosion - Copy.png") };
     modifiers_ = QPixmap { QStringLiteral(":/gfx/modifiers.png") };
+    exit_      = QPixmap { QStringLiteral(":/gfx/exit.png") };
 }
 
 std::unique_ptr<CellSpriteItem> SpriteObjectFactory::createSprite(const Cell *cell)
 {
     auto item = std::make_unique<CellSpriteItem>(callbacks_, cell_);
+    item->setZValue(SpriteZValue::ZCell);
     item->setFramesCount(5);
     if (cell->structure() == CellStructure::Empty) {
         item->setStructureFrame(CellSpriteItem::CellStructureFrame::Empty);
@@ -43,6 +45,7 @@ std::unique_ptr<CellSpriteItem> SpriteObjectFactory::createSprite(const Cell *ce
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bomberman> &character)
 {
     auto item = std::make_unique<CharacterSpriteItem>(callbacks_, bomberman_);
+    item->setZValue(SpriteZValue::ZCharacter);
     item->setCharacter(character);
     item->setFramesCount(10);
 
@@ -52,6 +55,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bot> &character)
 {
     auto item = std::make_unique<CharacterSpriteItem>(callbacks_, bot_);
+    item->setZValue(SpriteZValue::ZCharacter);
     item->setCharacter(character);
     item->setFramesCount(10);
 
@@ -61,6 +65,7 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_
 std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(const std::shared_ptr<Bomb> &bomb)
 {
     auto item = std::make_unique<SpriteItem>(callbacks_, bomb_);
+    item->setZValue(SpriteZValue::ZBomb);
     item->setFramesCount(4);
 
     return item;
@@ -74,6 +79,7 @@ std::unique_ptr<ExplosionSpriteItem> SpriteObjectFactory::createSprite(const Exp
 
     item->setPixmap(explosion_);
     item->setFramesCount(4);
+    item->setZValue(SpriteZValue::ZExplosion);
     item->setPos(centerCoordinates);
 
     for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
@@ -125,105 +131,20 @@ std::unique_ptr<SpriteItem> SpriteObjectFactory::createSprite(size_t index, cons
 {
     auto item = std::make_unique<ModifierSpriteItem>(callbacks_, modifiers_);
     item->setFramesCount(5);
+    item->setZValue(SpriteZValue::ZModifier);
     item->setCurrentSpriteRow(static_cast<int>(modifier->type()) - 1);
 
     return item;
 }
 
-// std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createCellObject(const Cell *cell)
-//{
-//    //    auto item = std::make_unique<CellItem>(cell);
+std::unique_ptr<SpriteItem> SpriteObjectFactory::createExitSprite()
+{
+    auto item = std::make_unique<SpriteItem>(callbacks_, exit_);
+    item->setFramesCount(5);
+    item->setZValue(SpriteZValue::ZExit);
 
-//    //    return item;
-//    return nullptr;
-//}
-
-// std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createBombermanObject(
-//    const std::shared_ptr<Bomberman> &character)
-//{
-//    auto item = std::make_unique<AnimatedSpriteGraphicsObject>();
-//    item->setPixmap(bomberman_);
-//    item->setCharacter(character);
-
-//    return item;
-//}
-
-// std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createBotObject(const std::shared_ptr<Bot> &character)
-//{
-//    auto item = std::make_unique<AnimatedSpriteGraphicsObject>();
-//    item->setPixmap(bot_);
-//    item->setCharacter(character);
-//    item->setDestroyAnimationSpriteRow(4);
-
-//    return item;
-//}
-
-// std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createBombObject(const std::shared_ptr<Bomb> &bomb)
-//{
-//    auto item = std::make_unique<AnimatedSpriteGraphicsObject>();
-//    item->setPixmap(bomb_);
-//    item->setFramesCount(4);
-
-//    return item;
-//}
-
-// std::unique_ptr<SpriteGraphicsObject> SpriteObjectFactory::createExplosionObject(const Explosion *explosion,
-//                                                                                 const Map &      map,
-
-//                                                                                 const QPoint &centerCoordinates)
-//{
-//    //    auto item = std::make_unique<ExplosionGraphicsObject>(nullptr, explosion);
-//    //    item->setPixmap(explosion_);
-//    //    item->setFramesCount(4);
-//    //    item->setPos(centerCoordinates);
-
-//    //    std::vector<ExplosionGraphicsObject *> children;
-//    //    for (size_t x = explosion->xMin(); x <= explosion->xMax(); ++x) {
-//    //        auto centerY = explosion->center().y();
-//    //        if (explosion->center() == CellLocation { x, centerY }) {
-//    //            continue;
-//    //        }
-
-//    //        auto child = new ExplosionGraphicsObject { item.get() };
-//    //        child->setPixmap(explosion_);
-//    //        if (x == explosion->xMin()) {
-//    //            child->setExplosionPart(ExplosionPart::LeftHorizontalEnd);
-//    //        } else if (x == explosion->xMax()) {
-//    //            child->setExplosionPart(ExplosionPart::RightHorizontalEnd);
-//    //        } else {
-//    //            child->setExplosionPart(ExplosionPart::Horizontal);
-//    //        }
-//    //        child->setFramesCount(4);
-//    //        child->setPos(mapCoordinatesToSceneCoordinates(map.locationToCellCenterCoordinates({ x, centerY })));
-//    //        children.push_back(child);
-//    //    }
-
-//    //    for (size_t y = explosion->yMin(); y <= explosion->yMax(); ++y) {
-//    //        auto centerX = explosion->center().x();
-//    //        if (explosion->center() == CellLocation { centerX, y }) {
-//    //            continue;
-//    //        }
-
-//    //        auto child = new ExplosionGraphicsObject { item.get() };
-//    //        child->setPixmap(explosion_);
-//    //        if (y == explosion->yMin()) {
-//    //            child->setExplosionPart(ExplosionPart::TopVerticalEnd);
-//    //        } else if (y == explosion->yMax()) {
-//    //            child->setExplosionPart(ExplosionPart::BottomVerticalEnd);
-//    //        } else {
-//    //            child->setExplosionPart(ExplosionPart::Vertical);
-//    //        }
-//    //        child->setFramesCount(4);
-//    //        child->setPos(mapCoordinatesToSceneCoordinates(map.locationToCellCenterCoordinates({ centerX, y })));
-//    //        children.push_back(child);
-//    //    }
-
-//    //    item->setParts(children);
-
-//    //    return item;
-
-//    return nullptr;
-//}
+    return item;
+}
 
 QPoint SpriteObjectFactory::mapCoordinatesToSceneCoordinates(const QPoint &coordinates) const
 {

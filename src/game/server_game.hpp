@@ -15,7 +15,6 @@ public:
     void                              movePlayer(object_id_t player, Direction direction) override;
     void                              stopPlayer(object_id_t player) override;
     std::shared_ptr<Bomb>             placeBomb(object_id_t player) override;
-    object_id_t                       playerId() const override;
     const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const override;
 };
 

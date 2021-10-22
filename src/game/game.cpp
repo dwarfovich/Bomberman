@@ -3,7 +3,6 @@
 #include "bomb_explosion_event.hpp"
 #include "bomb_explosion_finished_event.hpp"
 #include "modifier_deactivation_event.hpp"
-
 #include "map_constants.hpp"
 #include "bomb_explosion.hpp"
 
@@ -20,19 +19,35 @@ Game::Game() : collider_ { this }
     });
 }
 
+object_id_t Game::playerId() const
+{
+    return playerId_;
+}
+
+const std::shared_ptr<Bomberman>& Game::bomberman(object_id_t playerId) const
+{
+    return map_->bomberman(playerId);
+}
+
 void Game::start()
 {
+    setGameStatus(GameStatus::Playing);
     movementTimer_.start(game_ns::movementUpdatePeriod);
 }
 
+void Game::prepareToStart()
+{}
+
 void Game::setMap(const std::shared_ptr<Map>& map)
 {
+    // TODO: count connected and disconnected signals.
     if (map_) {
         disconnect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
         disconnect(map_.get(), &Map::characterMoved, this, &Game::characterMoved);
         disconnect(map_.get(), &Map::objectsCollided, this, &Game::onObjectsCollided);
         disconnect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
         disconnect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
+        disconnect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
     }
     map_ = map;
     connect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
@@ -41,27 +56,52 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     connect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
     connect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
     connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
+    connect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
 }
 
-Map* Game::map() const
+const std::shared_ptr<Map>& Game::map() const
 {
-    return map_.get();
+    return map_;
+}
+
+void Game::setGameProcessHandler(std::unique_ptr<GameProcessHandler> handler)
+{
+    gameProcessHandler_ = std::move(handler);
 }
 
 void Game::onExplosionFinished(const std::shared_ptr<Explosion>& explosion)
 {
+    map_->removeExplosion(explosion->id());
     emit explosionFinished(explosion);
-    map_->removeExplosion(explosion);
+}
+
+void Game::setGameStatus(GameStatus status)
+{
+    currentStatus_ = status;
+    if (status == GameStatus::GameOver) {
+        movementTimer_.stop();
+    }
+    emit gameStatusChanged(currentStatus_);
+}
+
+const GameResult& Game::gameResult() const
+{
+    return gameResult_;
+}
+
+GameStatus Game::currentStatus() const
+{
+    return currentStatus_;
 }
 
 object_id_t Game::getPlayerBomberman() const
 {
-    return playerBomberman_;
+    return playerId_;
 }
 
 void Game::setPlayerBomberman(object_id_t playerBomberman)
 {
-    playerBomberman_ = playerBomberman;
+    playerId_ = playerBomberman;
 }
 
 void Game::onObjectsCollided(const Map::Collisions& collisions)
@@ -105,6 +145,7 @@ void Game::explodeBomb(const std::shared_ptr<Bomb>& bomb)
         bomberman->decreaseActiveBombs();
     }
 
+    // TODO: Remove one of this signals.
     emit bombExploded(bomb);
     emit explosionHappened(explosion);
 }

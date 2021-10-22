@@ -9,7 +9,7 @@
 namespace bm {
 class Map;
 
-std::unique_ptr<Bot> createBot(BotType type, const Map& map);
+std::unique_ptr<Bot> createBot(BotType type, Map& map);
 
 } // namespace bm
 

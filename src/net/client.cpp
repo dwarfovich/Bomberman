@@ -1,13 +1,13 @@
 #include "client.hpp"
 #include "socket.hpp"
-#include "text_message.hpp"
-#include "client_name_message.hpp"
-#include "message_factory.hpp"
-#include "text_message.hpp"
-#include "client_id_message.hpp"
-#include "select_map_request_message.hpp"
-#include "map_initialization_message.hpp"
-#include "map_initialized_message.hpp"
+#include "messages/text_message.hpp"
+#include "messages/client_name_message.hpp"
+#include "messages/message_factory.hpp"
+#include "messages/text_message.hpp"
+#include "messages/set_player_id_message.hpp"
+#include "messages/select_map_request_message.hpp"
+#include "messages/map_initialization_message.hpp"
+#include "messages/player_ready_message.hpp"
 #include "game/map.hpp"
 
 #include <QHostAddress>
@@ -17,12 +17,13 @@ namespace bm {
 
 Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { this } }
 {
-    connect(socket_, &Socket::connected, this, &Client::onConnectedToServer);
+    connect(socket_, &Socket::connected, this, &Client::connectedToServer);
     connect(socket_, &Socket::disconnected, this, [this]() {
+        // TODO: Check the situation when server is out of ids and client's socket is still connected.
+        // In that case client cann't connect again even when new ids are available.
         emit logMessage("Disconnected from server");
     });
     connect(socket_, &Socket::messageReceived, this, &Client::onMessageReceived);
-    connect(socket_, &Socket::messageReceived, this, &Client::messageReceived);
     connect(socket_, &Socket::socketError, this, &Client::onSocketError);
 }
 
@@ -78,6 +79,7 @@ void Client::setName(const QString &newName)
 void Client::onMessageReceived(const std::unique_ptr<Message> &message)
 {
     message->accept(*this);
+    emit messageReceived(message);
 }
 
 void Client::onConnectedToServer()
@@ -88,7 +90,7 @@ void Client::onConnectedToServer()
 
 void Client::visit(const TextMessage &message)
 {
-    emit logMessage(message.toString());
+    emit logMessage(message.payload());
 }
 
 void Client::visit(const PrepareToStartGame &message)
@@ -96,25 +98,14 @@ void Client::visit(const PrepareToStartGame &message)
     emit readyForPreparingToGameStart();
 }
 
-void Client::visit(const ClientIdMessage &message)
+void Client::visit(const SetPlayerIdMessage &message)
 {
-    playerId_ = message.playerId();
+    playerId_ = message.payload();
 }
 
 void Client::visit(const SelectMapRequestMessage &message)
 {
-    emit selectMapRequest(message.toString());
-}
-
-void Client::visit(const MapInitializationMessage &message)
-{
-    initializedMap_ = std::make_shared<Map>();
-    QDataStream stream(message.data());
-    stream >> *initializedMap_;
-
-    MapInitializedMessage mapInitializedMessage;
-    emit                  readyToStartGame();
-    sendMessage(mapInitializedMessage);
+    emit selectMapRequest(message.payload());
 }
 
 } // namespace bm

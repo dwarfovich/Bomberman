@@ -1,21 +1,33 @@
 #include "server_worker.hpp"
 #include "socket.hpp"
-#include "message_type.hpp"
-#include "message.hpp"
-#include "message_factory.hpp"
+#include "messages/message_type.hpp"
+#include "messages/message.hpp"
+#include "messages/message_factory.hpp"
 
 #include <QDataStream>
 
+#include <stdexcept>
+
 namespace bm {
+
+uint8_t              ServerWorker::nextClientId_ = 0;
+std::vector<uint8_t> ServerWorker::freedIds      = {};
 
 ServerWorker::ServerWorker(QObject *parent) : QObject { parent }, socket_ { new Socket { this } }
 {
+    clientId_ = nextId();
     connect(socket_, &Socket::messageReceived, this, &ServerWorker::messageReceived);
 }
 
 ServerWorker::~ServerWorker()
 {
     socket_->disconnectFromHost();
+    freedIds.push_back(clientId_);
+}
+
+bool ServerWorker::isValid() const
+{
+    return (clientId_ != invalidClientId);
 }
 
 bool ServerWorker::setSocketDescriptor(qintptr descriptor)
@@ -43,9 +55,19 @@ uint8_t ServerWorker::clientId() const
     return clientId_;
 }
 
-void ServerWorker::setClientId(uint8_t newClientId)
+uint8_t ServerWorker::nextId()
 {
-    clientId_ = newClientId;
+    auto nextId = invalidClientId;
+    if (!freedIds.empty()) {
+        nextId = freedIds.back();
+        freedIds.pop_back();
+    } else {
+        if (nextClientId_ != invalidClientId) {
+            nextId = nextClientId_++;
+        }
+    }
+
+    return nextId;
 }
 
 } // namespace bm

@@ -3,6 +3,9 @@
 
 #include "game/game.hpp"
 #include "player_key_controls.hpp"
+#include "game/game_initialization_data.hpp"
+#include "game_dialogs.hpp"
+#include "game_dialogs_factory.hpp"
 
 #include <QMainWindow>
 
@@ -29,25 +32,33 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+    void showMainMenu();
+
 public slots:
+    void startCampaignGame();
     void startSinglePlayerGame();
     void startNetworkGame();
     void connectToServer();
+    void gameStatusChanged(bm::GameStatus newStatus);
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
 
 private: // methods
-    void initializeNetworkGame(const CreateNetworkGameDialog& dialog);
-    void initializeClientGame(const ClientGameDialog& dialog);
+    void showInitializationGameErrorsMessage(const QStringList& errors);
+    void createNewGameInitializationData();
+    void initializeGame(GameInitializationData& data);
+    void startGame(const GameInitializationData& data);
 
 private: // data
-    Ui::MainWindow*       ui_             = nullptr;
-    MainMenuWidget*       mainMenuWidget_ = nullptr;
-    PlayerKeyControls     keyControls_;
-    GameView*             gameView_ = nullptr;
-    std::unique_ptr<Game> game_;
+    Ui::MainWindow* ui_             = nullptr;
+    MainMenuWidget* mainMenuWidget_ = nullptr;
+    GameView*       gameView_       = nullptr;
+    // TODO: delete old dialogs before assigning new.
+    GameDialogs            gameDialogs_;
+    PlayerKeyControls      keyControls_;
+    GameInitializationData gameData_;
 };
 
 } // namespace gui

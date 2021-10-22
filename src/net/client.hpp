@@ -1,8 +1,8 @@
 #ifndef BM_CLIENT_HPP
 #define BM_CLIENT_HPP
 
-#include "message.hpp"
-#include "i_message_visitor.hpp"
+#include "messages/message.hpp"
+#include "messages/i_message_visitor.hpp"
 #include "game/game_object.hpp"
 
 #include <QObject>
@@ -36,6 +36,7 @@ signals:
     void messageReceived(const std::unique_ptr<Message>& message);
     void readyToStartGame();
     void selectMapRequest(QString mapFilename);
+    void connectedToServer();
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -57,12 +58,11 @@ public:
 
     // IMessageVisitor interface
 public:
-    void visit(const ClientIdMessage& message) override;
+    void visit(const SetPlayerIdMessage& message) override;
     void visit(const SelectMapRequestMessage& message) override;
 
     // IMessageVisitor interface
 public:
-    void                        visit(const MapInitializationMessage& message) override;
     const std::shared_ptr<Map>& initializedMap() const;
 };
 

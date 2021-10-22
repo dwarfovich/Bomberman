@@ -5,7 +5,7 @@
 
 namespace bm {
 
-BotAi::BotAi(const Map& map, const Bot* bot, uint32_t seed)
+BotAi::BotAi(Map& map, const Bot* bot, uint32_t seed)
     : map_ { map }, bot_ { bot }, seed_ { seed }, randomGenerator_ { std::make_unique<QRandomGenerator>(seed_) }
 {}
 
@@ -28,6 +28,19 @@ Direction BotAi::chooseNextDirection() const
     } else {
         return directions[randomGenerator_->bounded(0, static_cast<int>(nextValidDirection + 1))];
     }
+}
+
+void BotAi::updateActivity()
+{
+    auto newMoveData      = bot_->movementData();
+    auto newDirection     = chooseNextDirection();
+    newMoveData.direction = newDirection;
+    if ((newDirection == Direction::Upward || newDirection == Direction::Left) && newMoveData.speed > 0) {
+        newMoveData.speed = -5;
+    } else if ((newDirection == Direction::Downward || newDirection == Direction::Right)) {
+        newMoveData.speed = 5;
+    }
+    map_.moveCharacter(bot_->id(), newMoveData);
 }
 
 } // namespace bm
