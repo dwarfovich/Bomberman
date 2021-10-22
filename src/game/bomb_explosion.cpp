@@ -67,6 +67,7 @@ BombExplosionResult explodeBomb(Map &map, Bomb &bomb)
     }
 
     std::shared_ptr<Explosion> explosion = calculateExplosion(map, bomb);
+    explosion->setBombOwner(bomb.ownerId);
 
     map.addExplosion(explosion);
 

@@ -65,4 +65,14 @@ const CellLocation &Explosion::center() const
     return center_;
 }
 
+object_id_t Explosion::bombOwner() const
+{
+    return bombOwner_;
+}
+
+void Explosion::setBombOwner(object_id_t newBombOwner)
+{
+    bombOwner_ = newBombOwner;
+}
+
 } // namespace bm

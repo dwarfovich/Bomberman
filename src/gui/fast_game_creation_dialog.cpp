@@ -52,8 +52,9 @@ std::shared_ptr<Map> FastGameCreationDialog::chooseRandomMap() const
     const auto& mapsFolder = QDir { QDir::currentPath() + "/maps/" };
     auto        maps       = mapsFolder.entryList({ "*.json" });
     if (maps.size() > 0) {
-        auto        index   = QRandomGenerator::system()->bounded(maps.size());
-        const auto& mapFile = mapsFolder.filePath(maps[index]);
+        auto index = QRandomGenerator::system()->bounded(maps.size());
+        // TODO: change map index to rnadom 'index'.
+        const auto& mapFile = mapsFolder.filePath(maps[1]);
         return map_loader::loadFromFile(mapFile).map;
     } else {
         return nullptr;

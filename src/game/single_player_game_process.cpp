@@ -18,8 +18,8 @@ void SinglePlayerGameProcess::setGame(const std::shared_ptr<Game>& game)
     botsKilled_.clear();
     GameProcessHandler::setGame(game);
     const auto& map = game_->map();
+    // TODO: consider connecting to game signals.
     connect(map.get(), &Map::characterDestroyed, this, &SinglePlayerGameProcess::onCharacterDestroyed);
-    //    connect(map.get(), &Map::botRemoved, this, &SinglePlayerGameProcess::onBotRemoved);
     connect(map.get(), &Map::characterIndexChanged, this, &SinglePlayerGameProcess::onCharacterIndexChanged);
 }
 
@@ -28,7 +28,7 @@ void SinglePlayerGameProcess::onCharacterDestroyed(const std::shared_ptr<Charact
     if (character->type() == CharacterType::Bot) {
         botsKilled_.push_back(character->id());
         const auto& map = game_->map();
-        if (map->bots().size() == 1) {
+        if (map->bots().size() == 0) {
             map->activateExit();
         }
     } else {

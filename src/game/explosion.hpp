@@ -30,10 +30,14 @@ public:
     const std::pair<size_t, size_t>& yMinMax() const;
     const CellLocation&              center() const;
 
+    object_id_t bombOwner() const;
+    void        setBombOwner(object_id_t newBombOwner);
+
 private:
     CellLocation              center_;
     std::pair<size_t, size_t> xMinMax_;
     std::pair<size_t, size_t> yMinMax_;
+    object_id_t               bombOwner_;
 };
 
 } // namespace bm

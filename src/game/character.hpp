@@ -35,8 +35,12 @@ public:
     virtual void          meetsWall();
     virtual bool          acceptsModifiers() const = 0;
 
+    bool live() const;
+    void setLive(bool newLive);
+
 private:
     MoveData moveData_;
+    bool     live_ = true;
 };
 
 } // namespace bm

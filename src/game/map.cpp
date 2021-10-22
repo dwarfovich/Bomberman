@@ -185,15 +185,15 @@ void Map::addBomberman(const std::shared_ptr<Bomberman>& bomberman)
     idToCharacterMap_.emplace(bomberman->id(), bomberman);
 }
 
-void Map::removeBomberman(const Bomberman& bomberman)
-{
-    auto iter = idToCharacterMap_.find(bomberman.id());
-    if (iter != idToCharacterMap_.cend()) {
-        emit characterDestroyed(iter->second);
-        bombermans_.erase(&bomberman);
-        idToCharacterMap_.erase(iter);
-    }
-}
+// void Map::removeBomberman(const Bomberman& bomberman)
+//{
+//    auto iter = idToCharacterMap_.find(bomberman.id());
+//    if (iter != idToCharacterMap_.cend()) {
+//        emit characterDestroyed(iter->second, nullptr);
+//        bombermans_.erase(&bomberman);
+//        idToCharacterMap_.erase(iter);
+//    }
+//}
 
 const std::shared_ptr<Bomberman>& Map::bomberman(object_id_t id) const
 {
@@ -214,15 +214,15 @@ void Map::addBot(const std::shared_ptr<Bot>& bot)
     idToCharacterMap_.emplace(bot->id(), bot);
 }
 
-void Map::removeBot(const std::shared_ptr<Bot>& bot)
-{
-    auto iter = idToCharacterMap_.find(bot->id());
-    if (iter != idToCharacterMap_.cend()) {
-        emit characterDestroyed(bot);
-        idToCharacterMap_.erase(iter);
-        bots_.erase(std::remove(bots_.begin(), bots_.end(), bot));
-    }
-}
+// void Map::removeBot(const std::shared_ptr<Bot>& bot)
+//{
+//    auto iter = idToCharacterMap_.find(bot->id());
+//    if (iter != idToCharacterMap_.cend()) {
+//        emit characterDestroyed(bot, nullptr);
+//        idToCharacterMap_.erase(iter);
+//        bots_.erase(std::remove(bots_.begin(), bots_.end(), bot));
+//    }
+//}
 
 void Map::moveCharacter(object_id_t id, const MoveData& moveData)
 {
@@ -233,19 +233,23 @@ void Map::moveCharacter(object_id_t id, const MoveData& moveData)
     }
 }
 
-void Map::removeCharacter(object_id_t id)
+void Map::destroyCharacter(object_id_t victim, object_id_t killer)
 {
-    const auto& characterPtr = character(id);
-    if (characterPtr) {
-        emit characterDestroyed(characterPtr);
-        if (characterPtr->type() == CharacterType::Bomberman) {
-            const auto* bomberman = static_cast<Bomberman*>(characterPtr.get());
+    const auto& victimPtr = character(victim);
+    const auto& killerPtr = character(killer);
+    // TODO: when bot destroyed this method is called twice or even three times.
+    // Fix it and remove victimPtr->live() condition.
+    if (victimPtr && victimPtr->live()) {
+        if (victimPtr->type() == CharacterType::Bomberman) {
+            const auto* bomberman = static_cast<Bomberman*>(victimPtr.get());
             bombermans_.erase(bomberman);
         } else {
-            bots_.erase(std::remove(bots_.begin(), bots_.end(), characterPtr));
+            bots_.erase(std::remove(bots_.begin(), bots_.end(), victimPtr), bots_.end());
             // emit botRemoved();
         }
-        idToCharacterMap_.erase(id);
+        emit characterDestroyed(victimPtr, killerPtr);
+        victimPtr->setLive(false);
+        // idToCharacterMap_.erase(victim);
     }
 }
 
@@ -723,7 +727,7 @@ void Map::moveObjects(double timeDelta)
 {
     timeDelta /= 42.;
     for (const auto& [id, character] : idToCharacterMap_) {
-        if (character->movementData().speed == 0) {
+        if (!character->live() || character->movementData().speed == 0) {
             continue;
         }
 
@@ -913,7 +917,7 @@ void Map::addExplosionCollisionsAtLocation(const CellLocation&               loc
     collisions.emplace_back(explosion, cells_[index]);
     const auto& cellCenterCoordinates = locationToCellCenterCoordinates(location);
     for (const auto& [id, character] : idToCharacterMap_) {
-        if (rectsIntersect(cellCenterCoordinates, character->coordinates())) {
+        if (character->live() && rectsIntersect(cellCenterCoordinates, character->coordinates())) {
             collisions.emplace_back(explosion, character);
         }
     }

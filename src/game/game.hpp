@@ -64,6 +64,7 @@ signals:
     void bombExploded(const std::shared_ptr<Bomb>& bomb);
     void explosionHappened(const std::shared_ptr<Explosion>& explosion);
     void explosionFinished(const std::shared_ptr<Explosion>& explosion);
+    void characterDestroyed(const std::shared_ptr<Character>& victim, const std::shared_ptr<Character>& killer);
     void objectDestroyed(const std::shared_ptr<GameObject>& object);
     void modifierAdded(size_t index, const std::shared_ptr<IModifier>& modifier);
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);

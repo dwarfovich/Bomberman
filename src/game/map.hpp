@@ -42,12 +42,13 @@ public:
     const std::shared_ptr<Bomb>       removeBomb(size_t index);
     bool                              setModifier(size_t index, const std::shared_ptr<IModifier>& modifier);
     void                              addBomberman(const std::shared_ptr<Bomberman>& bomberman);
-    void                              removeBomberman(const Bomberman& bomberman);
     const std::shared_ptr<Bomberman>& bomberman(object_id_t id) const;
     void                              addBot(const std::shared_ptr<Bot>& bot);
-    void                              removeBot(const std::shared_ptr<Bot>& bot);
+    // TODO: remove remove- Bomberman and Bot methods if they are not needed.
+    //    void                              removeBomberman(const Bomberman& bomberman);
+    //    void                              removeBot(const std::shared_ptr<Bot>& bot);
     void                              moveCharacter(object_id_t id, const MoveData& moveData);
-    void                              removeCharacter(object_id_t id);
+    void                              destroyCharacter(object_id_t victim, object_id_t killer);
     void                              addExplosion(const std::shared_ptr<Explosion>& explosion);
     void                              removeExplosion(object_id_t id);
     const std::shared_ptr<Character>& character(object_id_t id) const;
@@ -102,7 +103,7 @@ signals:
     void modifierRemoved(size_t index, const std::shared_ptr<IModifier>& modifier);
     void explosionRemoved(const std::shared_ptr<Explosion>& explosion);
     void botRemoved();
-    void characterDestroyed(const std::shared_ptr<Character>& character);
+    void characterDestroyed(const std::shared_ptr<Character>& victim, const std::shared_ptr<Character>& killer);
     void exitActivated();
 
 private: // methods

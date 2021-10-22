@@ -48,6 +48,8 @@ void Game::setMap(const std::shared_ptr<Map>& map)
         disconnect(map_.get(), &Map::characterIndexChanged, this, &Game::onCharacterIndexChanged);
         disconnect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
         disconnect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
+        disconnect(map_.get(), &Map::characterDestroyed, this, &Game::characterDestroyed);
+        disconnect(map_.get(), &Map::characterDestroyed, this, &Game::objectDestroyed);
     }
     map_ = map;
     connect(map_.get(), &Map::cellStructureChanged, this, &Game::cellStructureChanged);
@@ -57,6 +59,8 @@ void Game::setMap(const std::shared_ptr<Map>& map)
     connect(map_.get(), &Map::modifierAdded, this, &Game::modifierAdded);
     connect(map_.get(), &Map::modifierRemoved, this, &Game::modifierRemoved);
     connect(map_.get(), &Map::exitActivated, this, &Game::exitActivated);
+    connect(map_.get(), &Map::characterDestroyed, this, &Game::characterDestroyed);
+    connect(map_.get(), &Map::characterDestroyed, this, &Game::objectDestroyed);
 }
 
 const std::shared_ptr<Map>& Game::map() const

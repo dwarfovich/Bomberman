@@ -33,6 +33,7 @@ private:
 
     // GameCreationDialog interface
 public:
+    // TODO: remove this method - map can be accessed through game_.
     const std::shared_ptr<Map> &map() const override;
 };
 

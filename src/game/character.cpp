@@ -104,4 +104,14 @@ bool Character::notifyIfMeetedWall() const
 void Character::meetsWall()
 {}
 
+bool Character::live() const
+{
+    return live_;
+}
+
+void Character::setLive(bool newLive)
+{
+    live_ = newLive;
+}
+
 } // namespace bm

@@ -36,8 +36,8 @@ void Collider::collide(Explosion &explosion, Bot &bot) const
 {
     const auto &botPtr = game_->map()->character(bot.id());
     if (botPtr) {
-        emit game_->objectDestroyed(botPtr);
-        game_->map()->removeCharacter(bot.id());
+        // emit game_->objectDestroyed(botPtr);
+        game_->map()->destroyCharacter(bot.id(), explosion.bombOwner());
     }
 }
 
