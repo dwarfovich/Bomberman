@@ -27,9 +27,10 @@ public:
     const GameInitializationData &initializationData() const override;
 
 private:
-    Ui::CampaignGameDialog *       ui_;
-    std::shared_ptr<Game>          game_;
-    mutable GameInitializationData initializationData_;
+    Ui::CampaignGameDialog *            ui_;
+    std::shared_ptr<Game>               game_;
+    const std::shared_ptr<const Player> player_;
+    mutable GameInitializationData      initializationData_;
 
     // GameCreationDialog interface
 public:

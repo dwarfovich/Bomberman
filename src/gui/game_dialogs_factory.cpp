@@ -2,6 +2,7 @@
 #include "fast_game_creation_dialog.hpp"
 #include "fast_game_over_dialog.hpp"
 #include "campaign_game_dialog.hpp"
+#include "campaign_game_over_dialog.hpp"
 
 namespace bm {
 namespace gui {
@@ -17,7 +18,7 @@ GameDialogs createGamesDialog(QWidget* parentWidget, GameType type, const std::s
 
         case GameType::Campaign:
             dialogs.creationDialog = new CampaignGameDialog { player, parentWidget };
-            dialogs.gameOverDialog = new FastGameOverDialog { parentWidget };
+            dialogs.gameOverDialog = new CampaignGameOverDialog { parentWidget };
             break;
     }
 

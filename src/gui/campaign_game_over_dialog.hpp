@@ -1,13 +1,16 @@
-#ifndef CAMPAIGN_GAME_OVER_DIALOG_HPP
-#define CAMPAIGN_GAME_OVER_DIALOG_HPP
+#ifndef BM_GUI_CAMPAIGN_GAME_OVER_DIALOG_HPP
+#define BM_GUI_CAMPAIGN_GAME_OVER_DIALOG_HPP
 
-#include <QDialog>
+#include "game_over_dialog.hpp"
+
+namespace bm {
+namespace gui {
 
 namespace Ui {
 class CampaignGameOverDialog;
 }
 
-class CampaignGameOverDialog : public QDialog
+class CampaignGameOverDialog : public GameOverDialog
 {
     Q_OBJECT
 
@@ -19,4 +22,6 @@ private:
     Ui::CampaignGameOverDialog *ui_;
 };
 
-#endif // CAMPAIGN_GAME_OVER_DIALOG_HPP
+} // namespace gui
+} // namespace bm
+#endif // BM_GUI_CAMPAIGN_GAME_OVER_DIALOG_HPP

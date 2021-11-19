@@ -16,8 +16,14 @@ class Campaign
 public:
     Campaign();
 
-private:
-    size_t currentLevel_ = 0;
+    QString mapForCampaignLevel(int level) const
+    {
+        if (level >= 0 && static_cast<size_t>(level) < campaign_ns::levels.size()) {
+            return campaign_ns::levels[level];
+        } else {
+            return {};
+        }
+    }
 };
 
 } // namespace bm
