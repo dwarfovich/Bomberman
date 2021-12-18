@@ -94,6 +94,7 @@ void MainWindow::gameStatusChanged(GameStatus newStatus)
         gameOverDialog->setGameResult(gameData_.game->gameResult());
         auto gameOverDialogAnswer = gameOverDialog->exec();
         if (gameOverDialogAnswer == QDialog::Accepted) {
+            gameDialogs_.creationDialog->updateScreen();
             auto answer = gameDialogs_.creationDialog->exec();
             if (answer == QDialog::Accepted) {
                 //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
@@ -161,7 +162,7 @@ void MainWindow::startGame(const GameInitializationData& data)
 
 void MainWindow::startSinglePlayerGame()
 {
-    gameDialogs_ = createGamesDialog(this, GameType::Fast, mainMenuWidget_->selectedPlayer());
+    gameDialogs_ = createGameDialogs(this, GameType::Fast, mainMenuWidget_->selectedPlayer());
 
     auto answer = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
@@ -177,7 +178,7 @@ void MainWindow::startCampaignGame()
 {
     const auto& player = mainMenuWidget_->selectedPlayer();
     if (player) {
-        gameDialogs_ = createGamesDialog(this, GameType::Campaign, player);
+        gameDialogs_ = createGameDialogs(this, GameType::Campaign, player);
         auto answer  = gameDialogs_.creationDialog->exec();
         if (answer == QDialog::Accepted) {
             //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());

@@ -15,11 +15,15 @@ class CampaignGameOverDialog : public GameOverDialog
     Q_OBJECT
 
 public:
-    explicit CampaignGameOverDialog(QWidget *parent = nullptr);
+    explicit CampaignGameOverDialog(const std::shared_ptr<Player> &player, QWidget *parent = nullptr);
     ~CampaignGameOverDialog();
 
 private:
     Ui::CampaignGameOverDialog *ui_;
+
+    // GameOverDialog interface
+public:
+    void setGameResult(const GameResult &gameResult) override;
 };
 
 } // namespace gui

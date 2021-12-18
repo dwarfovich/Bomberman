@@ -7,6 +7,9 @@ GameCreationDialog::GameCreationDialog(QWidget *parent, const std::shared_ptr<Pl
     : QDialog { parent }, player_ { player }
 {}
 
+void GameCreationDialog::updateScreen()
+{}
+
 const std::shared_ptr<Map> &GameCreationDialog::map() const
 {
     static const std::shared_ptr<Map> empty;

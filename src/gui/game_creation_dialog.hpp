@@ -17,6 +17,8 @@ class GameCreationDialog : public QDialog
 public:
     explicit GameCreationDialog(QWidget* parent = nullptr, const std::shared_ptr<Player>& player = nullptr);
 
+    virtual void updateScreen();
+
     // TODO: may be just return GameInitializationData by value?
     virtual const GameInitializationData& initializationData() const = 0;
     // TODO: remove.

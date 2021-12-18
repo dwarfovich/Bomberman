@@ -15,7 +15,7 @@ class FastGameOverDialog : public GameOverDialog
     Q_OBJECT
 
 public:
-    explicit FastGameOverDialog(QWidget *parent = nullptr);
+    explicit FastGameOverDialog(const std::shared_ptr<Player> &player, QWidget *parent = nullptr);
     ~FastGameOverDialog();
 
     void setGameResult(const GameResult &gameResult) override;

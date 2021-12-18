@@ -7,18 +7,19 @@
 namespace bm {
 namespace gui {
 
-GameDialogs createGamesDialog(QWidget* parentWidget, GameType type, const std::shared_ptr<Player>& player)
+GameDialogs createGameDialogs(QWidget* parentWidget, GameType type, const std::shared_ptr<Player>& player)
 {
     GameDialogs dialogs { parentWidget };
     switch (type) {
         case GameType::Fast:
+            // TODO: unify constructors of creation and game over dialogs.
             dialogs.creationDialog = new FastGameCreationDialog { parentWidget, player };
-            dialogs.gameOverDialog = new FastGameOverDialog { parentWidget };
+            dialogs.gameOverDialog = new FastGameOverDialog { player, parentWidget };
             break;
 
         case GameType::Campaign:
             dialogs.creationDialog = new CampaignGameDialog { player, parentWidget };
-            dialogs.gameOverDialog = new CampaignGameOverDialog { parentWidget };
+            dialogs.gameOverDialog = new CampaignGameOverDialog { player, parentWidget };
             break;
     }
 

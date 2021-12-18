@@ -21,6 +21,9 @@ CampaignGameDialog::CampaignGameDialog(const std::shared_ptr<Player> &player, QW
 
     connect(ui_->cancelButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(ui_->startButton, &QPushButton::clicked, this, &QDialog::accept);
+
+    greetPlayer(player_->name());
+    setCurrentLevel(player_->campaignLevel());
 }
 
 CampaignGameDialog::~CampaignGameDialog()
@@ -69,6 +72,16 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
     return initializationData_;
 }
 
+void CampaignGameDialog::greetPlayer(const QString &playerName)
+{
+    ui_->greetingsLabel->setText("Hello, " + playerName + '!');
+}
+
+void CampaignGameDialog::setCurrentLevel(size_t currentLevel)
+{
+    ui_->currentLevelLabel->setText("You're on level " + QString::number(currentLevel + 1));
+}
+
 } // namespace gui
 } // namespace bm
 
@@ -80,4 +93,10 @@ const std::shared_ptr<bm::Map> &bm::gui::CampaignGameDialog::map() const
         static const std::shared_ptr<bm::Map> empty { nullptr };
         return empty;
     }
+}
+
+void bm::gui::CampaignGameDialog::updateScreen()
+{
+    greetPlayer(player_->name());
+    setCurrentLevel(player_->campaignLevel());
 }

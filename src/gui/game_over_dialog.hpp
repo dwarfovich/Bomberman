@@ -5,6 +5,7 @@
 
 namespace bm {
 class GameResult;
+class Player;
 
 namespace gui {
 
@@ -17,10 +18,13 @@ class GameOverDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit GameOverDialog(QWidget *parent = nullptr);
+    explicit GameOverDialog(const std::shared_ptr<Player> &player, QWidget *parent = nullptr);
     ~GameOverDialog();
 
     virtual void setGameResult(const GameResult &gameResult);
+
+protected:
+    std::shared_ptr<Player> player_;
 
 private:
     Ui::GameOverDialog *ui_;

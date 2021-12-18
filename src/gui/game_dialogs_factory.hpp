@@ -17,7 +17,7 @@ class Player;
 
 namespace gui {
 
-GameDialogs createGamesDialog(QWidget* parentWidget, GameType type, const std::shared_ptr<Player>& player);
+GameDialogs createGameDialogs(QWidget* parentWidget, GameType type, const std::shared_ptr<Player>& player);
 
 } // namespace gui
 } // namespace bm

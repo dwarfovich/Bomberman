@@ -4,7 +4,8 @@
 namespace bm {
 namespace gui {
 
-GameOverDialog::GameOverDialog(QWidget *parent) : QDialog(parent), ui_(new Ui::GameOverDialog)
+GameOverDialog::GameOverDialog(const std::shared_ptr<Player> &player, QWidget *parent)
+    : QDialog { parent }, player_ { player }, ui_ { new Ui::GameOverDialog }
 {
     ui_->setupUi(this);
 }

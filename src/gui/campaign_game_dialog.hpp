@@ -26,7 +26,11 @@ public:
 
     const GameInitializationData &initializationData() const override;
 
-private:
+private: // methods
+    void greetPlayer(const QString &playerName);
+    void setCurrentLevel(size_t currentLevel);
+
+private: // data
     Ui::CampaignGameDialog *            ui_;
     std::shared_ptr<Game>               game_;
     const std::shared_ptr<const Player> player_;
@@ -36,6 +40,10 @@ private:
 public:
     // TODO: remove this method - map can be accessed through game_.
     const std::shared_ptr<Map> &map() const override;
+
+    // GameCreationDialog interface
+public:
+    void updateScreen() override;
 };
 
 } // namespace gui

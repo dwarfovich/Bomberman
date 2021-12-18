@@ -5,7 +5,8 @@
 namespace bm {
 namespace gui {
 
-FastGameOverDialog::FastGameOverDialog(QWidget *parent) : GameOverDialog { parent }, ui_ { new Ui::FastGameOverDialog }
+FastGameOverDialog::FastGameOverDialog(const std::shared_ptr<Player> &player, QWidget *parent)
+    : GameOverDialog { player, parent }, ui_ { new Ui::FastGameOverDialog }
 {
     ui_->setupUi(this);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &QDialog::reject);
