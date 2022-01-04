@@ -10,6 +10,7 @@
 namespace bm {
 class Game;
 class GameResult;
+class Player;
 
 class GameProcessHandler : public QObject
 {
@@ -21,8 +22,9 @@ public:
     virtual void setGame(const std::shared_ptr<Game>& game);
 
 protected: // methods
-    void changeGameStatus(GameStatus newStatus);
-    void assignGameResultToGame(const GameResult& result);
+    const std::vector<std::shared_ptr<Player>>& gamePlayers() const;
+    void                                        changeGameStatus(GameStatus newStatus);
+    void                                        assignGameResultToGame(const GameResult& result);
 
 protected: // data
     std::shared_ptr<Game> game_;

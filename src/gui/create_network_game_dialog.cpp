@@ -1,7 +1,9 @@
 #include "create_network_game_dialog.hpp"
 #include "ui_create_network_game_dialog.h"
+#include "game/player.hpp"
 #include "game/game_factory.hpp"
 #include "game/map_loader.hpp"
+#include "game/network_game_process_handler.hpp"
 #include "net/server.hpp"
 #include "net/messages/text_message.hpp"
 #include "net/messages/select_map_request_message.hpp"
@@ -12,12 +14,20 @@
 namespace bm {
 namespace gui {
 
-CreateNetworkGameDialog::CreateNetworkGameDialog(QWidget *parent)
-    : GameCreationDialog { parent }, ui_ { new Ui::CreateNetworkGameDialog }, server_ { new Server { this } }
+CreateNetworkGameDialog::CreateNetworkGameDialog(const std::shared_ptr<Player> &player, QWidget *parent)
+    : GameCreationDialog { parent, player }, ui_ { new Ui::CreateNetworkGameDialog }, server_ { new Server { this } }
 {
     ui_->setupUi(this);
 
+    // TODO: Move process hadler's initializtion somewhere, may be into game factory.
     game_ = std::make_shared<NetworkGame>(server_);
+    player->setCurrentGameBombermanId(game_->playerId());
+    game_->addPlayer(player);
+    auto processHandler = std::make_unique<NetworkGameProcessHandler>();
+    processHandler->setGame(game_);
+    game_->setGameProcessHandler(std::move(processHandler));
+
+    ui_->serverPlayerNameEdit->setText(player_->name());
 
     ui_->mapPreview->setScene(&scene_);
 
@@ -51,6 +61,16 @@ CreateNetworkGameDialog::~CreateNetworkGameDialog()
 Server *CreateNetworkGameDialog::server() const
 {
     return server_;
+}
+
+void CreateNetworkGameDialog::reset()
+{
+    for (int i = 1; i < playersModel_.rowCount(); ++i) {
+        auto *item = playersModel_.item(i);
+        item->setIcon(playerConnectedIcon_);
+    }
+    onNewMapSelected(ui_->mapComboBox->currentIndex());
+    game_->reset();
 }
 
 void CreateNetworkGameDialog::logMessage(const QString &message)
@@ -138,6 +158,7 @@ void CreateNetworkGameDialog::addServerPlayerToModel()
 {
     auto item = new QStandardItem { ui_->serverPlayerNameEdit->text() };
     item->setIcon(playerReadyIcon_);
+    // TODO: give a name to magic 0xFF constant.
     item->setData(0xFF, PlayersModelRoles::ClientId);
     playersModel_.appendRow(item);
 }
@@ -183,6 +204,7 @@ const GameInitializationData &CreateNetworkGameDialog::initializationData() cons
     initializationData_.bombermans      = game_->playersBombermans();
     initializationData_.game            = game_;
     initializationData_.playerBomberman = game_->playerId();
+
     return initializationData_;
 }
 

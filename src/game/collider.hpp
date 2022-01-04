@@ -29,9 +29,7 @@ public:
     void collide(Explosion& explosion, GameObject& object) const;
     void collide(Explosion& explosion, Cell& cell) const;
     ADD_INVERSE_COLLISION(Explosion, Cell);
-    void collide(Explosion& explosion, Bomberman&) const
-    { /*qDebug() << "Exploding bomberman\n";*/
-    }
+    void collide(Explosion& explosion, Bomberman& bomberman) const;
     ADD_INVERSE_COLLISION(Explosion, Bomberman);
     void collide(Explosion& explosion, Bot& bot) const;
     ADD_INVERSE_COLLISION(Explosion, Bot);

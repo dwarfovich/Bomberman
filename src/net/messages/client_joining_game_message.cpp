@@ -8,6 +8,9 @@ namespace bm {
 
 REGISTER_MESSAGE_MAKER(MessageType::ClientJoiningGame, ClientJoiningGameMessage);
 
+ClientJoiningGameMessage::ClientJoiningGameMessage(const Player &player) : ByteArrayMessage<Player> { player }
+{}
+
 MessageType ClientJoiningGameMessage::type() const
 {
     return MessageType::ClientJoiningGame;

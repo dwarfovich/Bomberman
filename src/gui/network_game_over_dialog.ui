@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>bm::gui::FastGameCreationDialog</class>
- <widget class="QDialog" name="bm::gui::FastGameCreationDialog">
+ <class>bm::gui::NetworkGameOverDialog</class>
+ <widget class="QDialog" name="bm::gui::NetworkGameOverDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>191</height>
+    <width>452</width>
+    <height>369</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="gameReultLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -22,7 +32,30 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>121</height>
+       <height>116</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="addinitionalInfoLabel">
+     <property name="text">
+      <string>Text</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>115</height>
       </size>
      </property>
     </spacer>
@@ -30,9 +63,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="cancelButton">
+      <widget class="QPushButton" name="exitButton">
        <property name="text">
-        <string>Cancel</string>
+        <string>Exit</string>
        </property>
       </widget>
      </item>
@@ -50,9 +83,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="startButton">
+      <widget class="QPushButton" name="playAgainButton">
        <property name="text">
-        <string>Start</string>
+        <string>Play again</string>
        </property>
       </widget>
      </item>

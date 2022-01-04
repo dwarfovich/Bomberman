@@ -43,7 +43,7 @@ public:
 
     // GameCreationDialog interface
 public:
-    void updateScreen() override;
+    void reset() override;
 };
 
 } // namespace gui

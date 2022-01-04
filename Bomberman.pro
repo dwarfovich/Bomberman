@@ -36,6 +36,7 @@ SOURCES += \
     src/game/game_object.cpp \
     src/game/game_object_id.cpp \
     src/game/game_over_conditions/game_over_condition.cpp \
+    src/game/game_over_conditions/network_player_game_over_condition.cpp \
     src/game/game_over_conditions/single_player_game_over_condition.cpp \
     src/game/game_process_handler.cpp \
     src/game/game_result.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
     src/game/modifiers/permanent_modifier.cpp \
     src/game/move_data.cpp \
     src/game/network_game.cpp \
+    src/game/network_game_process_handler.cpp \
     src/game/player.cpp \
     src/game/server_game.cpp \
     src/game/single_player_game_process.cpp \
@@ -75,6 +77,7 @@ SOURCES += \
     src/gui/main_window.cpp \
     src/gui/map_widget.cpp \
     src/gui/modifier_sprite_item.cpp \
+    src/gui/network_game_over_dialog.cpp \
     src/gui/player_key_controls.cpp \
     src/gui/sprite_factory.cpp \
     src/gui/sprite_item.cpp \
@@ -89,6 +92,7 @@ SOURCES += \
     src/net/messages/client_joining_game_message.cpp \
     src/net/messages/client_name_message.cpp \
     src/net/messages/explosion_finished_message.cpp \
+    src/net/messages/game_over_message.cpp \
     src/net/messages/i_message_visitor.cpp \
     src/net/messages/map_initialization_message.cpp \
     src/net/messages/message.cpp \
@@ -97,6 +101,7 @@ SOURCES += \
     src/net/messages/player_ready_message.cpp \
     src/net/messages/prepare_to_start_game_message.cpp \
     src/net/messages/select_map_request_message.cpp \
+    src/net/messages/set_player_data_message.cpp \
     src/net/messages/set_player_id_message.cpp \
     src/net/messages/start_game_message.cpp \
     src/net/messages/text_message.cpp \
@@ -135,6 +140,7 @@ HEADERS += \
     src/game/game_object_id.hpp \
     src/game/game_over_conditions/game_over_condition.hpp \
     src/game/game_over_conditions/game_winner_type.hpp \
+    src/game/game_over_conditions/network_player_game_over_condition.hpp \
     src/game/game_over_conditions/single_player_game_over_condition.hpp \
     src/game/game_process_handler.hpp \
     src/game/game_result.hpp \
@@ -153,6 +159,7 @@ HEADERS += \
     src/game/modifiers/permanent_modifier.hpp \
     src/game/move_data.hpp \
     src/game/network_game.hpp \
+    src/game/network_game_process_handler.hpp \
     src/game/player.hpp \
     src/game/respawn_type.hpp \
     src/game/server_game.hpp \
@@ -178,6 +185,7 @@ HEADERS += \
     src/gui/main_window.hpp \
     src/gui/map_widget.hpp \
     src/gui/modifier_sprite_item.hpp \
+    src/gui/network_game_over_dialog.hpp \
     src/gui/player_key_controls.hpp \
     src/gui/sprite_factory.hpp \
     src/gui/sprite_item.hpp \
@@ -191,6 +199,7 @@ HEADERS += \
     src/net/messages/client_joining_game_message.hpp \
     src/net/messages/client_name_message.hpp \
     src/net/messages/explosion_finished_message.hpp \
+    src/net/messages/game_over_message.hpp \
     src/net/messages/i_message_maker.hpp \
     src/net/messages/i_message_visitor.hpp \
     src/net/messages/map_initialization_message.hpp \
@@ -202,6 +211,7 @@ HEADERS += \
     src/net/messages/player_ready_message.hpp \
     src/net/messages/prepare_to_start_game_message.hpp \
     src/net/messages/select_map_request_message.hpp \
+    src/net/messages/set_player_data_message.hpp \
     src/net/messages/set_player_id_message.hpp \
     src/net/messages/start_game_message.hpp \
     src/net/messages/text_message.hpp \
@@ -224,7 +234,8 @@ FORMS += \
     src/gui/game_over_dialog.ui \
     src/gui/main_menu_widget.ui \
     src/gui/main_window.ui \
-    src/gui/map_widget.ui
+    src/gui/map_widget.ui \
+    src/gui/network_game_over_dialog.ui
 
 TRANSLATIONS += \
     Bomberman_en_US.ts

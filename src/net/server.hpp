@@ -33,10 +33,11 @@ public:
     void visit(const ClientNameMessage& message) override;
     void visit(const ClientJoiningGameMessage& message) override;
 
-    void          setServerPort(quint16 port);
-    void          startListen();
-    void          startListen(const QHostAddress& address, quint16 port);
-    uint8_t       clients() const;
+    void    setServerPort(quint16 port);
+    void    startListen();
+    void    startListen(const QHostAddress& address, quint16 port);
+    uint8_t clients() const;
+    // TODO: Rename excludeClient parameter - we are not excluding it.
     void          sendMessage(const Message& message, ServerWorker* excludeClient);
     void          broadcastMessage(const Message& message, ServerWorker* excludeClient = nullptr);
     ServerWorker* currentMessageClient() const;

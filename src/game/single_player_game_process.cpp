@@ -2,9 +2,6 @@
 #include "game.hpp"
 #include "map.hpp"
 
-#include <QDebug>
-#define DEB qDebug()
-
 namespace bm {
 
 SinglePlayerGameProcess::SinglePlayerGameProcess()

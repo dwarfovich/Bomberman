@@ -14,6 +14,7 @@
 
 namespace bm {
 class GameProcessHandler;
+class Player;
 
 namespace gui {
 class GameScene;
@@ -54,6 +55,8 @@ public:
 
     const GameResult& gameResult() const;
 
+    void addPlayer(const std::shared_ptr<Player>& player);
+
 signals:
     void gameOver();
     void cellStructureChanged(size_t index, CellStructure previousStructure);
@@ -82,17 +85,18 @@ protected: // methods
     virtual void explodeBomb(const std::shared_ptr<Bomb>& bomb);
     virtual void onExplosionFinished(const std::shared_ptr<Explosion>& explosion);
 
-    void setGameStatus(GameStatus status);
+    virtual void setGameStatus(GameStatus status);
 
 protected: // data
-    std::shared_ptr<Map>                map_;
-    std::unique_ptr<GameProcessHandler> gameProcessHandler_;
-    object_id_t                         playerId_ = invalidObjectId;
-    Collider                            collider_;
-    TimerQueue                          timerEventsQueue;
-    QTimer                              movementTimer_;
-    GameStatus                          currentStatus_ = GameStatus::Waiting;
-    GameResult                          gameResult_;
+    std::shared_ptr<Map>                 map_;
+    std::unique_ptr<GameProcessHandler>  gameProcessHandler_;
+    std::vector<std::shared_ptr<Player>> players_;
+    object_id_t                          playerId_ = invalidObjectId;
+    Collider                             collider_;
+    TimerQueue                           timerEventsQueue;
+    QTimer                               movementTimer_;
+    GameStatus                           currentStatus_ = GameStatus::Waiting;
+    GameResult                           gameResult_;
 };
 
 } // namespace bm

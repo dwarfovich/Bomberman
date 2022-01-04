@@ -25,6 +25,7 @@ void CampaignGameOverDialog::setGameResult(const GameResult &gameResult)
     if (gameResult.gameWon) {
         ui_->gameResultLabel->setText("Wow! You won!");
         ui_->continueButton->setText("Continue");
+        // TODO: increase campaign level in game module, not in GUI.
         player_->setCampaignLevel(player_->campaignLevel() + 1);
     } else {
         ui_->gameResultLabel->setText("Ooh! You lost!");

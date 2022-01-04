@@ -18,17 +18,20 @@ namespace Ui {
 class CreateNetworkGameDialog;
 }
 
+// TODO: rename class, the name should be unfied with other creation dialogs.
 class CreateNetworkGameDialog : public GameCreationDialog
 {
     Q_OBJECT
 
 public:
-    explicit CreateNetworkGameDialog(QWidget *parent = nullptr);
+    explicit CreateNetworkGameDialog(const std::shared_ptr<Player> &player, QWidget *parent = nullptr);
     ~CreateNetworkGameDialog();
 
     const GameInitializationData &initializationData() const override;
 
     Server *server() const;
+
+    void reset() override;
 
 public slots:
     void logMessage(const QString &message);

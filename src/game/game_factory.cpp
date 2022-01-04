@@ -5,6 +5,7 @@
 #include "client_game.hpp"
 #include "map_loader.hpp"
 #include "single_player_game_process.hpp"
+#include "network_game_process_handler.hpp"
 #include "net/server.hpp"
 #include "net/client.hpp"
 
@@ -50,9 +51,7 @@ GameInitializationData createSinglePlayerGame(const std::shared_ptr<Map>& map)
 std::unique_ptr<Game> createClientGame(Client* client)
 {
     auto game = std::make_unique<ClientGame>(client);
-    auto map2 = client->initializedMap();
     game->setMap(client->initializedMap());
-    //    game->startPreparing();
 
     return game;
 }
@@ -60,6 +59,7 @@ std::unique_ptr<Game> createClientGame(Client* client)
 std::unique_ptr<Game> createNetworkGame(Server* server)
 {
     auto game = std::make_unique<NetworkGame>(server);
+    game->setGameProcessHandler(std::make_unique<NetworkGameProcessHandler>());
 
     return game;
 }

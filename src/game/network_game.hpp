@@ -30,11 +30,13 @@ public:
     void visit(const BombPlacedMessage& message) override;
 
     const std::vector<std::shared_ptr<Bomberman>>& playersBombermans() const;
+    void                                           reset();
 
 protected:
     void prepareToStart() override;
     void explodeBomb(const std::shared_ptr<Bomb>& bomb) override;
     void onExplosionFinished(const std::shared_ptr<Explosion>& explosion) override;
+    void setGameStatus(GameStatus status) override;
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);
@@ -47,7 +49,8 @@ private: // methods
     bool allPlayersReady();
 
 private: // data
-    Server*                                 server_;
+    Server* server_;
+    // TODO: Check if connectionsMade_ var is actually used.
     bool                                    connectionsMade_ = false;
     std::unordered_set<uint8_t>             playersPreparingToStartGame_;
     std::unordered_set<uint8_t>             playersReady_;

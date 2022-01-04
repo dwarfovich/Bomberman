@@ -18,12 +18,13 @@ class Client;
 
 namespace gui {
 
+// TODO: rename class, the name should be unfied with other creation dialogs.
 class ClientGameDialog : public GameCreationDialog
 {
     Q_OBJECT
 
 public:
-    explicit ClientGameDialog(QWidget* parent = nullptr);
+    explicit ClientGameDialog(const std::shared_ptr<Player>& player, QWidget* parent = nullptr);
     ~ClientGameDialog();
 
     const GameInitializationData& initializationData() const override;

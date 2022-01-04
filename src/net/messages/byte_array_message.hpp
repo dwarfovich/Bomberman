@@ -2,6 +2,7 @@
 #define BM_SIMPLEMESSAGE_HPP
 
 #include "message.hpp"
+#include "utils.hpp"
 
 #include <QByteArray>
 #include <QDataStream>

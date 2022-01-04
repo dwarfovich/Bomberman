@@ -2,18 +2,20 @@
 #define BM_CLIENTREADYMESSAGE_HPP
 
 #include "message.hpp"
-#include "notifying_message.hpp"
+#include "byte_array_message.hpp"
 #include "message_type.hpp"
-
-#include <cinttypes>
+#include "game/player.hpp"
 
 namespace bm {
 
-class ClientJoiningGameMessage : public NotifyingMessage
+// TODO: Rename message to something like "SetPlayerData". Do not forget to rename all other corresponig entities.
+class ClientJoiningGameMessage : public ByteArrayMessage<Player>
 {
 public:
+    ClientJoiningGameMessage(const Player& player = {});
+
     MessageType type() const override;
-    void        accept(IMessageVisitor &visitor) override;
+    void        accept(IMessageVisitor& visitor) override;
 };
 
 } // namespace bm

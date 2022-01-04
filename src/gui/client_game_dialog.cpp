@@ -14,14 +14,18 @@
 namespace bm {
 namespace gui {
 
-ClientGameDialog::ClientGameDialog(QWidget *parent)
-    : GameCreationDialog(parent), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
+ClientGameDialog::ClientGameDialog(const std::shared_ptr<Player> &player, QWidget *parent)
+    : GameCreationDialog(parent, player), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
 {
     ui_->setupUi(this);
 
     game_ = std::make_shared<ClientGame>(client_);
+    game_->addPlayer(player_);
 
     ui_->mapPreview->setScene(&scene_);
+
+    ui_->playerNameEdit->setText(player->name());
+    qDebug() << "player:" << player->name();
 
     connect(game_.get(), &Game::gameStatusChanged, this, &ClientGameDialog::onGameStatusChanged);
 
@@ -50,7 +54,7 @@ Client *ClientGameDialog::client() const
 
 void ClientGameDialog::onReady()
 {
-    ClientJoiningGameMessage message;
+    ClientJoiningGameMessage message { *player_ };
     client_->sendMessage(message);
 }
 

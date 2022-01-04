@@ -31,6 +31,8 @@ public:
     void visit(const CellChangedMessage& message) override;
     void visit(const BombExplodedMessage& message) override;
     void visit(const ExplosionFinishedMessage& message) override;
+    void visit(const ClientJoiningGameMessage& message) override;
+    void visit(const GameOverMessage& message) override;
 
 private slots:
     void onMessageReceived(const std::unique_ptr<Message>& message);

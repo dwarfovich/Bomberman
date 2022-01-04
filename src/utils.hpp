@@ -3,13 +3,30 @@
 
 #include <QDataStream>
 
+#include <vector>
+
 namespace bm {
 
-template<typename Type1, typename Type2>
-QDataStream& operator<<(QDataStream& stream, std::pair<Type1, Type2>& pair)
+template<typename Type>
+QDataStream& operator<<(QDataStream& stream, const std::vector<Type>& vector)
 {
-    stream << pair.first;
-    stream << pair.second;
+    stream << vector.size();
+    for (const auto& element : vector) {
+        stream << element;
+    }
+
+    return stream;
+}
+
+template<typename Type>
+QDataStream& operator>>(QDataStream& stream, std::vector<Type>& vector)
+{
+    size_t size = 0;
+    stream >> size;
+    vector.resize(size);
+    for (auto& element : vector) {
+        stream >> element;
+    }
 
     return stream;
 }

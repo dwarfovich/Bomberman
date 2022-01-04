@@ -29,6 +29,14 @@ void Collider::collide(Explosion &explosion, Cell &cell) const
     }
 }
 
+void Collider::collide(Explosion &explosion, Bomberman &bomberman) const
+{
+    const auto &bombermanPtr = game_->map()->character(bomberman.id());
+    if (bombermanPtr) {
+        game_->map()->destroyCharacter(bomberman.id(), explosion.bombOwner());
+    }
+}
+
 void Collider::collide(Cell &explosion, Bot &bot) const
 {}
 

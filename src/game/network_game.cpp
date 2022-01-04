@@ -11,6 +11,8 @@
 #include "net/messages/set_player_id_message.hpp"
 #include "net/messages/bomb_exploded_message.hpp"
 #include "net/messages/explosion_finished_message.hpp"
+#include "net/messages/client_joining_game_message.hpp"
+#include "net/messages/game_over_message.hpp"
 
 namespace bm {
 
@@ -39,6 +41,8 @@ void NetworkGame::prepareToStart()
     if (allPlayersReady()) {
         startGame();
     } else {
+        ClientJoiningGameMessage message { *players_.front() };
+        server_->broadcastMessage(message);
         sendMapInitializationMessage();
     }
 }
@@ -89,6 +93,17 @@ bool NetworkGame::allPlayersReady()
 const std::vector<std::shared_ptr<Bomberman>> &NetworkGame::playersBombermans() const
 {
     return playersBombermans_;
+}
+
+void NetworkGame::reset()
+{
+    playersReady_.clear();
+    playersPreparingToStartGame_.clear();
+
+    auto bomberman = std::make_shared<Bomberman>();
+    playersBombermans_.push_back(bomberman);
+    playerId_ = bomberman->id();
+    playersPreparingToStartGame_.insert(bomberman->id());
 }
 
 void NetworkGame::movePlayer(object_id_t player, Direction direction)
@@ -146,10 +161,16 @@ void NetworkGame::visit(const ClientJoiningGameMessage &message)
         auto bomberman = std::make_shared<Bomberman>();
         playersPreparingToStartGame_.insert(bomberman->id());
         playersBombermans_.push_back(bomberman);
+        auto player = std::make_shared<Player>(message.payload());
+        player->setCurrentGameBombermanId(bomberman->id());
+        addPlayer(player);
 
         SetPlayerIdMessage idMessage(bomberman->id());
         server_->sendMessage(idMessage, server_->currentMessageClient());
         emit server_->logMessageRequest("Adding bomberman for client " + QString::number(bomberman->id()));
+
+        ClientJoiningGameMessage newMessage { *player };
+        server_->broadcastMessage(newMessage, server_->currentMessageClient());
     }
 }
 
@@ -189,6 +210,16 @@ void NetworkGame::onExplosionFinished(const std::shared_ptr<Explosion> &explosio
     emit                     explosionFinished(explosion);
     ExplosionFinishedMessage message { explosion->id() };
     server_->broadcastMessage(message);
+}
+
+void NetworkGame::setGameStatus(GameStatus status)
+{
+    if (status == GameStatus::GameOver) {
+        GameOverMessage message { gameResult_ };
+        server_->broadcastMessage(message);
+    }
+
+    Game::setGameStatus(status);
 }
 
 } // namespace bm

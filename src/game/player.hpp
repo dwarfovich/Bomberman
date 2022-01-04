@@ -1,6 +1,8 @@
 #ifndef BM_PLAYER_HPP
 #define BM_PLAYER_HPP
 
+#include "game_object_id.hpp"
+
 #include <QString>
 
 QT_BEGIN_NAMESPACE
@@ -26,10 +28,14 @@ public:
     size_t campaignLevel() const;
     void   setCampaignLevel(size_t newCampaignLevel);
 
+    object_id_t currentGameBombermanId() const;
+    void        setCurrentGameBombermanId(object_id_t newCurrentGameBombermanId);
+
 private:
-    QString name_;
-    QString filename_;
-    size_t  campaignLevel_ = 0;
+    QString     name_;
+    QString     filename_;
+    size_t      campaignLevel_ = 0;
+    object_id_t currentGameBombermanId_;
 };
 
 } // namespace bm

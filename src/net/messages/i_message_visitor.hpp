@@ -17,6 +17,7 @@ class BombPlacedMessage;
 class BombExplodedMessage;
 class ExplosionFinishedMessage;
 class CellChangedMessage;
+class GameOverMessage;
 
 class IMessageVisitor
 {
@@ -38,6 +39,7 @@ public:
     virtual void visit(const PrepareToStartGame& message);
     virtual void visit(const StartGameMessage& message);
     virtual void visit(const SetPlayerIdMessage& message);
+    virtual void visit(const GameOverMessage& message);
 };
 
 } // namespace bm

@@ -1,4 +1,5 @@
 #include "client_game.hpp"
+#include "game/player.hpp"
 #include "net/client.hpp"
 #include "net/messages/character_moved_message.hpp"
 #include "net/messages/bomb_placed_message.hpp"
@@ -7,8 +8,11 @@
 #include "net/messages/player_ready_message.hpp"
 #include "net/messages/bomb_exploded_message.hpp"
 #include "net/messages/explosion_finished_message.hpp"
+#include "net/messages/client_joining_game_message.hpp"
+#include "net/messages/game_over_message.hpp"
 
 #include <QDebug>
+#include <QMessageBox>
 
 namespace bm {
 
@@ -131,11 +135,38 @@ void ClientGame::visit(const SetPlayerIdMessage &message)
 {
     playerId_ = message.payload();
     setGameStatus(GameStatus::Preparing);
+    if (players_.size() > 0) {
+        players_.front()->setCurrentGameBombermanId(playerId_);
+    }
 }
 
 void ClientGame::visit(const ExplosionFinishedMessage &message)
 {
     map_->removeExplosion(message.payload());
+}
+
+void ClientGame::visit(const ClientJoiningGameMessage &message)
+{
+    bool        playerFound       = false;
+    const auto &playerFromMessage = message.payload();
+    for (const auto &player : players_) {
+        if (player->currentGameBombermanId() == playerFromMessage.currentGameBombermanId()) {
+            *player     = playerFromMessage;
+            playerFound = true;
+        }
+    }
+
+    if (!playerFound) {
+        auto newPlayer = std::make_shared<Player>(playerFromMessage);
+        addPlayer(newPlayer);
+    }
+}
+
+void ClientGame::visit(const GameOverMessage &message)
+{
+    gameResult_ = message.payload();
+    auto t      = gameResult().losePlayers;
+    setGameStatus(GameStatus::GameOver);
 }
 
 void ClientGame::setMap(const std::shared_ptr<Map> &map)

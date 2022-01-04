@@ -93,6 +93,11 @@ const GameResult& Game::gameResult() const
     return gameResult_;
 }
 
+void Game::addPlayer(const std::shared_ptr<Player>& player)
+{
+    players_.push_back(player);
+}
+
 GameStatus Game::currentStatus() const
 {
     return currentStatus_;

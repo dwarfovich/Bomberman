@@ -17,6 +17,7 @@ enum class MessageType : uint8_t
     MapInitialized,
     PrepareToStartGame,
     StartGame,
+    GameOver,
 
     CharacterMoved,
     BombPlaced,

@@ -1,5 +1,6 @@
 #include "campaign_game_dialog.hpp"
 #include "ui_campaign_game_dialog.h"
+#include "game/player.hpp"
 #include "game/server_game.hpp"
 #include "game/player.hpp"
 #include "game/campaign.hpp"
@@ -59,6 +60,7 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
         bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
         map->addBomberman(bomberman);
         initializationData_.playerBomberman = bomberman->id();
+        // player_->setCurrentGameBombermanId(bomberman->id());
     }
 
     game_->setMap(map);
@@ -95,7 +97,7 @@ const std::shared_ptr<bm::Map> &bm::gui::CampaignGameDialog::map() const
     }
 }
 
-void bm::gui::CampaignGameDialog::updateScreen()
+void bm::gui::CampaignGameDialog::reset()
 {
     greetPlayer(player_->name());
     setCurrentLevel(player_->campaignLevel());

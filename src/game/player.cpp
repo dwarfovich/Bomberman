@@ -8,6 +8,7 @@ QDataStream& operator<<(QDataStream& stream, const Player& player)
 {
     stream << player.name_;
     stream << player.campaignLevel_;
+    stream << player.currentGameBombermanId_;
 
     return stream;
 }
@@ -16,6 +17,7 @@ QDataStream& operator>>(QDataStream& stream, Player& player)
 {
     stream >> player.name_;
     stream >> player.campaignLevel_;
+    stream >> player.currentGameBombermanId_;
 
     return stream;
 }
@@ -51,6 +53,16 @@ size_t Player::campaignLevel() const
 void Player::setCampaignLevel(size_t newCampaignLevel)
 {
     campaignLevel_ = newCampaignLevel;
+}
+
+object_id_t Player::currentGameBombermanId() const
+{
+    return currentGameBombermanId_;
+}
+
+void Player::setCurrentGameBombermanId(object_id_t newCurrentGameBombermanId)
+{
+    currentGameBombermanId_ = newCurrentGameBombermanId;
 }
 
 } // namespace bm

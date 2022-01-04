@@ -47,4 +47,7 @@ void IMessageVisitor::visit(const StartGameMessage &message)
 void IMessageVisitor::visit(const SetPlayerIdMessage &message)
 {}
 
+void IMessageVisitor::visit(const GameOverMessage &message)
+{}
+
 } // namespace bm
