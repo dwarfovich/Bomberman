@@ -13,6 +13,9 @@
 #include <QHostAddress>
 #include <QDataStream>
 
+#include <QDebug>
+#include <QMessageBox>
+
 namespace bm {
 
 Client::Client(QObject *parent) : QObject { parent }, socket_ { new Socket { this } }
@@ -78,6 +81,7 @@ void Client::setName(const QString &newName)
 
 void Client::onMessageReceived(const std::unique_ptr<Message> &message)
 {
+    qDebug() << "Received new message " << (int)message->type();
     message->accept(*this);
     emit messageReceived(message);
 }
@@ -90,6 +94,8 @@ void Client::onConnectedToServer()
 
 void Client::visit(const TextMessage &message)
 {
+    qDebug() << "Got text message: " + message.payload();
+    QMessageBox::information(nullptr, "New message", message.payload());
     emit logMessage(message.payload());
 }
 

@@ -35,6 +35,9 @@ void Game::start()
     movementTimer_.start(game_ns::movementUpdatePeriod);
 }
 
+void Game::reset()
+{}
+
 void Game::prepareToStart()
 {}
 

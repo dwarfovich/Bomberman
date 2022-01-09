@@ -42,6 +42,7 @@ public:
     virtual object_id_t                       playerId() const;
     virtual const std::shared_ptr<Bomberman>& bomberman(object_id_t playerId) const;
     virtual void                              start();
+    virtual void                              reset();
 
     virtual void                        setMap(const std::shared_ptr<Map>& map);
     virtual const std::shared_ptr<Map>& map() const;

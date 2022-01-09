@@ -17,6 +17,8 @@ class ClientGame : public Game, public IMessageVisitor
 public:
     explicit ClientGame(Client* client);
 
+    void reset() override;
+
     void                  setMap(const std::shared_ptr<Map>& map) override;
     void                  start() override;
     void                  movePlayer(object_id_t player, Direction direction) override;

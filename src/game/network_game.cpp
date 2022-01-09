@@ -30,6 +30,7 @@ NetworkGame::NetworkGame(Server *server) : server_ { server }
 
 void NetworkGame::start()
 {
+    qDebug() << "Starting game";
     prepareToStart();
 }
 
@@ -38,9 +39,12 @@ void NetworkGame::prepareToStart()
     setGameStatus(GameStatus::Preparing);
     playersReady_.insert(playerId());
 
+    qDebug() << "Prepare to start";
     if (allPlayersReady()) {
+        qDebug() << "all players ready - starting game";
         startGame();
     } else {
+        qDebug() << "Not all players ready - sending ClientJoiningGameMessage";
         ClientJoiningGameMessage message { *players_.front() };
         server_->broadcastMessage(message);
         sendMapInitializationMessage();
@@ -99,6 +103,10 @@ void NetworkGame::reset()
 {
     playersReady_.clear();
     playersPreparingToStartGame_.clear();
+    playersBombermans_.clear();
+    players_.clear();
+
+    setGameStatus(GameStatus::Waiting);
 
     auto bomberman = std::make_shared<Bomberman>();
     playersBombermans_.push_back(bomberman);
@@ -171,6 +179,9 @@ void NetworkGame::visit(const ClientJoiningGameMessage &message)
 
         ClientJoiningGameMessage newMessage { *player };
         server_->broadcastMessage(newMessage, server_->currentMessageClient());
+        qDebug() << "ClientJoiningGameMessage: added new player";
+    } else {
+        qDebug() << "ClientJoiningGameMessage: not added player due wrong gamestatus";
     }
 }
 

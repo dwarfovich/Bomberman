@@ -7,6 +7,8 @@
 
 #include <QDir>
 
+#include <QCoreApplication>
+
 namespace Ui {
 class ClientGameDialog;
 }
@@ -18,7 +20,7 @@ class Client;
 
 namespace gui {
 
-// TODO: rename class, the name should be unfied with other creation dialogs.
+// TODO: rename class, the name should be unified with other creation dialogs.
 class ClientGameDialog : public GameCreationDialog
 {
     Q_OBJECT
@@ -30,6 +32,7 @@ public:
     const GameInitializationData& initializationData() const override;
 
     Client* client() const;
+    void    reset() override;
 
 private slots:
     void onReady();
@@ -49,9 +52,15 @@ private:
     GameScene                   scene_;
     std::shared_ptr<Map>        selectedMap_;
 
+    QTimer timer;
+
     // GameCreationDialog interface
 public:
     const std::shared_ptr<Map>& map() const override;
+
+    // QDialog interface
+public slots:
+    void accept() override;
 };
 
 } // namespace gui

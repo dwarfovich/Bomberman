@@ -71,6 +71,7 @@ void CreateNetworkGameDialog::reset()
     }
     onNewMapSelected(ui_->mapComboBox->currentIndex());
     game_->reset();
+    game_->addPlayer(player_);
 }
 
 void CreateNetworkGameDialog::logMessage(const QString &message)
@@ -151,6 +152,7 @@ void CreateNetworkGameDialog::sendMessage()
 {
     TextMessage message { ui_->serverPlayerNameEdit->text() + ": " + ui_->messageEdit->toPlainText() };
     server_->broadcastMessage(message);
+    qDebug() << "Broadcasting message to " << server_->clients() << " clients";
     logMessage("You: " + ui_->messageEdit->toPlainText());
 }
 
@@ -204,6 +206,7 @@ const GameInitializationData &CreateNetworkGameDialog::initializationData() cons
     initializationData_.bombermans      = game_->playersBombermans();
     initializationData_.game            = game_;
     initializationData_.playerBomberman = game_->playerId();
+    // initializationData_.map             = selectedMap_;
 
     return initializationData_;
 }

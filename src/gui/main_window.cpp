@@ -95,15 +95,20 @@ void MainWindow::gameStatusChanged(GameStatus newStatus)
         auto gameOverDialogAnswer = gameOverDialog->exec();
         if (gameOverDialogAnswer == QDialog::Accepted) {
             gameDialogs_.creationDialog->reset();
-            auto answer = gameDialogs_.creationDialog->exec();
-            if (answer == QDialog::Accepted) {
-                //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
-                auto initializationData = gameDialogs_.creationDialog->initializationData();
-                // TODO: Check if gameData has errors.
-                initializeGame(initializationData);
-                startGame(initializationData);
+            auto d = qobject_cast<ClientGameDialog*>(gameDialogs_.creationDialog);
+            if (d) {
+                // d->setModal(true);
+                gameDialogs_.creationDialog->open();
             } else {
-                showMainMenu();
+                auto answer = gameDialogs_.creationDialog->exec();
+                if (answer == QDialog::Accepted) {
+                    auto initializationData = gameDialogs_.creationDialog->initializationData();
+                    // TODO: Check if gameData has errors.
+                    initializeGame(initializationData);
+                    startGame(initializationData);
+                } else {
+                    showMainMenu();
+                }
             }
         } else {
             showMainMenu();
@@ -197,8 +202,9 @@ void MainWindow::startNetworkGame()
     // CreateNetworkGameDialog dialog;
     // auto                    answer = dialog.exec();
     const auto& player = mainMenuWidget_->selectedPlayer();
-    gameDialogs_       = createGameDialogs(this, GameType::Server, player);
-    auto answer        = gameDialogs_.creationDialog->exec();
+    // TODO: delete old dialogs.
+    gameDialogs_ = createGameDialogs(this, GameType::Server, player);
+    auto answer  = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
         auto initializationData = gameDialogs_.creationDialog->initializationData();
         // TODO: Check if gameData has errors.
@@ -218,15 +224,6 @@ void MainWindow::connectToServer()
         initializeGame(initializationData);
         startGame(initializationData);
     }
-
-    //    ClientGameDialog dialog { mainMenuWidget_->selectedPlayer()->name() };
-    //    auto             answer = dialog.exec();
-    //    if (answer == QDialog::Accepted) {
-    //        auto initializationData = dialog.initializationData();
-    //        // TODO: Check if gameData has errors.
-    //        initializeGame(initializationData);
-    //        startGame(initializationData);
-    //    }
 }
 
 } // namespace gui

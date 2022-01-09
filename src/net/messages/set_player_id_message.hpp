@@ -6,6 +6,7 @@
 
 namespace bm {
 
+// TODO: rename SetPlayerIdMessage to something like SetPlayerBombermanIdMessage.
 class SetPlayerIdMessage : public ByteArrayMessage<object_id_t>
 {
 public:

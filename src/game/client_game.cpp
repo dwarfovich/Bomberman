@@ -23,6 +23,11 @@ ClientGame::ClientGame(Client *client) : client_ { client }
     connect(client_, &Client::messageReceived, this, &ClientGame::onMessageReceived);
 }
 
+void ClientGame::reset()
+{
+    setGameStatus(GameStatus::Waiting);
+}
+
 void ClientGame::start()
 {}
 
@@ -135,8 +140,12 @@ void ClientGame::visit(const SetPlayerIdMessage &message)
 {
     playerId_ = message.payload();
     setGameStatus(GameStatus::Preparing);
+    emit client_->logMessage("Set game status to Preparing");
     if (players_.size() > 0) {
         players_.front()->setCurrentGameBombermanId(playerId_);
+        emit client_->logMessage("Setting player ID to " + QString::number(playerId_));
+    } else {
+        emit client_->logMessage("No player for setting bombreman ID");
     }
 }
 
@@ -165,7 +174,6 @@ void ClientGame::visit(const ClientJoiningGameMessage &message)
 void ClientGame::visit(const GameOverMessage &message)
 {
     gameResult_ = message.payload();
-    auto t      = gameResult().losePlayers;
     setGameStatus(GameStatus::GameOver);
 }
 

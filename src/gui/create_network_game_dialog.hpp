@@ -18,7 +18,7 @@ namespace Ui {
 class CreateNetworkGameDialog;
 }
 
-// TODO: rename class, the name should be unfied with other creation dialogs.
+// TODO: rename class, the name should be unified with other creation dialogs.
 class CreateNetworkGameDialog : public GameCreationDialog
 {
     Q_OBJECT

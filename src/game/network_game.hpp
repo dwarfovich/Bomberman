@@ -30,7 +30,7 @@ public:
     void visit(const BombPlacedMessage& message) override;
 
     const std::vector<std::shared_ptr<Bomberman>>& playersBombermans() const;
-    void                                           reset();
+    void                                           reset() override;
 
 protected:
     void prepareToStart() override;

@@ -15,6 +15,7 @@ class GameOverDialog;
 class GameDialogs
 {
 public:
+    // TODO: consider remove unused parentWidget_ var.
     explicit GameDialogs(QWidget* parentWidget = nullptr);
 
     GameCreationDialog* creationDialog = nullptr;

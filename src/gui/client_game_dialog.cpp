@@ -15,7 +15,7 @@ namespace bm {
 namespace gui {
 
 ClientGameDialog::ClientGameDialog(const std::shared_ptr<Player> &player, QWidget *parent)
-    : GameCreationDialog(parent, player), ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
+    : GameCreationDialog { parent, player }, ui_(new ::Ui::ClientGameDialog), client_ { new Client { this } }
 {
     ui_->setupUi(this);
 
@@ -50,6 +50,11 @@ ClientGameDialog::~ClientGameDialog()
 Client *ClientGameDialog::client() const
 {
     return client_;
+}
+
+void ClientGameDialog::reset()
+{
+    game_->reset();
 }
 
 void ClientGameDialog::onReady()
@@ -133,4 +138,10 @@ const std::shared_ptr<bm::Map> &bm::gui::ClientGameDialog::map() const
         static const std::shared_ptr<Map> empty { nullptr };
         return empty;
     }
+}
+
+void bm::gui::ClientGameDialog::accept()
+{
+    qDebug() << "ClientGameDialog::accept()";
+    QDialog::accept();
 }
