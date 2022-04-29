@@ -27,6 +27,7 @@ std::vector<std::shared_ptr<Player>> loadPlayers(const QString &playersFolder)
 
 bool savePlayer(const Player &player, const QString &playersFolder)
 {
+    // TODO: create `players` folder, if it doesn't exist, or you will not be able to create a file.
     QFile file { player.filename() };
     if (file.open(QIODevice::WriteOnly)) {
         QDataStream stream { &file };

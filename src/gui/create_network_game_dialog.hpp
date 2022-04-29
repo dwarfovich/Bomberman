@@ -33,23 +33,30 @@ public:
 
     void reset() override;
 
+signals:
+    void playersReadyCountChanged(size_t newCount);
+
 public slots:
     void logMessage(const QString &message);
     void startServer();
 
 private slots:
+    void onPlayersReadyCountChanged(size_t newCount);
     void onServerPlayerNameChanged(const QString &newName);
     void onClientConnected(uint8_t clientId, const QString &name);
+    void onClientDisconnected(uint8_t clientId);
     void onClientNameChanged(uint8_t clientId, QString name);
     void onClientJoinedGame(uint8_t clientId);
     void onClientsWaitingForGameData();
     void onNewMapSelected(int index);
     void sendMessage();
 
+
 private: // methods
     void addServerPlayerToModel();
     void prepareMapList();
     void addPlayerToModel(uint8_t clientId, const QString &name);
+    size_t countPlayersReady() const;
 
 private: // data
     enum MapsComboBoxRoles
@@ -58,7 +65,8 @@ private: // data
     };
     enum PlayersModelRoles
     {
-        ClientId = Qt::UserRole + 1
+        ClientId = Qt::UserRole + 1,
+        ClientReady
     };
 
     Ui::CreateNetworkGameDialog *  ui_;

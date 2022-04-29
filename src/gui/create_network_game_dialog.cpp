@@ -27,6 +27,7 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(const std::shared_ptr<Player> &
     processHandler->setGame(game_);
     game_->setGameProcessHandler(std::move(processHandler));
 
+    ui_->startGameButton->setEnabled(false);
     ui_->serverPlayerNameEdit->setText(player_->name());
 
     ui_->mapPreview->setScene(&scene_);
@@ -38,6 +39,7 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(const std::shared_ptr<Player> &
 
     connect(server_, &Server::logMessageRequest, this, &CreateNetworkGameDialog::logMessage);
     connect(server_, &Server::clientConnected, this, &CreateNetworkGameDialog::onClientConnected);
+    connect(server_, &Server::clientDisconnected, this, &CreateNetworkGameDialog::onClientDisconnected);
     connect(server_, &Server::clientNameChanged, this, &CreateNetworkGameDialog::onClientNameChanged);
     connect(server_, &Server::clientJoinedGame, this, &CreateNetworkGameDialog::onClientJoinedGame);
 
@@ -47,6 +49,7 @@ CreateNetworkGameDialog::CreateNetworkGameDialog(const std::shared_ptr<Player> &
     connect(ui_->startGameButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::accept);
     connect(ui_->cancelButton, &QPushButton::clicked, this, &CreateNetworkGameDialog::reject);
     connect(ui_->mapComboBox, &QComboBox::currentIndexChanged, this, &CreateNetworkGameDialog::onNewMapSelected);
+    connect(this, &CreateNetworkGameDialog::playersReadyCountChanged, this, &CreateNetworkGameDialog::onPlayersReadyCountChanged);
 
     prepareMapList();
 
@@ -86,6 +89,13 @@ void CreateNetworkGameDialog::startServer()
     server_->startListen(address, ui_->serverPortSpinBox->value());
 }
 
+void CreateNetworkGameDialog::onPlayersReadyCountChanged(size_t newCount)
+{
+    if (newCount > 1) {
+        ui_->startGameButton->setEnabled(true);
+    }
+}
+
 void CreateNetworkGameDialog::onServerPlayerNameChanged(const QString &newName)
 {
     auto item = playersModel_.item(0, 0);
@@ -101,6 +111,19 @@ void CreateNetworkGameDialog::onClientConnected(uint8_t clientId, const QString 
     const auto &            selectedMapFileName = ui_->mapComboBox->currentData(MapsComboBoxRoles::Filename).toString();
     SelectMapRequestMessage message { selectedMapFileName };
     server_->sendMessage(message, server_->currentMessageClient());
+}
+
+// TODO: add methods to find and ger player's item from model.
+void CreateNetworkGameDialog::onClientDisconnected(uint8_t clientId)
+{
+    for (int i = 0; i < playersModel_.rowCount(); ++i) {
+        auto *item = playersModel_.item(i);
+        if (static_cast<uint8_t>(item->data(PlayersModelRoles::ClientId).toUInt()) == clientId) {
+            playersModel_.removeRow(i);
+            emit playersReadyCountChanged(countPlayersReady());
+            return;
+        }
+    }
 }
 
 void CreateNetworkGameDialog::onClientNameChanged(uint8_t clientId, QString name)
@@ -120,6 +143,8 @@ void CreateNetworkGameDialog::onClientJoinedGame(uint8_t clientId)
         auto *item = playersModel_.item(i);
         if (static_cast<uint8_t>(item->data(PlayersModelRoles::ClientId).toUInt()) == clientId) {
             item->setIcon(playerReadyIcon_);
+            item->setData(true, PlayersModelRoles::ClientReady);
+            emit playersReadyCountChanged(countPlayersReady());
             return;
         }
     }
@@ -162,6 +187,7 @@ void CreateNetworkGameDialog::addServerPlayerToModel()
     item->setIcon(playerReadyIcon_);
     // TODO: give a name to magic 0xFF constant.
     item->setData(0xFF, PlayersModelRoles::ClientId);
+    item->setData(true, PlayersModelRoles::ClientReady);
     playersModel_.appendRow(item);
 }
 
@@ -199,6 +225,19 @@ void CreateNetworkGameDialog::addPlayerToModel(uint8_t clientId, const QString &
     modelItem->setData(clientId, PlayersModelRoles::ClientId);
     modelItem->setIcon(playerConnectedIcon_);
     playersModel_.appendRow(modelItem);
+}
+
+size_t CreateNetworkGameDialog::countPlayersReady() const
+{
+    size_t count = 0;
+    for (int i = 0; i < playersModel_.rowCount(); ++i) {
+        auto *item = playersModel_.item(i);
+        if (item->data(PlayersModelRoles::ClientReady).toBool()) {
+            ++count;
+        }
+    }
+
+    return count;
 }
 
 const GameInitializationData &CreateNetworkGameDialog::initializationData() const

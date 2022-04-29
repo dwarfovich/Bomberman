@@ -2,6 +2,7 @@
 #define BM_GAMEINITIALIZATIONDATA_HPP
 
 #include "game_object_id.hpp"
+
 #include <QStringList>
 
 #include <memory>

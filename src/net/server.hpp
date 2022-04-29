@@ -46,6 +46,7 @@ signals:
     void messageReceived(const std::unique_ptr<Message>& message);
     void logMessageRequest(const QString& message);
     void clientConnected(uint8_t clientId, QString name);
+    void clientDisconnected(uint8_t clientId);
     void clientNameChanged(uint8_t clientId, QString name);
     void clientJoinedGame(uint8_t clientId);
 

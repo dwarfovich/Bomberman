@@ -9,8 +9,10 @@
 
 namespace bm {
 
+// TODO: implement client disconnection.
 Server::Server(QObject *parent) : QTcpServer { parent }
-{}
+{
+}
 
 void Server::visit(const TextMessage &message)
 {
@@ -93,7 +95,9 @@ void Server::onMessageReceived(ServerWorker *client, const std::unique_ptr<Messa
 
 // TODO: Implement.
 void Server::onUserDisconnected(ServerWorker *client)
-{}
+{
+    emit clientDisconnected(client->clientId());
+}
 
 ServerWorker *Server::currentMessageClient() const
 {

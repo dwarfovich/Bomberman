@@ -25,4 +25,5 @@ private:
 
 } // namespace gui
 } // namespace bm
+
 #endif // BM_GUI_CREATE_PLAYER_DIALOG_HPP

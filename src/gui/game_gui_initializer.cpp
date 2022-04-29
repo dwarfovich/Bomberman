@@ -21,22 +21,23 @@ bool initializeGameGui(GameInitializationData& data)
     data.scene->setMap(data.map);
     data.view->setScene(data.scene);
 
+    // TODO: I've added Qt::UniqueConnection to prevent duplicates, so consider to get rid of data.sceneConnectedToGame var.
     if (!data.sceneConnectedToGame) {
         const auto* game = data.game.get();
-        QObject::connect(game, &Game::cellStructureChanged, data.scene, &gui::GameScene::onCellStructureChanged);
-        QObject::connect(game, &Game::characterMoved, data.scene, &gui::GameScene::onCharacterMoved);
-        QObject::connect(game, &Game::characterStartedMoving, data.scene, &gui::GameScene::onCharacterStartedMove);
-        QObject::connect(game, &Game::characterStopped, data.scene, &gui::GameScene::onCharacterStopped);
-        QObject::connect(game, &Game::bombPlaced, data.scene, &gui::GameScene::onBombPlaced);
-        QObject::connect(game, &Game::bombExploded, data.scene, &gui::GameScene::onBombExploded);
-        QObject::connect(game, &Game::explosionHappened, data.scene, &gui::GameScene::onExplosionHappened);
-        QObject::connect(game, &Game::explosionFinished, data.scene, &gui::GameScene::onExplosionFinished);
-        QObject::connect(game, &Game::objectDestroyed, data.scene, &gui::GameScene::onObjectDestroyed);
-        QObject::connect(game, &Game::modifierAdded, data.scene, &gui::GameScene::onModifierAdded);
-        QObject::connect(game, &Game::modifierRemoved, data.scene, &gui::GameScene::onModifierRemoved);
-        QObject::connect(game, &Game::exitRevealed, data.scene, &gui::GameScene::onExitRevealed);
-        QObject::connect(game, &Game::exitActivated, data.scene, &gui::GameScene::onExitActivated);
-        QObject::connect(game, &Game::gameStatusChanged, data.mainWindow, &gui::MainWindow::gameStatusChanged);
+        QObject::connect(game, &Game::cellStructureChanged, data.scene, &gui::GameScene::onCellStructureChanged,Qt::UniqueConnection);
+        QObject::connect(game, &Game::characterMoved, data.scene, &gui::GameScene::onCharacterMoved,Qt::UniqueConnection);
+        QObject::connect(game, &Game::characterStartedMoving, data.scene, &gui::GameScene::onCharacterStartedMove,Qt::UniqueConnection);
+        QObject::connect(game, &Game::characterStopped, data.scene, &gui::GameScene::onCharacterStopped,Qt::UniqueConnection);
+        QObject::connect(game, &Game::bombPlaced, data.scene, &gui::GameScene::onBombPlaced,Qt::UniqueConnection);
+        QObject::connect(game, &Game::bombExploded, data.scene, &gui::GameScene::onBombExploded,Qt::UniqueConnection);
+        QObject::connect(game, &Game::explosionHappened, data.scene, &gui::GameScene::onExplosionHappened,Qt::UniqueConnection);
+        QObject::connect(game, &Game::explosionFinished, data.scene, &gui::GameScene::onExplosionFinished,Qt::UniqueConnection);
+        QObject::connect(game, &Game::objectDestroyed, data.scene, &gui::GameScene::onObjectDestroyed,Qt::UniqueConnection);
+        QObject::connect(game, &Game::modifierAdded, data.scene, &gui::GameScene::onModifierAdded,Qt::UniqueConnection);
+        QObject::connect(game, &Game::modifierRemoved, data.scene, &gui::GameScene::onModifierRemoved,Qt::UniqueConnection);
+        QObject::connect(game, &Game::exitRevealed, data.scene, &gui::GameScene::onExitRevealed,Qt::UniqueConnection);
+        QObject::connect(game, &Game::exitActivated, data.scene, &gui::GameScene::onExitActivated,Qt::UniqueConnection);
+        QObject::connect(game, &Game::gameStatusChanged, data.mainWindow, &gui::MainWindow::gameStatusChanged, Qt::UniqueConnection);
 
         data.sceneConnectedToGame = true;
     }

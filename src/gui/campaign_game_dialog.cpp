@@ -41,7 +41,8 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
     Campaign campaign;
     auto     mapFile = campaign.mapForCampaignLevel(level);
     if (mapFile.isEmpty()) {
-        static const GameInitializationData empty;
+        static GameInitializationData empty;
+        empty.errors.append("No map file for level " + QString::number(level));
         return empty;
     }
 
@@ -50,7 +51,8 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
 
     // TODO: Concider move static const empty entities somewhere.
     if (!map) {
-        static const GameInitializationData empty;
+        static GameInitializationData empty;
+        empty.errors.append("Cannot load map from file " + mapPath);
         return empty;
     }
 
@@ -60,7 +62,9 @@ const GameInitializationData &CampaignGameDialog::initializationData() const
         bomberman->setCoordinates(map->indexToCellCenterCoordinates(respawns[0]));
         map->addBomberman(bomberman);
         initializationData_.playerBomberman = bomberman->id();
-        // player_->setCurrentGameBombermanId(bomberman->id());
+    } else {
+        static GameInitializationData empty;
+        empty.errors.append("Map " + map->name() + " has no respawn places for bomberman");
     }
 
     game_->setMap(map);

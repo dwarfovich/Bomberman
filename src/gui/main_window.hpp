@@ -2,10 +2,11 @@
 #define MAINWINDOW_HPP
 
 #include "game/game.hpp"
-#include "player_key_controls.hpp"
+#include "game/game_type.hpp"
 #include "game/game_initialization_data.hpp"
+#include "player_key_controls.hpp"
 #include "game_dialogs.hpp"
-#include "game_dialogs_factory.hpp"
+//#include "game_dialogs_factory.hpp"
 
 #include <QMainWindow>
 
@@ -45,11 +46,15 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
 
+private slots:
+    void onGameCreationDialogFinished(int result);
+
 private: // methods
     void showInitializationGameErrorsMessage(const QStringList& errors);
     void createNewGameInitializationData();
     void initializeGame(GameInitializationData& data);
     void startGame(const GameInitializationData& data);
+    void createGameDialogs(GameType type, const std::shared_ptr<Player>& player);
 
 private: // data
     Ui::MainWindow* ui_             = nullptr;

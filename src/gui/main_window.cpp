@@ -1,3 +1,4 @@
+// TODO: remove duplicates.
 #include "main_window.hpp"
 #include "ui_main_window.h"
 #include "game/map_loader.hpp"
@@ -10,15 +11,17 @@
 #include "client_game_dialog.hpp"
 #include "game_gui_initializer.hpp"
 #include "game_over_dialog.hpp"
-#include "net/client.hpp"
+#include "fast_game_creation_dialog.hpp"
+#include "fast_game_over_dialog.hpp"
+#include "campaign_game_dialog.hpp"
+#include "campaign_game_over_dialog.hpp"
+#include "create_network_game_dialog.hpp"
+#include "network_game_over_dialog.hpp"
+#include "client_game_dialog.hpp"
 
 #include <QKeyEvent>
 #include <QDir>
 #include <QMessageBox>
-
-//#include <iostream>
-
-#include <QDebug>
 
 namespace bm {
 namespace gui {
@@ -87,6 +90,25 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
+// TODO: this method is intended to unify game start process, so check and remove an older code for game creation and start processes.
+void MainWindow::onGameCreationDialogFinished(int result)
+{
+    if (result == QDialog::Accepted) {
+        auto initializationData = gameDialogs_.creationDialog->initializationData();
+        // TODO: check if game initialization finished with errors.
+        initializeGame(initializationData);
+        if (!initializationData.errors.empty()) {
+            QString errorMessage = "Cannot start game because there are some errors:\n";
+            for (const auto& error : initializationData.errors) {
+                errorMessage.append(error + "\n");
+            }
+            QMessageBox::critical(this, "Critical error", errorMessage);
+        } else {
+        startGame(initializationData);
+        }
+    }
+}
+
 void MainWindow::gameStatusChanged(GameStatus newStatus)
 {
     if (newStatus == GameStatus::GameOver) {
@@ -97,7 +119,6 @@ void MainWindow::gameStatusChanged(GameStatus newStatus)
             gameDialogs_.creationDialog->reset();
             auto d = qobject_cast<ClientGameDialog*>(gameDialogs_.creationDialog);
             if (d) {
-                // d->setModal(true);
                 gameDialogs_.creationDialog->open();
             } else {
                 auto answer = gameDialogs_.creationDialog->exec();
@@ -115,6 +136,28 @@ void MainWindow::gameStatusChanged(GameStatus newStatus)
         }
     }
 }
+
+// void MainWindow::gameStatusChanged(GameStatus newStatus)
+//{
+//    if (newStatus == GameStatus::GameOver) {
+//        auto* gameOverDialog = gameDialogs_.gameOverDialog;
+//        gameOverDialog->setGameResult(gameData_.game->gameResult());
+//        auto gameOverDialogAnswer = gameOverDialog->exec();
+//        if (gameOverDialogAnswer == QDialog::Accepted) {
+//            gameDialogs_.creationDialog->reset();
+//            auto answer = gameDialogs_.creationDialog->exec();
+//            if (answer == QDialog::Accepted) {
+//                auto initializationData = gameDialogs_.creationDialog->initializationData();
+//                initializeGame(initializationData);
+//                startGame(initializationData);
+//            } else {
+//                showMainMenu();
+//            }
+//        } else {
+//            showMainMenu();
+//        }
+//    }
+//}
 
 void MainWindow::showInitializationGameErrorsMessage(const QStringList& errors)
 {
@@ -165,9 +208,42 @@ void MainWindow::startGame(const GameInitializationData& data)
     gameData_.game->start();
 }
 
+void MainWindow::createGameDialogs(GameType type, const std::shared_ptr<Player>& player)
+{
+        delete gameDialogs_.creationDialog;
+        delete gameDialogs_.gameOverDialog;
+
+    switch (type) {
+            // TODO: unify constructors of creation and game over dialogs.
+        case GameType::Fast:
+            gameDialogs_.creationDialog = new FastGameCreationDialog { this, player };
+            gameDialogs_.gameOverDialog = new FastGameOverDialog { player, this };
+            break;
+
+        case GameType::Campaign:
+            gameDialogs_.creationDialog = new CampaignGameDialog { player, this };
+            gameDialogs_.gameOverDialog = new CampaignGameOverDialog { player, this };
+            break;
+
+        case GameType::Server:
+            gameDialogs_.creationDialog = new CreateNetworkGameDialog { player, this };
+            gameDialogs_.gameOverDialog = new NetworkGameOverDialog { player, this };
+            break;
+
+        case GameType::Client:
+            gameDialogs_.creationDialog = new ClientGameDialog { player, this };
+            gameDialogs_.gameOverDialog = new NetworkGameOverDialog { player, this };
+            break;
+
+        default: Q_ASSERT(false);
+    }
+
+    connect(gameDialogs_.creationDialog, &QDialog::finished, this, &MainWindow::onGameCreationDialogFinished);
+}
+
 void MainWindow::startSinglePlayerGame()
 {
-    gameDialogs_ = createGameDialogs(this, GameType::Fast, mainMenuWidget_->selectedPlayer());
+    createGameDialogs(GameType::Fast, mainMenuWidget_->selectedPlayer());
 
     auto answer = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
@@ -183,15 +259,16 @@ void MainWindow::startCampaignGame()
 {
     const auto& player = mainMenuWidget_->selectedPlayer();
     if (player) {
-        gameDialogs_ = createGameDialogs(this, GameType::Campaign, player);
-        auto answer  = gameDialogs_.creationDialog->exec();
-        if (answer == QDialog::Accepted) {
-            //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
-            auto initializationData = gameDialogs_.creationDialog->initializationData();
-            // TODO: Check if gameData has errors.
-            initializeGame(initializationData);
-            startGame(initializationData);
-        }
+        createGameDialogs(GameType::Campaign, player);
+        gameDialogs_.creationDialog->open();
+        //        auto answer = gameDialogs_.creationDialog->exec();
+//                if (answer == QDialog::Accepted) {
+//                    //        auto initializationData = createSinglePlayerGame(gameDialogs_.creationDialog->map());
+//                    auto initializationData = gameDialogs_.creationDialog->initializationData();
+//                    // TODO: Check if gameData has errors.
+//                    initializeGame(initializationData);
+//                    startGame(initializationData);
+//                }
     } else {
         QMessageBox::information(this, "Cann't play campaign", "Please select correct player to play campaign");
     }
@@ -203,8 +280,8 @@ void MainWindow::startNetworkGame()
     // auto                    answer = dialog.exec();
     const auto& player = mainMenuWidget_->selectedPlayer();
     // TODO: delete old dialogs.
-    gameDialogs_ = createGameDialogs(this, GameType::Server, player);
-    auto answer  = gameDialogs_.creationDialog->exec();
+    createGameDialogs(GameType::Server, player);
+    auto answer = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
         auto initializationData = gameDialogs_.creationDialog->initializationData();
         // TODO: Check if gameData has errors.
@@ -216,8 +293,8 @@ void MainWindow::startNetworkGame()
 void MainWindow::connectToServer()
 {
     const auto& player = mainMenuWidget_->selectedPlayer();
-    gameDialogs_       = createGameDialogs(this, GameType::Client, player);
-    auto answer        = gameDialogs_.creationDialog->exec();
+    createGameDialogs(GameType::Client, player);
+    auto answer = gameDialogs_.creationDialog->exec();
     if (answer == QDialog::Accepted) {
         auto initializationData = gameDialogs_.creationDialog->initializationData();
         // TODO: Check if gameData has errors.
