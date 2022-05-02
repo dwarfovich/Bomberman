@@ -261,7 +261,7 @@ void Map::addExplosion(const std::shared_ptr<Explosion>& explosion)
 void Map::removeExplosion(object_id_t id)
 {
     // TODO: Check all erase calls for proper form - you should use form with 2 arguments, where second argument is
-    // end() typically.
+    // the end() typically.
     explosions_.erase(std::remove_if(explosions_.begin(),
                                      explosions_.end(),
                                      [this, id](std::shared_ptr<Explosion> explosion) {
@@ -737,115 +737,7 @@ void Map::moveObjects(double timeDelta)
         auto  inCell      = topLeftCoordinates(coordinates);
         int   ds          = 5;
 
-        const int firstCoord            = firstCoordinate(coordinates, moveData.direction);
-        const int firstCoordBestAdvance = advanceCoordinate(firstCoord, moveData.speed, timeDelta);
-        const int firstCoordObstacle    = firstCoordinateObstacle(coordinates, moveData.direction);
-        const int maxFirstCoordAdvance =
-            maxFirstCoordinateAdvance(firstCoordBestAdvance, firstCoordObstacle, moveData.direction);
 
-        if (moveData.direction == Direction::Upward) {
-            coordinates.setY(maxFirstCoordAdvance);
-            auto d = abs(inCell.x() - cellHalfSize);
-            if (inCell.x() > cellHalfSize) {
-                auto obstacleCoords = findUpwardRightObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setX(coordinates.x() - ds);
-                    } else {
-                        coordinates.setX(coordinates.x() - d);
-                    }
-                }
-            } else if (inCell.x() < cellHalfSize) {
-                auto obstacleCoords = findUpwardLeftObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setX(coordinates.x() + ds);
-                    } else {
-                        coordinates.setX(coordinates.x() + d);
-                    }
-                }
-            }
-        } else if (moveData.direction == Direction::Right) {
-            coordinates.setX(maxFirstCoordAdvance);
-            auto d = abs(inCell.y() - cellHalfSize);
-            if (inCell.y() > cellHalfSize) {
-                auto obstacleCoords = findRightBottomObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setY(coordinates.y() - ds);
-                    } else {
-                        coordinates.setY(coordinates.y() - d);
-                    }
-                }
-            } else if (inCell.x() < cellHalfSize) {
-                auto obstacleCoords = findRightTopObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setY(coordinates.y() + ds);
-                    } else {
-                        coordinates.setY(coordinates.y() + d);
-                    }
-                }
-            }
-        } else if (moveData.direction == Direction::Downward) {
-            coordinates.setY(maxFirstCoordAdvance);
-            auto d = abs(inCell.x() - cellHalfSize);
-            if (inCell.x() > cellHalfSize) {
-                auto obstacleCoords = findDownwardRightObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setX(coordinates.x() - ds);
-                    } else {
-                        coordinates.setX(coordinates.x() - d);
-                    }
-                }
-            } else if (inCell.x() < cellHalfSize) {
-                auto obstacleCoords = findDownwardLeftObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setX(coordinates.x() + ds);
-                    } else {
-                        coordinates.setX(coordinates.x() + d);
-                    }
-                }
-            }
-        } else if (moveData.direction == Direction::Left) {
-            coordinates.setX(maxFirstCoordAdvance);
-            auto d = abs(inCell.y() - cellHalfSize);
-            if (inCell.y() > cellHalfSize) {
-                auto obstacleCoords = findLeftBottomObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setY(coordinates.y() - ds);
-                    } else {
-                        coordinates.setY(coordinates.y() - d);
-                    }
-                }
-            } else if (inCell.x() < cellHalfSize) {
-                auto obstacleCoords = findLeftTopObstacle(coordinates);
-                if (circlesIntersect(coordinates, obstacleCoords)) {
-                    if (d > ds) {
-                        coordinates.setY(coordinates.y() + ds);
-                    } else {
-                        coordinates.setY(coordinates.y() + d);
-                    }
-                }
-            }
-        }
-
-        character->setMovementData(moveData);
-        auto newIndex = coordinatesToIndex(coordinates);
-        if (oldIndex != newIndex) {
-            emit characterIndexChanged(character, newIndex);
-        }
-
-        emit characterMoved(character);
-        if (character->notifyIfMeetedWall()) {
-            if (!nextCellIsMovable(*character, character->movementData().direction)
-                && isCellCenter(character->coordinates())) {
-                character->meetsWall();
-            }
-        }
     }
 
     Collisions collisions;
